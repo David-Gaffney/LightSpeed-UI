@@ -47,6 +47,16 @@ test.describe("LightSpeedUI Playground (Themes, Ambient Context & WCAG 2.2 AA)",
         getComputedStyle(nordicDarkCompact.querySelector(".primary-pill")!).minHeight,
       );
 
+      const heroBackdrop = getComputedStyle(
+        document.getElementById("hero-surface")!,
+      ).backgroundImage;
+      const themedImgLight = getComputedStyle(
+        document.getElementById("themed-img-light")!,
+      ).backgroundImage;
+      const themedImgDark = getComputedStyle(
+        document.getElementById("themed-img-dark")!,
+      ).backgroundImage;
+
       return {
         nordicLightBg,
         nordicDarkBg,
@@ -58,12 +68,19 @@ test.describe("LightSpeedUI Playground (Themes, Ambient Context & WCAG 2.2 AA)",
         editorialHeadingFont: getComputedStyle(editorialHeading).fontFamily,
         spaciousPillHeight,
         compactPillHeight,
+        heroBackdrop,
+        themedImgLight,
+        themedImgDark,
       };
     });
 
-    // Light vs nested Dark backgrounds flip automatically via light-dark()
+    // Light vs nested Dark backgrounds & CSS light-dark() images flip automatically
     expect(computed.nordicLightBg).not.toBe(computed.nordicDarkBg);
     expect(computed.editorialLightBg).not.toBe(computed.editorialDarkBg);
+    expect(computed.heroBackdrop).not.toBe("none");
+    expect(computed.themedImgLight).not.toBe("none");
+    expect(computed.themedImgDark).not.toBe("none");
+    expect(computed.themedImgLight).not.toBe(computed.themedImgDark);
 
     // Nordic (0.5rem = 8px) vs Editorial (0.1875rem = 3px) geometry & heading typography differ
     expect(parseFloat(computed.nordicRadius)).toBeGreaterThan(

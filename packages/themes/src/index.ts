@@ -48,6 +48,10 @@ export const THEMES: Record<ThemeName, ThemeMetadata> = {
   },
 };
 
+export const REQUIRED_SEMANTIC_IMAGE_TOKENS = [
+  "--image-hero-backdrop",
+] as const;
+
 export const REQUIRED_SEMANTIC_COLOR_TOKENS = [
   "--color-bg",
   "--color-text",

@@ -5,11 +5,29 @@ import { PACKAGE_NAME } from "@lsui/core";
 
 <BaseLayout title="LightSpeedUI Playground" theme="nordic light">
   <main data-layout="container" data-density="spacious" id="outer-spacious">
-    <header class="swatch-panel" data-surface="card">
+    <header class="swatch-panel" data-surface="hero" id="hero-surface">
       <h1 class="display-heading">LightSpeedUI Playground</h1>
       <p class="muted-copy">
         Connected workspace package: <code>{PACKAGE_NAME}</code>
       </p>
+      <div class="themed-img-row">
+        <span
+          id="themed-img-light"
+          class="themed-badge"
+          data-lsui-themed-image
+          role="img"
+          aria-label="Light mode sun icon"
+        ></span>
+        <span data-theme="dark" class="inline-dark-chip">
+          <span
+            id="themed-img-dark"
+            class="themed-badge"
+            data-lsui-themed-image
+            role="img"
+            aria-label="Dark mode moon icon"
+          ></span>
+        </span>
+      </div>
     </header>
 
     <div data-layout="split" style="margin-block-start: var(--space-lg);">
@@ -125,6 +143,30 @@ import { PACKAGE_NAME } from "@lsui/core";
         background-color: var(--color-secondary);
         color: var(--color-on-secondary);
         border: var(--border-width) solid var(--color-border-strong);
+      }
+
+      .themed-img-row {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        margin-block-start: var(--space-sm);
+      }
+
+      .inline-dark-chip {
+        display: inline-flex;
+        padding: var(--space-1);
+        border-radius: var(--radius-sm);
+      }
+
+      .themed-badge {
+        --image-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='5' fill='%231d4ed8'/%3E%3C/svg%3E");
+        --image-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='5' fill='%2393c5fd'/%3E%3C/svg%3E");
+        display: inline-block;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
       }
     }
   }

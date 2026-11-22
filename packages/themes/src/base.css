@@ -251,6 +251,41 @@
       --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.06);
       --shadow-md: 0 4px 12px oklch(0 0 0 / 0.08), 0 1px 3px oklch(0 0 0 / 0.05);
       --shadow-lg: 0 12px 28px oklch(0 0 0 / 0.12), 0 4px 10px oklch(0 0 0 / 0.06);
+
+      /* ---- Light/Dark CSS Image Tokens (`https://webstatus.dev/features/light-dark-image`) ----
+       * Uses `light-dark(<image>, <image>)` (Baseline Newly Available 2026-09) with a zero-JS
+       * `image-set()` MIME-switch fallback (`--lsui-img-light` / `--lsui-img-dark`).
+       * Active branch must remain empty whitespace (never `type("")`, which drops all options). */
+      --lsui-img-light: ;
+      --lsui-img-dark: type("image/do-not-use");
+
+      @media (prefers-color-scheme: dark) {
+        --lsui-img-light: type("image/do-not-use");
+        --lsui-img-dark: ;
+      }
+
+      --image-hero-backdrop-light: radial-gradient(
+        120% 90% at 50% 0%,
+        color-mix(in oklab, var(--color-accent-light) 55%, transparent),
+        transparent 70%
+      );
+      --image-hero-backdrop-dark: radial-gradient(
+        120% 90% at 50% 0%,
+        color-mix(in oklab, var(--color-accent-dark) 45%, transparent),
+        transparent 70%
+      );
+      --image-hero-backdrop: var(--image-hero-backdrop-light);
+
+      @media (prefers-color-scheme: dark) {
+        --image-hero-backdrop: var(--image-hero-backdrop-dark);
+      }
+
+      @supports (background-image: light-dark(url("a"), url("b"))) {
+        --image-hero-backdrop: light-dark(
+          var(--image-hero-backdrop-light),
+          var(--image-hero-backdrop-dark)
+        );
+      }
     }
   }
 
@@ -262,26 +297,44 @@
      * inherited `<color>` properties re-evaluate `light-dark()` in the new scheme. */
     [data-theme~="light"] {
       color-scheme: only light;
+      --lsui-img-light: ;
+      --lsui-img-dark: type("image/do-not-use");
       background-color: var(--color-bg);
       color: var(--color-text);
       accent-color: var(--color-primary);
       caret-color: var(--color-primary);
+      @supports not (background-image: light-dark(url("a"), url("b"))) {
+        --image-hero-backdrop: var(--image-hero-backdrop-light);
+      }
     }
 
     [data-theme~="dark"] {
       color-scheme: only dark;
+      --lsui-img-light: type("image/do-not-use");
+      --lsui-img-dark: ;
       background-color: var(--color-bg);
       color: var(--color-text);
       accent-color: var(--color-primary);
       caret-color: var(--color-primary);
+
+      @supports not (background-image: light-dark(url("a"), url("b"))) {
+        --image-hero-backdrop: var(--image-hero-backdrop-dark);
+      }
     }
 
     [data-theme~="auto"] {
       color-scheme: light dark;
+      --lsui-img-light: ;
+      --lsui-img-dark: type("image/do-not-use");
       background-color: var(--color-bg);
       color: var(--color-text);
       accent-color: var(--color-primary);
       caret-color: var(--color-primary);
+
+      @media (prefers-color-scheme: dark) {
+        --lsui-img-light: type("image/do-not-use");
+        --lsui-img-dark: ;
+      }
     }
 
     /* 2. Ambient Surface Context (`data-surface`) */
@@ -305,7 +358,8 @@
 
     [data-surface="hero"] {
       --lsui-surface: hero;
-      background-color: color-mix(in oklab, var(--color-surface-muted) 75%, var(--color-accent));
+      background-color: var(--color-surface-muted);
+      background-image: var(--image-hero-backdrop);
       color: var(--color-text);
     }
 
@@ -484,6 +538,20 @@
     :where(:focus-visible) {
       outline: var(--ring-width) solid var(--color-ring);
       outline-offset: var(--ring-offset);
+    }
+
+    /* Reusable hook for light/dark `url()` CSS images (`--image-light` & `--image-dark`):
+     * Uses `image-set()` fallback (downloads only the active image) and upgrades to
+     * native `light-dark(<image>, <image>)` (`https://webstatus.dev/features/light-dark-image`). */
+    :where([data-lsui-themed-image]) {
+      background-image: image-set(
+        var(--image-light) var(--lsui-img-light),
+        var(--image-dark) var(--lsui-img-dark)
+      );
+
+      @supports (background-image: light-dark(url("a"), url("b"))) {
+        background-image: light-dark(var(--image-light), var(--image-dark));
+      }
     }
   }
 }

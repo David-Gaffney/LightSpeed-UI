@@ -27,3 +27,5 @@ All components consume semantic tokens—never raw `--*-light` / `--*-dark` prim
 | `--font-mono` | `"IBM Plex Mono", "JetBrains Mono", ui-monospace` | Inline code & code blocks |
 | `--radius-sm` / `--radius-md` / `--radius-lg` | `0.375rem` / `0.5rem` / `0.75rem` | Badges / Controls / Cards & Modals |
 | `--shadow-sm` / `--shadow-md` / `--shadow-lg` | Cool slate diffused elevation | Subtle lift / Popovers / Modals |
+| `--image-hero-backdrop` | `light-dark(<image>, <image>)` arctic radial glow (`image-set` / `@supports` fallback) | Applied automatically on `[data-surface="hero"]` |
+| `--image-light` / `--image-dark` | Component-level URL tokens on `[data-lsui-themed-image]` | Zero-JS light/dark CSS background & mask images (`light-dark-image`) |

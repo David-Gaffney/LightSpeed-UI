@@ -133,6 +133,30 @@
       --color-danger: light-dark(var(--color-danger-light), var(--color-danger-dark));
       --color-danger-surface: light-dark(var(--color-danger-surface-light), var(--color-danger-surface-dark));
       --color-on-danger-surface: light-dark(var(--color-on-danger-surface-light), var(--color-on-danger-surface-dark));
+
+      /* Light/Dark CSS `<image>` Tokens (`https://webstatus.dev/features/light-dark-image`) */
+      --image-hero-backdrop-light: linear-gradient(
+        180deg,
+        oklch(0.955 0.025 72 / 0.7) 0%,
+        transparent 100%
+      );
+      --image-hero-backdrop-dark: linear-gradient(
+        180deg,
+        oklch(0.25 0.032 45 / 0.65) 0%,
+        transparent 100%
+      );
+      --image-hero-backdrop: var(--image-hero-backdrop-light);
+
+      @media (prefers-color-scheme: dark) {
+        --image-hero-backdrop: var(--image-hero-backdrop-dark);
+      }
+
+      @supports (background-image: light-dark(url("a"), url("b"))) {
+        --image-hero-backdrop: light-dark(
+          var(--image-hero-backdrop-light),
+          var(--image-hero-backdrop-dark)
+        );
+      }
     }
 
     [data-theme~="editorial"] {

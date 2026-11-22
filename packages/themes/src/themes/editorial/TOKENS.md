@@ -27,3 +27,5 @@ All components consume semantic tokens—never raw `--*-light` / `--*-dark` prim
 | `--font-mono` | `"JetBrains Mono", Menlo, Consolas, monospace` | Inline code & code blocks |
 | `--radius-sm` / `--radius-md` / `--radius-lg` | `0.125rem` / `0.1875rem` / `0.25rem` | Tailored crisp corners |
 | `--shadow-sm` / `--shadow-md` / `--shadow-lg` | Crisp tactile ink elevation | Hairline lift / Popovers / Modals |
+| `--image-hero-backdrop` | `light-dark(<image>, <image>)` warm editorial wash (`image-set` / `@supports` fallback) | Applied automatically on `[data-surface="hero"]` |
+| `--image-light` / `--image-dark` | Component-level URL tokens on `[data-lsui-themed-image]` | Zero-JS light/dark CSS background & mask images (`light-dark-image`) |
