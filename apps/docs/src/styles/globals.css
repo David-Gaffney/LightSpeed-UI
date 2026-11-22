@@ -329,25 +329,31 @@ body {
 }
 
 /* ---- Scrollbar ----
-   Thin and quiet everywhere, coloured from the theme. Chrome and Firefox use
-   the standard properties; Safari uses the WebKit pseudo-elements below. */
+   Thin and quiet everywhere, coloured from the theme. Chrome, Firefox, and
+   Safari 26.2+ use the standard properties; older WebKit uses the `@supports`
+   fallback below (tracked in root BASELINE.md Section 2). */
 * {
 	scrollbar-width: thin;
 	scrollbar-color: color-mix(in oklch, var(--nb-foreground) 20%, transparent) transparent;
 }
-::-webkit-scrollbar {
-	width: 6px;
-	height: 6px;
-}
-::-webkit-scrollbar-track {
-	background: transparent;
-}
-::-webkit-scrollbar-thumb {
-	background: color-mix(in oklch, var(--nb-foreground) 20%, transparent);
-	border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-	background: var(--nb-muted-foreground);
+@supports not (scrollbar-color: auto) {
+	* {
+		scrollbar-width: auto;
+	}
+	::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	::-webkit-scrollbar-thumb {
+		background: color-mix(in oklch, var(--nb-foreground) 20%, transparent);
+		border-radius: 3px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: var(--nb-muted-foreground);
+	}
 }
 
 /* ---- Shiki code-block styling + copy button ---- */

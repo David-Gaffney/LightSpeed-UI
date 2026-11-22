@@ -1,6 +1,6 @@
 /**
  * Conditional feature-detected polyfill loaders for Baseline Newly Available APIs.
- * Every polyfill loaded here is tracked in root `POLYFILL.md` (oldest -> newest).
+ * Every polyfill loaded here is tracked in root `BASELINE.md` Section 3 (oldest -> newest).
  */
 
 let popoverPromise: Promise<unknown> | null = null;

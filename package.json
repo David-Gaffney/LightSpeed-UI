@@ -15,7 +15,7 @@
     "typecheck:apps": "pnpm -r --filter './apps/*' run typecheck",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "check:polyfills": "node scripts/check-polyfills.ts",
+    "check:baseline": "node scripts/check-baseline.ts",
     "changeset": "changeset",
     "changeset:status": "changeset status",
     "version-packages": "changeset version"
