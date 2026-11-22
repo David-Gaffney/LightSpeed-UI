@@ -1,0 +1,24 @@
+{
+  "name": "@lsui/cli",
+  "version": "0.0.1",
+  "description": "LightSpeedUI CLI (lsui init, add, theme, and 3-stage upgrade)",
+  "type": "module",
+  "bin": {
+    "lsui": "./dist/index.js"
+  },
+  "dependencies": {
+    "@lsui/ast": "workspace:*",
+    "@lsui/codemods": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

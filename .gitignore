@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.astro/
+.nimbus/
+*.tsbuildinfo
+
+# Test & coverage artifacts
+coverage/
+playwright-report/
+test-results/
+
+# Environment & OS
+.env
+.env.*
+!.env.example
+.DS_Store

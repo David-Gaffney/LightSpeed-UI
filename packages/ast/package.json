@@ -1,0 +1,17 @@
+{
+  "name": "@lsui/ast",
+  "version": "0.0.1",
+  "description": "Shared AST extractor for LightSpeedUI (.astro, TypeScript Props, and CSS tokens)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

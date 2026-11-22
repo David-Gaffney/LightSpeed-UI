@@ -1,0 +1,21 @@
+{
+  "name": "@lsui/core",
+  "version": "0.0.1",
+  "description": "Canonical .astro UI, Content, and Documentation components for LightSpeedUI",
+  "type": "module",
+  "dependencies": {
+    "@lsui/behaviors": "workspace:*",
+    "@lsui/themes": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

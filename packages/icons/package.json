@@ -1,0 +1,17 @@
+{
+  "name": "@lsui/icons",
+  "version": "0.0.1",
+  "description": "Astro-native icon set for LightSpeedUI",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}
