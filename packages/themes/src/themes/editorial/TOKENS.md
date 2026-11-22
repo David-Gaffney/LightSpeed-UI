@@ -29,3 +29,5 @@ All components consume semantic tokens—never raw `--*-light` / `--*-dark` prim
 | `--shadow-sm` / `--shadow-md` / `--shadow-lg` | Crisp tactile ink elevation | Hairline lift / Popovers / Modals |
 | `--image-hero-backdrop` | `light-dark(<image>, <image>)` warm editorial wash (`image-set` / `@supports` fallback) | Applied automatically on `[data-surface="hero"]` |
 | `--image-light` / `--image-dark` | Component-level URL tokens on `[data-lsui-themed-image]` | Zero-JS light/dark CSS background & mask images (`light-dark-image`) |
+| `--cursor-interactive` | `default` (override to `pointer` if desired) | Tokenized cursor for `<Button>` (`<LinkButton>` keeps `pointer`) |
+| `--target-min-size` | `1.5rem` (`24px`), `2.75rem` (`44px`) on `@media (pointer: coarse)` | Minimum hit target enforced on interactive controls |

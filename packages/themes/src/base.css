@@ -88,6 +88,12 @@
       --control-pad-inline-md: 1rem;
       --control-pad-inline-lg: 1.375rem;
 
+      /* Minimum interactive hit target: 24px desktop (WCAG 2.5.8), bumped to 44px on coarse pointers */
+      --target-min-size: 1.5rem;
+
+      /* Tokenized button cursor (`default` per W3C/OS conventions; override to `pointer` if desired) */
+      --cursor-interactive: default;
+
       /* ---- Typography Scale (rem + container-fluid clamp where max <= 2.5 * min) ---- */
       --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       --font-heading: var(--font-body);
@@ -203,6 +209,10 @@
 
       --color-danger-light: oklch(0.48 0.18 26);
       --color-danger-dark: oklch(0.76 0.15 24);
+      --color-danger-hover-light: oklch(0.41 0.18 26);
+      --color-danger-hover-dark: oklch(0.82 0.135 24);
+      --color-on-danger-light: oklch(0.99 0 0);
+      --color-on-danger-dark: oklch(0.16 0.025 26);
       --color-danger-surface-light: oklch(0.95 0.03 24);
       --color-danger-surface-dark: oklch(0.27 0.055 24);
       --color-on-danger-surface-light: oklch(0.28 0.09 25);
@@ -245,6 +255,8 @@
       --color-on-warning-surface: light-dark(var(--color-on-warning-surface-light), var(--color-on-warning-surface-dark));
 
       --color-danger: light-dark(var(--color-danger-light), var(--color-danger-dark));
+      --color-danger-hover: light-dark(var(--color-danger-hover-light), var(--color-danger-hover-dark));
+      --color-on-danger: light-dark(var(--color-on-danger-light), var(--color-on-danger-dark));
       --color-danger-surface: light-dark(var(--color-danger-surface-light), var(--color-danger-surface-dark));
       --color-on-danger-surface: light-dark(var(--color-on-danger-surface-light), var(--color-on-danger-surface-dark));
 
@@ -503,6 +515,13 @@
       @container (min-width: 42rem) {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         align-items: center;
+      }
+    }
+
+    /* Touch target adaptation (WCAG 2.5.5: >= 44x44 CSS px on coarse pointers) */
+    @media (pointer: coarse) {
+      :root {
+        --target-min-size: 2.75rem;
       }
     }
 

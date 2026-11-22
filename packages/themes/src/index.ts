@@ -81,6 +81,8 @@ export const REQUIRED_SEMANTIC_COLOR_TOKENS = [
   "--color-warning-surface",
   "--color-on-warning-surface",
   "--color-danger",
+  "--color-danger-hover",
+  "--color-on-danger",
   "--color-danger-surface",
   "--color-on-danger-surface",
 ] as const;

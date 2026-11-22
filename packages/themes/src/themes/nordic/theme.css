@@ -89,6 +89,10 @@
 
       --color-danger-light: oklch(0.475 0.18 26);
       --color-danger-dark: oklch(0.765 0.15 24);
+      --color-danger-hover-light: oklch(0.41 0.18 26);
+      --color-danger-hover-dark: oklch(0.82 0.135 24);
+      --color-on-danger-light: oklch(0.99 0 0);
+      --color-on-danger-dark: oklch(0.16 0.025 26);
       --color-danger-surface-light: oklch(0.95 0.03 24);
       --color-danger-surface-dark: oklch(0.27 0.055 24);
       --color-on-danger-surface-light: oklch(0.275 0.09 25);
@@ -131,6 +135,8 @@
       --color-on-warning-surface: light-dark(var(--color-on-warning-surface-light), var(--color-on-warning-surface-dark));
 
       --color-danger: light-dark(var(--color-danger-light), var(--color-danger-dark));
+      --color-danger-hover: light-dark(var(--color-danger-hover-light), var(--color-danger-hover-dark));
+      --color-on-danger: light-dark(var(--color-on-danger-light), var(--color-on-danger-dark));
       --color-danger-surface: light-dark(var(--color-danger-surface-light), var(--color-danger-surface-dark));
       --color-on-danger-surface: light-dark(var(--color-on-danger-surface-light), var(--color-on-danger-surface-dark));
 

@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { PACKAGE_NAME } from "@lsui/core";
+import Button from "@lsui/core/Button.astro";
+import LinkButton from "@lsui/core/LinkButton.astro";
 ---
 
 <BaseLayout title="LightSpeedUI Playground" theme="nordic light">
@@ -42,8 +44,24 @@ import { PACKAGE_NAME } from "@lsui/core";
         <h2 id="nordic-heading" class="display-heading">Nordic Theme</h2>
         <p class="muted-copy">Calm technical clarity in light mode.</p>
         <div class="action-row">
-          <span class="token-pill primary-pill">Primary Action</span>
-          <span class="token-pill secondary-pill">Secondary</span>
+          <Button id="nordic-primary-btn" variant="primary">Primary Action</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="outline">Outline</Button>
+          <Button variant="ghost">Ghost</Button>
+          <Button variant="danger">Delete</Button>
+          <LinkButton id="nordic-link-btn" href="/triggers" variant="outline">
+            Declarative Triggers
+            <svg slot="icon-end" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 3l5 5-5 5" />
+            </svg>
+          </LinkButton>
+          <Button iconOnly aria-label="Add item" variant="secondary" size="sm">
+            <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3v10M3 8h10" />
+            </svg>
+          </Button>
+          <Button disabled variant="secondary">Disabled</Button>
+          <Button render={false}>Hidden When False</Button>
         </div>
 
         <aside
@@ -57,7 +75,10 @@ import { PACKAGE_NAME } from "@lsui/core";
           <p class="muted-copy">
             Inherits Nordic tokens and flips via <code>light-dark()</code>.
           </p>
-          <span class="token-pill primary-pill">Dark Primary</span>
+          <div class="action-row">
+            <Button id="compact-sm-btn" size="sm" variant="primary">Dark Compact Small</Button>
+            <Button size="sm" variant="outline">Outline Dark</Button>
+          </div>
         </aside>
       </section>
 
@@ -72,8 +93,10 @@ import { PACKAGE_NAME } from "@lsui/core";
         <h2 id="editorial-heading" class="display-heading">Editorial Theme</h2>
         <p class="muted-copy">Warm archival paper &amp; literary serif headings.</p>
         <div class="action-row">
-          <span class="token-pill primary-pill">Read Essay</span>
-          <span class="token-pill secondary-pill">Bookmark</span>
+          <Button id="editorial-primary-btn" variant="primary" size="lg">Read Essay</Button>
+          <Button variant="secondary">Bookmark</Button>
+          <Button variant="outline">Share</Button>
+          <LinkButton href="/triggers" variant="ghost">Explore Demos</LinkButton>
         </div>
 
         <aside
@@ -87,7 +110,10 @@ import { PACKAGE_NAME } from "@lsui/core";
           <p class="muted-copy">
             Uses <code>data-theme="editorial dark"</code> without extra wrappers.
           </p>
-          <span class="token-pill primary-pill">Subscribe</span>
+          <div class="action-row">
+            <Button variant="primary">Subscribe</Button>
+            <Button variant="danger">Unsubscribe</Button>
+          </div>
         </aside>
       </section>
     </div>
@@ -121,28 +147,9 @@ import { PACKAGE_NAME } from "@lsui/core";
       .action-row {
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
         gap: var(--space-sm);
         margin-block-start: var(--space-md);
-      }
-
-      .token-pill {
-        display: inline-flex;
-        align-items: center;
-        min-block-size: var(--control-height-md);
-        padding-inline: var(--control-pad-inline-md);
-        border-radius: var(--radius-md);
-        font-weight: var(--weight-medium);
-      }
-
-      .primary-pill {
-        background-color: var(--color-primary);
-        color: var(--color-on-primary);
-      }
-
-      .secondary-pill {
-        background-color: var(--color-secondary);
-        color: var(--color-on-secondary);
-        border: var(--border-width) solid var(--color-border-strong);
       }
 
       .themed-img-row {

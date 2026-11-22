@@ -1,13 +1,25 @@
 {
   "name": "@lsui/behaviors",
   "version": "0.0.1",
-  "description": "Headless UI-SDK-style interaction and accessibility primitives for LightSpeedUI",
+  "description": "Headless UI-SDK-style interaction, accessibility, and conditional polyfill primitives for LightSpeedUI",
   "type": "module",
   "sideEffects": false,
+  "dependencies": {
+    "@oddbird/popover-polyfill": "^0.7.3",
+    "invokers-polyfill": "^1.0.4"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./polyfills": {
+      "types": "./dist/polyfills.d.ts",
+      "default": "./dist/polyfills.js"
+    },
+    "./aria-disabled": {
+      "types": "./dist/aria-disabled.d.ts",
+      "default": "./dist/aria-disabled.js"
     }
   },
   "files": ["dist"],

@@ -258,6 +258,28 @@ const isMain =
   process.argv[1] !== undefined &&
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
+async function checkOnlineGraduation(entries: PolyfillEntry[]): Promise<void> {
+  for (const entry of entries) {
+    const slug = entry.webstatusUrl.replace(/\/$/, "").split("/").pop();
+    if (!slug) continue;
+    const res = await fetch(`https://api.webstatus.dev/v1/features/${slug}`);
+    if (!res.ok) continue;
+    const data = (await res.json()) as {
+      baseline?: { status?: string; low_date?: string; high_date?: string };
+    };
+    const status = data.baseline?.status ?? "unknown";
+    if (status === "widely") {
+      console.log(
+        `🎉 READY TO REMOVE: "${entry.feature}" (${entry.webstatusUrl}) graduated to Baseline Widely Available on ${data.baseline?.high_date}!`,
+      );
+    } else {
+      console.log(
+        `  • ${entry.baselineDate} — ${entry.feature}: status="${status}" (${entry.webstatusUrl})`,
+      );
+    }
+  }
+}
+
 if (isMain) {
   const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
   const result = validatePolyfillLedger({ rootDir });
@@ -271,4 +293,7 @@ if (isMain) {
   console.log(
     `✓ POLYFILL.md check passed (${result.entries.length} active polyfill(s) tracked).`,
   );
+  if (process.argv.includes("--online")) {
+    await checkOnlineGraduation(result.entries);
+  }
 }

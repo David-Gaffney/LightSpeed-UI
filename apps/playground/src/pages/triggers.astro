@@ -1,0 +1,57 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "@lsui/core/Button.astro";
+import LinkButton from "@lsui/core/LinkButton.astro";
+---
+
+<BaseLayout title="Declarative Triggers | LightSpeedUI Playground" theme="nordic light">
+  <main data-layout="container" style="padding-block: var(--space-lg);">
+    <h1>Declarative Baseline 2026 Triggers</h1>
+    <p style="margin-block: var(--space-sm); color: var(--color-text-muted);">
+      Verifies Invoker Commands (<code>commandfor</code> / <code>command</code>), Popover API
+      (<code>popovertarget</code>), and focusable <code>aria-disabled</code> behavior.
+    </p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-block-start: var(--space-md);">
+      <Button id="open-dialog-btn" commandfor="demo-dialog" command="show-modal">
+        Open Modal Dialog
+      </Button>
+
+      <Button id="toggle-popover-btn" variant="secondary" popovertarget="demo-popover">
+        Toggle Info Popover
+      </Button>
+
+      <Button id="aria-disabled-btn" variant="outline" aria-disabled="true">
+        Toolbar Save (aria-disabled)
+      </Button>
+
+      <LinkButton id="disabled-link-btn" href="/never" variant="ghost" disabled>
+        Disabled LinkButton
+      </LinkButton>
+
+      <LinkButton href="/" variant="ghost">Back Home</LinkButton>
+    </div>
+
+    <dialog
+      id="demo-dialog"
+      aria-labelledby="dialog-title"
+      style="padding: var(--space-lg); border: var(--border-width) solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); color: var(--color-text);"
+    >
+      <h2 id="dialog-title">Confirm Action</h2>
+      <p style="margin-block: var(--space-sm);">
+        Opened declaratively via HTML Invoker Commands with zero custom event listeners.
+      </p>
+      <Button id="close-dialog-btn" variant="secondary" commandfor="demo-dialog" command="close">
+        Close Dialog
+      </Button>
+    </dialog>
+
+    <div
+      id="demo-popover"
+      popover="auto"
+      style="padding: var(--space-md); border: var(--border-width) solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-md);"
+    >
+      <p>Declarative Popover content.</p>
+    </div>
+  </main>
+</BaseLayout>
