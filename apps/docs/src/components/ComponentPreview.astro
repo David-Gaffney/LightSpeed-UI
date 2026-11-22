@@ -1,4 +1,8 @@
 ---
+import "@lsui/themes/base.css";
+import "@lsui/themes/nordic.css";
+import "@lsui/themes/editorial.css";
+
 export interface Props {
   title?: string;
   theme?: string;
@@ -9,8 +13,8 @@ export interface Props {
 
 const {
   title,
-  theme,
-  surface,
+  theme = "nordic light",
+  surface = "canvas",
   density,
   hydration = "none",
 } = Astro.props;

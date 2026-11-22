@@ -4,7 +4,7 @@
 
 @layer lsui {
   @layer tokens {
-    :where(:root),
+    :where(:root:not([data-mode])),
     [data-theme~="editorial"] {
       /* Typography */
       --font-body: "Inter", "Source Sans 3", system-ui, -apple-system, sans-serif;

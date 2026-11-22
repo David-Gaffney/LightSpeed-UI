@@ -1,8 +1,13 @@
 {
   "name": "@lsui/ast",
   "version": "0.0.1",
-  "description": "Shared AST extractor for LightSpeedUI (.astro, TypeScript Props, and CSS tokens)",
+  "description": "Shared AST extractor for LightSpeedUI (@astrojs/compiler-rs + ts-morph + PostCSS)",
   "type": "module",
+  "dependencies": {
+    "@astrojs/compiler-rs": "^0.5.3",
+    "postcss": "^8.5.33",
+    "ts-morph": "^28.0.0"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

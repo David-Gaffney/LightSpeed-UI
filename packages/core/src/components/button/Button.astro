@@ -31,9 +31,15 @@ type NativeButtonAttributes = Omit<
 >;
 
 interface BaseButtonProps extends NativeButtonAttributes {
+  /** Visual style token variant. */
   variant?: ButtonVariant | undefined;
+  /** Control height and padding scale. */
   size?: ControlSize | undefined;
+  /** Native button behavior (`"button"` by default so forms never submit accidentally). */
   type?: "button" | "submit" | "reset" | undefined;
+  /** Disables the button and removes it from tab order. Use `aria-disabled="true"` when focus must remain reachable. */
+  disabled?: boolean | undefined;
+  /** Conditionally renders the component when `true` (omits markup when `false`). */
   render?: boolean | undefined;
   /** Target element ID for the HTML Invoker Commands API (`https://webstatus.dev/features/invoker-commands`). */
   commandfor?: string | undefined;

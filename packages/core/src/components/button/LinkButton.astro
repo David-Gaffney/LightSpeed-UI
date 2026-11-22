@@ -24,18 +24,25 @@ import "./button.css";
 type NativeAnchorAttributes = Omit<HTMLAttributes<"a">, "href" | "role">;
 
 interface BaseLinkButtonProps extends NativeAnchorAttributes {
+  /** Visual style token variant matching Button. */
   variant?: ButtonVariant | undefined;
+  /** Control height and padding scale. */
   size?: ControlSize | undefined;
+  /** Conditionally renders the component when `true` (omits markup when `false`). */
   render?: boolean | undefined;
 }
 
 type DisabledUnion =
   | {
+      /** Destination URL navigated to on activation. */
       href: string | URL;
+      /** Active link state (`false` by default). */
       disabled?: false | undefined;
     }
   | {
+      /** Omitted from rendered `<a>` when `disabled` is `true`. */
       href?: string | URL | undefined;
+      /** Renders an accessible disabled link (`role="link" aria-disabled="true"` without `href`). */
       disabled: true;
     };
 

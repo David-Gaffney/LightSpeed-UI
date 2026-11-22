@@ -4,7 +4,7 @@
 
 @layer lsui {
   @layer tokens {
-    :where(:root),
+    :where(:root:not([data-mode])),
     [data-theme~="nordic"] {
       /* Typography */
       --font-body: "IBM Plex Sans", "Inter", system-ui, -apple-system, sans-serif;

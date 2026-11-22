@@ -1,0 +1,1467 @@
+{
+  "schemaVersion": 1,
+  "variableCollections": {
+    "colors": {
+      "name": "Theme Colors",
+      "modes": [
+        "Editorial Light",
+        "Editorial Dark",
+        "Nordic Light",
+        "Nordic Dark"
+      ],
+      "variables": [
+        {
+          "name": "color/bg",
+          "cssToken": "--color-bg",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.9914,
+              "g": 0.9752,
+              "b": 0.942,
+              "a": 1,
+              "hex": "#fdf9f0"
+            },
+            "Editorial Dark": {
+              "r": 0.075,
+              "g": 0.0564,
+              "b": 0.039,
+              "a": 1,
+              "hex": "#130e0a"
+            },
+            "Nordic Light": {
+              "r": 0.9745,
+              "g": 0.986,
+              "b": 0.9975,
+              "a": 1,
+              "hex": "#f9fbfe"
+            },
+            "Nordic Dark": {
+              "r": 0.0377,
+              "g": 0.0581,
+              "b": 0.0812,
+              "a": 1,
+              "hex": "#0a0f15"
+            }
+          }
+        },
+        {
+          "name": "color/text",
+          "cssToken": "--color-text",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.1035,
+              "g": 0.0756,
+              "b": 0.0535,
+              "a": 1,
+              "hex": "#1a130e"
+            },
+            "Editorial Dark": {
+              "r": 0.9574,
+              "g": 0.9392,
+              "b": 0.9071,
+              "a": 1,
+              "hex": "#f4f0e7"
+            },
+            "Nordic Light": {
+              "r": 0.0675,
+              "g": 0.0932,
+              "b": 0.1226,
+              "a": 1,
+              "hex": "#11181f"
+            },
+            "Nordic Dark": {
+              "r": 0.9276,
+              "g": 0.9435,
+              "b": 0.9595,
+              "a": 1,
+              "hex": "#edf1f5"
+            }
+          }
+        },
+        {
+          "name": "color/text/muted",
+          "cssToken": "--color-text-muted",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.3455,
+              "g": 0.3041,
+              "b": 0.2697,
+              "a": 1,
+              "hex": "#584e45"
+            },
+            "Editorial Dark": {
+              "r": 0.7229,
+              "g": 0.6965,
+              "b": 0.6572,
+              "a": 1,
+              "hex": "#b8b2a8"
+            },
+            "Nordic Light": {
+              "r": 0.2878,
+              "g": 0.322,
+              "b": 0.3613,
+              "a": 1,
+              "hex": "#49525c"
+            },
+            "Nordic Dark": {
+              "r": 0.6742,
+              "g": 0.7044,
+              "b": 0.7346,
+              "a": 1,
+              "hex": "#acb4bb"
+            }
+          }
+        },
+        {
+          "name": "color/surface",
+          "cssToken": "--color-surface",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 1,
+              "g": 0.9929,
+              "b": 0.9763,
+              "a": 1,
+              "hex": "#fffdf9"
+            },
+            "Editorial Dark": {
+              "r": 0.1179,
+              "g": 0.0949,
+              "b": 0.0734,
+              "a": 1,
+              "hex": "#1e1813"
+            },
+            "Nordic Light": {
+              "r": 1,
+              "g": 1,
+              "b": 1,
+              "a": 1,
+              "hex": "#ffffff"
+            },
+            "Nordic Dark": {
+              "r": 0.0776,
+              "g": 0.1021,
+              "b": 0.1302,
+              "a": 1,
+              "hex": "#141a21"
+            }
+          }
+        },
+        {
+          "name": "color/surface/muted",
+          "cssToken": "--color-surface-muted",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.9498,
+              "g": 0.9256,
+              "b": 0.8828,
+              "a": 1,
+              "hex": "#f2ece1"
+            },
+            "Editorial Dark": {
+              "r": 0.1582,
+              "g": 0.1307,
+              "b": 0.1051,
+              "a": 1,
+              "hex": "#28211b"
+            },
+            "Nordic Light": {
+              "r": 0.9198,
+              "g": 0.9403,
+              "b": 0.9608,
+              "a": 1,
+              "hex": "#ebf0f5"
+            },
+            "Nordic Dark": {
+              "r": 0.1122,
+              "g": 0.1392,
+              "b": 0.1702,
+              "a": 1,
+              "hex": "#1d242b"
+            }
+          }
+        },
+        {
+          "name": "color/surface/inverse",
+          "cssToken": "--color-surface-inverse",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.1035,
+              "g": 0.0756,
+              "b": 0.0535,
+              "a": 1,
+              "hex": "#1a130e"
+            },
+            "Editorial Dark": {
+              "r": 0.9574,
+              "g": 0.9392,
+              "b": 0.9071,
+              "a": 1,
+              "hex": "#f4f0e7"
+            },
+            "Nordic Light": {
+              "r": 0.0675,
+              "g": 0.0932,
+              "b": 0.1226,
+              "a": 1,
+              "hex": "#11181f"
+            },
+            "Nordic Dark": {
+              "r": 0.9276,
+              "g": 0.9435,
+              "b": 0.9595,
+              "a": 1,
+              "hex": "#edf1f5"
+            }
+          }
+        },
+        {
+          "name": "color/text/inverse",
+          "cssToken": "--color-text-inverse",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.9863,
+              "g": 0.9728,
+              "b": 0.9452,
+              "a": 1,
+              "hex": "#fbf8f1"
+            },
+            "Editorial Dark": {
+              "r": 0.083,
+              "g": 0.0592,
+              "b": 0.0404,
+              "a": 1,
+              "hex": "#150f0a"
+            },
+            "Nordic Light": {
+              "r": 0.9725,
+              "g": 0.9817,
+              "b": 0.9909,
+              "a": 1,
+              "hex": "#f8fafd"
+            },
+            "Nordic Dark": {
+              "r": 0.0405,
+              "g": 0.0624,
+              "b": 0.0873,
+              "a": 1,
+              "hex": "#0a1016"
+            }
+          }
+        },
+        {
+          "name": "color/primary",
+          "cssToken": "--color-primary",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.6111,
+              "g": 0.1415,
+              "b": 0.0181,
+              "a": 1,
+              "hex": "#9c2405"
+            },
+            "Editorial Dark": {
+              "r": 0.9939,
+              "g": 0.5922,
+              "b": 0.4341,
+              "a": 1,
+              "hex": "#fd976f"
+            },
+            "Nordic Light": {
+              "r": 0,
+              "g": 0.3278,
+              "b": 0.6287,
+              "a": 1,
+              "hex": "#0054a0"
+            },
+            "Nordic Dark": {
+              "r": 0.4103,
+              "g": 0.7307,
+              "b": 0.9912,
+              "a": 1,
+              "hex": "#69bafd"
+            }
+          }
+        },
+        {
+          "name": "color/primary/hover",
+          "cssToken": "--color-primary-hover",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.5316,
+              "g": 0.0298,
+              "b": 0,
+              "a": 1,
+              "hex": "#880800"
+            },
+            "Editorial Dark": {
+              "r": 1,
+              "g": 0.671,
+              "b": 0.5296,
+              "a": 1,
+              "hex": "#ffab87"
+            },
+            "Nordic Light": {
+              "r": 0,
+              "g": 0.2581,
+              "b": 0.5533,
+              "a": 1,
+              "hex": "#00428d"
+            },
+            "Nordic Dark": {
+              "r": 0.5219,
+              "g": 0.7987,
+              "b": 1,
+              "a": 1,
+              "hex": "#85ccff"
+            }
+          }
+        },
+        {
+          "name": "color/on/primary",
+          "cssToken": "--color-on-primary",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.9931,
+              "g": 0.9864,
+              "b": 0.9726,
+              "a": 1,
+              "hex": "#fdfcf8"
+            },
+            "Editorial Dark": {
+              "r": 0.0889,
+              "g": 0.0425,
+              "b": 0.0305,
+              "a": 1,
+              "hex": "#170b08"
+            },
+            "Nordic Light": {
+              "r": 0.9868,
+              "g": 0.9868,
+              "b": 0.9868,
+              "a": 1,
+              "hex": "#fcfcfc"
+            },
+            "Nordic Dark": {
+              "r": 0.0257,
+              "g": 0.0542,
+              "b": 0.0881,
+              "a": 1,
+              "hex": "#070e16"
+            }
+          }
+        },
+        {
+          "name": "color/secondary",
+          "cssToken": "--color-secondary",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.9344,
+              "g": 0.9052,
+              "b": 0.858,
+              "a": 1,
+              "hex": "#eee7db"
+            },
+            "Editorial Dark": {
+              "r": 0.1902,
+              "g": 0.1584,
+              "b": 0.1288,
+              "a": 1,
+              "hex": "#312821"
+            },
+            "Nordic Light": {
+              "r": 0.892,
+              "g": 0.9192,
+              "b": 0.9464,
+              "a": 1,
+              "hex": "#e3eaf1"
+            },
+            "Nordic Dark": {
+              "r": 0.1373,
+              "g": 0.1682,
+              "b": 0.2036,
+              "a": 1,
+              "hex": "#232b34"
+            }
+          }
+        },
+        {
+          "name": "color/secondary/hover",
+          "cssToken": "--color-secondary-hover",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.8818,
+              "g": 0.8465,
+              "b": 0.7894,
+              "a": 1,
+              "hex": "#e1d8c9"
+            },
+            "Editorial Dark": {
+              "r": 0.2486,
+              "g": 0.2117,
+              "b": 0.1773,
+              "a": 1,
+              "hex": "#3f362d"
+            },
+            "Nordic Light": {
+              "r": 0.8202,
+              "g": 0.8561,
+              "b": 0.8919,
+              "a": 1,
+              "hex": "#d1dae3"
+            },
+            "Nordic Dark": {
+              "r": 0.1875,
+              "g": 0.223,
+              "b": 0.2637,
+              "a": 1,
+              "hex": "#303943"
+            }
+          }
+        },
+        {
+          "name": "color/on/secondary",
+          "cssToken": "--color-on-secondary",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.1152,
+              "g": 0.0835,
+              "b": 0.0582,
+              "a": 1,
+              "hex": "#1d150f"
+            },
+            "Editorial Dark": {
+              "r": 0.9574,
+              "g": 0.9392,
+              "b": 0.9071,
+              "a": 1,
+              "hex": "#f4f0e7"
+            },
+            "Nordic Light": {
+              "r": 0.0718,
+              "g": 0.0977,
+              "b": 0.1272,
+              "a": 1,
+              "hex": "#121920"
+            },
+            "Nordic Dark": {
+              "r": 0.9256,
+              "g": 0.9438,
+              "b": 0.9621,
+              "a": 1,
+              "hex": "#ecf1f5"
+            }
+          }
+        },
+        {
+          "name": "color/accent",
+          "cssToken": "--color-accent",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.9791,
+              "g": 0.8813,
+              "b": 0.8183,
+              "a": 1,
+              "hex": "#fae1d1"
+            },
+            "Editorial Dark": {
+              "r": 0.2534,
+              "g": 0.1502,
+              "b": 0.1033,
+              "a": 1,
+              "hex": "#41261a"
+            },
+            "Nordic Light": {
+              "r": 0.8375,
+              "g": 0.9136,
+              "b": 0.9838,
+              "a": 1,
+              "hex": "#d6e9fb"
+            },
+            "Nordic Dark": {
+              "r": 0.1056,
+              "g": 0.1929,
+              "b": 0.2683,
+              "a": 1,
+              "hex": "#1b3144"
+            }
+          }
+        },
+        {
+          "name": "color/on/accent",
+          "cssToken": "--color-on-accent",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.1619,
+              "g": 0.0872,
+              "b": 0.0532,
+              "a": 1,
+              "hex": "#29160e"
+            },
+            "Editorial Dark": {
+              "r": 0.9562,
+              "g": 0.9317,
+              "b": 0.8923,
+              "a": 1,
+              "hex": "#f4eee4"
+            },
+            "Nordic Light": {
+              "r": 0.0522,
+              "g": 0.1085,
+              "b": 0.1656,
+              "a": 1,
+              "hex": "#0d1c2a"
+            },
+            "Nordic Dark": {
+              "r": 0.9114,
+              "g": 0.9387,
+              "b": 0.9661,
+              "a": 1,
+              "hex": "#e8eff6"
+            }
+          }
+        },
+        {
+          "name": "color/border",
+          "cssToken": "--color-border",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.8518,
+              "g": 0.8212,
+              "b": 0.7757,
+              "a": 1,
+              "hex": "#d9d1c6"
+            },
+            "Editorial Dark": {
+              "r": 0.2326,
+              "g": 0.2033,
+              "b": 0.1761,
+              "a": 1,
+              "hex": "#3b342d"
+            },
+            "Nordic Light": {
+              "r": 0.816,
+              "g": 0.8416,
+              "b": 0.8691,
+              "a": 1,
+              "hex": "#d0d7de"
+            },
+            "Nordic Dark": {
+              "r": 0.1787,
+              "g": 0.2073,
+              "b": 0.2403,
+              "a": 1,
+              "hex": "#2e353d"
+            }
+          }
+        },
+        {
+          "name": "color/border/strong",
+          "cssToken": "--color-border-strong",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.4745,
+              "g": 0.4313,
+              "b": 0.3871,
+              "a": 1,
+              "hex": "#796e63"
+            },
+            "Editorial Dark": {
+              "r": 0.5684,
+              "g": 0.5312,
+              "b": 0.4873,
+              "a": 1,
+              "hex": "#91877c"
+            },
+            "Nordic Light": {
+              "r": 0.4175,
+              "g": 0.4556,
+              "b": 0.4965,
+              "a": 1,
+              "hex": "#6a747f"
+            },
+            "Nordic Dark": {
+              "r": 0.4975,
+              "g": 0.5367,
+              "b": 0.5788,
+              "a": 1,
+              "hex": "#7f8994"
+            }
+          }
+        },
+        {
+          "name": "color/ring",
+          "cssToken": "--color-ring",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.6111,
+              "g": 0.1415,
+              "b": 0.0181,
+              "a": 1,
+              "hex": "#9c2405"
+            },
+            "Editorial Dark": {
+              "r": 0.9939,
+              "g": 0.5922,
+              "b": 0.4341,
+              "a": 1,
+              "hex": "#fd976f"
+            },
+            "Nordic Light": {
+              "r": 0,
+              "g": 0.3278,
+              "b": 0.6287,
+              "a": 1,
+              "hex": "#0054a0"
+            },
+            "Nordic Dark": {
+              "r": 0.4103,
+              "g": 0.7307,
+              "b": 0.9912,
+              "a": 1,
+              "hex": "#69bafd"
+            }
+          }
+        },
+        {
+          "name": "color/info",
+          "cssToken": "--color-info",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0,
+              "g": 0.3649,
+              "b": 0.5369,
+              "a": 1,
+              "hex": "#005d89"
+            },
+            "Editorial Dark": {
+              "r": 0.4286,
+              "g": 0.7514,
+              "b": 0.9141,
+              "a": 1,
+              "hex": "#6dc0e9"
+            },
+            "Nordic Light": {
+              "r": 0,
+              "g": 0.3427,
+              "b": 0.6073,
+              "a": 1,
+              "hex": "#00579b"
+            },
+            "Nordic Dark": {
+              "r": 0.3923,
+              "g": 0.7387,
+              "b": 0.9691,
+              "a": 1,
+              "hex": "#64bcf7"
+            }
+          }
+        },
+        {
+          "name": "color/info/surface",
+          "cssToken": "--color-info-surface",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.8762,
+              "g": 0.9397,
+              "b": 0.9794,
+              "a": 1,
+              "hex": "#dff0fa"
+            },
+            "Editorial Dark": {
+              "r": 0.0695,
+              "g": 0.1518,
+              "b": 0.1983,
+              "a": 1,
+              "hex": "#122733"
+            },
+            "Nordic Light": {
+              "r": 0.8806,
+              "g": 0.9415,
+              "b": 0.9959,
+              "a": 1,
+              "hex": "#e1f0fe"
+            },
+            "Nordic Dark": {
+              "r": 0.0669,
+              "g": 0.1489,
+              "b": 0.2156,
+              "a": 1,
+              "hex": "#112637"
+            }
+          }
+        },
+        {
+          "name": "color/on/info/surface",
+          "cssToken": "--color-on-info-surface",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0,
+              "g": 0.1512,
+              "b": 0.2324,
+              "a": 1,
+              "hex": "#00273b"
+            },
+            "Editorial Dark": {
+              "r": 0.8561,
+              "g": 0.9282,
+              "b": 0.9732,
+              "a": 1,
+              "hex": "#daedf8"
+            },
+            "Nordic Light": {
+              "r": 0,
+              "g": 0.1443,
+              "b": 0.258,
+              "a": 1,
+              "hex": "#002542"
+            },
+            "Nordic Dark": {
+              "r": 0.8576,
+              "g": 0.9257,
+              "b": 0.9864,
+              "a": 1,
+              "hex": "#dbecfc"
+            }
+          }
+        },
+        {
+          "name": "color/success",
+          "cssToken": "--color-success",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.071,
+              "g": 0.3997,
+              "b": 0.2073,
+              "a": 1,
+              "hex": "#126635"
+            },
+            "Editorial Dark": {
+              "r": 0.4927,
+              "g": 0.7929,
+              "b": 0.5761,
+              "a": 1,
+              "hex": "#7eca93"
+            },
+            "Nordic Light": {
+              "r": 0,
+              "g": 0.4132,
+              "b": 0.2221,
+              "a": 1,
+              "hex": "#006939"
+            },
+            "Nordic Dark": {
+              "r": 0.4394,
+              "g": 0.8026,
+              "b": 0.5857,
+              "a": 1,
+              "hex": "#70cd95"
+            }
+          }
+        },
+        {
+          "name": "color/success/surface",
+          "cssToken": "--color-success-surface",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.887,
+              "g": 0.9529,
+              "b": 0.9009,
+              "a": 1,
+              "hex": "#e2f3e6"
+            },
+            "Editorial Dark": {
+              "r": 0.0884,
+              "g": 0.1605,
+              "b": 0.108,
+              "a": 1,
+              "hex": "#17291c"
+            },
+            "Nordic Light": {
+              "r": 0.8797,
+              "g": 0.9588,
+              "b": 0.9048,
+              "a": 1,
+              "hex": "#e0f4e7"
+            },
+            "Nordic Dark": {
+              "r": 0.0718,
+              "g": 0.1638,
+              "b": 0.1088,
+              "a": 1,
+              "hex": "#122a1c"
+            }
+          }
+        },
+        {
+          "name": "color/on/success/surface",
+          "cssToken": "--color-on-success-surface",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.0264,
+              "g": 0.1555,
+              "b": 0.0733,
+              "a": 1,
+              "hex": "#072813"
+            },
+            "Editorial Dark": {
+              "r": 0.8702,
+              "g": 0.9359,
+              "b": 0.8841,
+              "a": 1,
+              "hex": "#deefe1"
+            },
+            "Nordic Light": {
+              "r": 0,
+              "g": 0.1589,
+              "b": 0.0772,
+              "a": 1,
+              "hex": "#002914"
+            },
+            "Nordic Dark": {
+              "r": 0.8604,
+              "g": 0.9392,
+              "b": 0.8855,
+              "a": 1,
+              "hex": "#dbefe2"
+            }
+          }
+        },
+        {
+          "name": "color/warning",
+          "cssToken": "--color-warning",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.5799,
+              "g": 0.3341,
+              "b": 0,
+              "a": 1,
+              "hex": "#945500"
+            },
+            "Editorial Dark": {
+              "r": 0.9242,
+              "g": 0.6983,
+              "b": 0.3508,
+              "a": 1,
+              "hex": "#ecb259"
+            },
+            "Nordic Light": {
+              "r": 0.5805,
+              "g": 0.3443,
+              "b": 0,
+              "a": 1,
+              "hex": "#945800"
+            },
+            "Nordic Dark": {
+              "r": 0.9233,
+              "g": 0.7003,
+              "b": 0.3243,
+              "a": 1,
+              "hex": "#ebb353"
+            }
+          }
+        },
+        {
+          "name": "color/warning/surface",
+          "cssToken": "--color-warning-surface",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.989,
+              "g": 0.9268,
+              "b": 0.8257,
+              "a": 1,
+              "hex": "#fcecd3"
+            },
+            "Editorial Dark": {
+              "r": 0.202,
+              "g": 0.1356,
+              "b": 0.0539,
+              "a": 1,
+              "hex": "#34230e"
+            },
+            "Nordic Light": {
+              "r": 0.9914,
+              "g": 0.9303,
+              "b": 0.8219,
+              "a": 1,
+              "hex": "#fdedd2"
+            },
+            "Nordic Dark": {
+              "r": 0.2037,
+              "g": 0.1353,
+              "b": 0.0427,
+              "a": 1,
+              "hex": "#34230b"
+            }
+          }
+        },
+        {
+          "name": "color/on/warning/surface",
+          "cssToken": "--color-on-warning-surface",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.2279,
+              "g": 0.1138,
+              "b": 0,
+              "a": 1,
+              "hex": "#3a1d00"
+            },
+            "Editorial Dark": {
+              "r": 0.9677,
+              "g": 0.9068,
+              "b": 0.816,
+              "a": 1,
+              "hex": "#f7e7d0"
+            },
+            "Nordic Light": {
+              "r": 0.2335,
+              "g": 0.1101,
+              "b": 0,
+              "a": 1,
+              "hex": "#3c1c00"
+            },
+            "Nordic Dark": {
+              "r": 0.9693,
+              "g": 0.9073,
+              "b": 0.8066,
+              "a": 1,
+              "hex": "#f7e7ce"
+            }
+          }
+        },
+        {
+          "name": "color/danger",
+          "cssToken": "--color-danger",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.6548,
+              "g": 0.1009,
+              "b": 0.1202,
+              "a": 1,
+              "hex": "#a71a1f"
+            },
+            "Editorial Dark": {
+              "r": 1,
+              "g": 0.546,
+              "b": 0.5071,
+              "a": 1,
+              "hex": "#ff8b81"
+            },
+            "Nordic Light": {
+              "r": 0.6687,
+              "g": 0.0896,
+              "b": 0.116,
+              "a": 1,
+              "hex": "#ab171e"
+            },
+            "Nordic Dark": {
+              "r": 1,
+              "g": 0.5371,
+              "b": 0.5143,
+              "a": 1,
+              "hex": "#ff8983"
+            }
+          }
+        },
+        {
+          "name": "color/danger/hover",
+          "cssToken": "--color-danger-hover",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.5667,
+              "g": 0,
+              "b": 0.0297,
+              "a": 1,
+              "hex": "#910008"
+            },
+            "Editorial Dark": {
+              "r": 1,
+              "g": 0.6343,
+              "b": 0.5945,
+              "a": 1,
+              "hex": "#ffa298"
+            },
+            "Nordic Light": {
+              "r": 0.5801,
+              "g": 0,
+              "b": 0.0217,
+              "a": 1,
+              "hex": "#940006"
+            },
+            "Nordic Dark": {
+              "r": 1,
+              "g": 0.6261,
+              "b": 0.6002,
+              "a": 1,
+              "hex": "#ffa099"
+            }
+          }
+        },
+        {
+          "name": "color/on/danger",
+          "cssToken": "--color-on-danger",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.9931,
+              "g": 0.9864,
+              "b": 0.9726,
+              "a": 1,
+              "hex": "#fdfcf8"
+            },
+            "Editorial Dark": {
+              "r": 0.0935,
+              "g": 0.0389,
+              "b": 0.0339,
+              "a": 1,
+              "hex": "#180a09"
+            },
+            "Nordic Light": {
+              "r": 0.9868,
+              "g": 0.9868,
+              "b": 0.9868,
+              "a": 1,
+              "hex": "#fcfcfc"
+            },
+            "Nordic Dark": {
+              "r": 0.0889,
+              "g": 0.0348,
+              "b": 0.0303,
+              "a": 1,
+              "hex": "#170908"
+            }
+          }
+        },
+        {
+          "name": "color/danger/surface",
+          "cssToken": "--color-danger-surface",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 1,
+              "g": 0.9047,
+              "b": 0.8918,
+              "a": 1,
+              "hex": "#ffe7e3"
+            },
+            "Editorial Dark": {
+              "r": 0.2361,
+              "g": 0.1076,
+              "b": 0.097,
+              "a": 1,
+              "hex": "#3c1b19"
+            },
+            "Nordic Light": {
+              "r": 1,
+              "g": 0.9068,
+              "b": 0.8971,
+              "a": 1,
+              "hex": "#ffe7e5"
+            },
+            "Nordic Dark": {
+              "r": 0.2403,
+              "g": 0.1038,
+              "b": 0.0978,
+              "a": 1,
+              "hex": "#3d1a19"
+            }
+          }
+        },
+        {
+          "name": "color/on/danger/surface",
+          "cssToken": "--color-on-danger-surface",
+          "valuesByMode": {
+            "Editorial Light": {
+              "r": 0.2862,
+              "g": 0.0673,
+              "b": 0.0614,
+              "a": 1,
+              "hex": "#491110"
+            },
+            "Editorial Dark": {
+              "r": 0.9947,
+              "g": 0.8962,
+              "b": 0.8842,
+              "a": 1,
+              "hex": "#fee5e1"
+            },
+            "Nordic Light": {
+              "r": 0.2927,
+              "g": 0.0569,
+              "b": 0.0587,
+              "a": 1,
+              "hex": "#4b0f0f"
+            },
+            "Nordic Dark": {
+              "r": 0.9999,
+              "g": 0.8939,
+              "b": 0.8841,
+              "a": 1,
+              "hex": "#ffe4e1"
+            }
+          }
+        }
+      ]
+    },
+    "dimensions": {
+      "name": "Geometry & Spacing",
+      "modes": [
+        "Editorial",
+        "Nordic"
+      ],
+      "variables": [
+        {
+          "name": "space/0",
+          "cssToken": "--space-0",
+          "valuesByMode": {
+            "Editorial": 0,
+            "Nordic": 0
+          }
+        },
+        {
+          "name": "space/1",
+          "cssToken": "--space-1",
+          "valuesByMode": {
+            "Editorial": 4,
+            "Nordic": 4
+          }
+        },
+        {
+          "name": "space/2",
+          "cssToken": "--space-2",
+          "valuesByMode": {
+            "Editorial": 8,
+            "Nordic": 8
+          }
+        },
+        {
+          "name": "space/3",
+          "cssToken": "--space-3",
+          "valuesByMode": {
+            "Editorial": 12,
+            "Nordic": 12
+          }
+        },
+        {
+          "name": "space/4",
+          "cssToken": "--space-4",
+          "valuesByMode": {
+            "Editorial": 16,
+            "Nordic": 16
+          }
+        },
+        {
+          "name": "space/5",
+          "cssToken": "--space-5",
+          "valuesByMode": {
+            "Editorial": 20,
+            "Nordic": 20
+          }
+        },
+        {
+          "name": "space/6",
+          "cssToken": "--space-6",
+          "valuesByMode": {
+            "Editorial": 24,
+            "Nordic": 24
+          }
+        },
+        {
+          "name": "space/8",
+          "cssToken": "--space-8",
+          "valuesByMode": {
+            "Editorial": 32,
+            "Nordic": 32
+          }
+        },
+        {
+          "name": "space/10",
+          "cssToken": "--space-10",
+          "valuesByMode": {
+            "Editorial": 40,
+            "Nordic": 40
+          }
+        },
+        {
+          "name": "space/12",
+          "cssToken": "--space-12",
+          "valuesByMode": {
+            "Editorial": 48,
+            "Nordic": 48
+          }
+        },
+        {
+          "name": "space/16",
+          "cssToken": "--space-16",
+          "valuesByMode": {
+            "Editorial": 64,
+            "Nordic": 64
+          }
+        },
+        {
+          "name": "control/height/sm",
+          "cssToken": "--control-height-sm",
+          "valuesByMode": {
+            "Editorial": 32,
+            "Nordic": 32
+          }
+        },
+        {
+          "name": "control/height/md",
+          "cssToken": "--control-height-md",
+          "valuesByMode": {
+            "Editorial": 40,
+            "Nordic": 40
+          }
+        },
+        {
+          "name": "control/height/lg",
+          "cssToken": "--control-height-lg",
+          "valuesByMode": {
+            "Editorial": 48,
+            "Nordic": 48
+          }
+        },
+        {
+          "name": "control/pad/inline/sm",
+          "cssToken": "--control-pad-inline-sm",
+          "valuesByMode": {
+            "Editorial": 12,
+            "Nordic": 12
+          }
+        },
+        {
+          "name": "control/pad/inline/md",
+          "cssToken": "--control-pad-inline-md",
+          "valuesByMode": {
+            "Editorial": 16,
+            "Nordic": 16
+          }
+        },
+        {
+          "name": "control/pad/inline/lg",
+          "cssToken": "--control-pad-inline-lg",
+          "valuesByMode": {
+            "Editorial": 22,
+            "Nordic": 22
+          }
+        },
+        {
+          "name": "target/min/size",
+          "cssToken": "--target-min-size",
+          "valuesByMode": {
+            "Editorial": 24,
+            "Nordic": 24
+          }
+        },
+        {
+          "name": "radius/xs",
+          "cssToken": "--radius-xs",
+          "valuesByMode": {
+            "Editorial": 1,
+            "Nordic": 3
+          }
+        },
+        {
+          "name": "radius/sm",
+          "cssToken": "--radius-sm",
+          "valuesByMode": {
+            "Editorial": 2,
+            "Nordic": 6
+          }
+        },
+        {
+          "name": "radius/md",
+          "cssToken": "--radius-md",
+          "valuesByMode": {
+            "Editorial": 3,
+            "Nordic": 8
+          }
+        },
+        {
+          "name": "radius/lg",
+          "cssToken": "--radius-lg",
+          "valuesByMode": {
+            "Editorial": 4,
+            "Nordic": 12
+          }
+        },
+        {
+          "name": "radius/xl",
+          "cssToken": "--radius-xl",
+          "valuesByMode": {
+            "Editorial": 6,
+            "Nordic": 16
+          }
+        },
+        {
+          "name": "radius/full",
+          "cssToken": "--radius-full",
+          "valuesByMode": {
+            "Editorial": 9999,
+            "Nordic": 9999
+          }
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "name": "Button",
+      "slug": "button",
+      "description": "Triggers an in-page action, form submission, or declarative dialog/popover command. For URL navigation, use LinkButton instead.",
+      "rootTag": "button",
+      "variantAxes": [
+        {
+          "name": "variant",
+          "values": [
+            "primary",
+            "secondary",
+            "outline",
+            "ghost",
+            "danger"
+          ],
+          "defaultValue": "primary"
+        },
+        {
+          "name": "size",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "defaultValue": "md"
+        }
+      ],
+      "booleanProperties": [
+        {
+          "name": "disabled",
+          "defaultValue": false
+        },
+        {
+          "name": "iconOnly",
+          "defaultValue": false
+        }
+      ],
+      "textProperties": [],
+      "slots": [
+        {
+          "name": "icon-start",
+          "figmaType": "INSTANCE_SWAP",
+          "description": "Optional leading decorative icon (`aria-hidden=\"true\"` on SVGs)."
+        },
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Visible button label text."
+        },
+        {
+          "name": "icon-end",
+          "figmaType": "INSTANCE_SWAP",
+          "description": "Optional trailing decorative icon (`aria-hidden=\"true\"` on SVGs)."
+        }
+      ],
+      "skippedProps": [
+        {
+          "name": "type",
+          "reason": "Form submission behavior ('button' | 'submit' | 'reset')"
+        },
+        {
+          "name": "render",
+          "reason": "Astro conditional rendering helper"
+        },
+        {
+          "name": "commandfor",
+          "reason": "HTML Invoker Commands target ID"
+        },
+        {
+          "name": "command",
+          "reason": "HTML Invoker Commands action name"
+        },
+        {
+          "name": "popovertarget",
+          "reason": "HTML Popover target ID"
+        },
+        {
+          "name": "popovertargetaction",
+          "reason": "HTML Popover trigger action"
+        },
+        {
+          "name": "href",
+          "reason": "Forbidden prop (compile-time guard)"
+        },
+        {
+          "name": "aria-label",
+          "reason": "Screen-reader accessible name"
+        }
+      ]
+    },
+    {
+      "name": "LinkButton",
+      "slug": "link-button",
+      "description": "Navigates to a URL using a semantic `<a>` element styled to match Button variants. Never overrides link semantics with `role=\"button\"`.",
+      "rootTag": "a",
+      "variantAxes": [
+        {
+          "name": "variant",
+          "values": [
+            "primary",
+            "secondary",
+            "outline",
+            "ghost",
+            "danger"
+          ],
+          "defaultValue": "primary"
+        },
+        {
+          "name": "size",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "defaultValue": "md"
+        }
+      ],
+      "booleanProperties": [
+        {
+          "name": "disabled",
+          "defaultValue": false
+        },
+        {
+          "name": "iconOnly",
+          "defaultValue": false
+        }
+      ],
+      "textProperties": [],
+      "slots": [
+        {
+          "name": "icon-start",
+          "figmaType": "INSTANCE_SWAP",
+          "description": "Optional leading decorative icon (`aria-hidden=\"true\"` on SVGs)."
+        },
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Visible link label text."
+        },
+        {
+          "name": "icon-end",
+          "figmaType": "INSTANCE_SWAP",
+          "description": "Optional trailing decorative icon (`aria-hidden=\"true\"` on SVGs)."
+        }
+      ],
+      "skippedProps": [
+        {
+          "name": "render",
+          "reason": "Astro conditional rendering helper"
+        },
+        {
+          "name": "href",
+          "reason": "Navigation destination attribute (no visual Figma axis)"
+        },
+        {
+          "name": "aria-label",
+          "reason": "Screen-reader accessible name"
+        }
+      ]
+    }
+  ]
+}

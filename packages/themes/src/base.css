@@ -58,7 +58,7 @@
   }
 
   @layer tokens {
-    :root {
+    :where(:root:not([data-mode])) {
       /* ---- Literal Spacing Scale (rem-based, scales with OS text-scale) ---- */
       --space-0: 0rem;
       --space-1: 0.25rem;

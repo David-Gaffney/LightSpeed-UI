@@ -1,0 +1,31 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry.json",
+  "name": "lightspeed-ui",
+  "homepage": "https://lightspeedui.dev",
+  "items": [
+    {
+      "name": "button",
+      "title": "Button",
+      "type": "registry:ui",
+      "category": "Actions",
+      "hydration": "optional",
+      "description": "Triggers an in-page action, form submission, or declarative dialog/popover command. For URL navigation, use LinkButton instead.",
+      "dependencies": [
+        "@lsui/behaviors"
+      ],
+      "registryUrl": "/r/button.json"
+    },
+    {
+      "name": "link-button",
+      "title": "LinkButton",
+      "type": "registry:ui",
+      "category": "Actions",
+      "hydration": "optional",
+      "description": "Navigates to a URL using a semantic `<a>` element styled to match Button variants. Never overrides link semantics with `role=\"button\"`.",
+      "dependencies": [
+        "@lsui/behaviors"
+      ],
+      "registryUrl": "/r/link-button.json"
+    }
+  ]
+}

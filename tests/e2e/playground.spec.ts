@@ -198,9 +198,10 @@ test.describe("LightSpeedUI Playground (Themes, Button/LinkButton & WCAG 2.2 AA)
   });
 });
 
-test.describe("Nimbus Docs <ComponentPreview> CSS Isolation", () => {
-  test("reverts Tailwind Preflight inside [data-lsui-preview] and passes axe checks", async ({
+test.describe("Nimbus Docs <ComponentPreview> CSS Isolation & Auto-Generated Pages", () => {
+  test("reverts Tailwind Preflight inside [data-lsui-preview] and renders AST-generated Button docs + registry JSON", async ({
     page,
+    request,
   }) => {
     await page.goto("http://localhost:4321/");
 
@@ -217,5 +218,27 @@ test.describe("Nimbus Docs <ComponentPreview> CSS Isolation", () => {
 
     expect(styles.borderTopWidth).toBeGreaterThan(0);
     expect(styles.paddingLeft).toBeGreaterThan(0);
+
+    // Verify AST-generated /components/button/ docs page renders live Nordic & Editorial previews
+    await page.goto("http://localhost:4321/components/button/");
+    await expect(
+      page.getByRole("heading", { name: "Button", level: 1 }),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-lsui-preview][data-theme="nordic light"] button[data-variant="primary"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-lsui-preview][data-theme="editorial dark"] button[data-size="lg"]'),
+    ).toBeVisible();
+
+    // Verify static registry JSON endpoint generated from AST
+    const regRes = await request.get("http://localhost:4321/r/button.json");
+    expect(regRes.ok()).toBe(true);
+    const regJson = (await regRes.json()) as {
+      name: string;
+      files: Array<{ sha256: string }>;
+    };
+    expect(regJson.name).toBe("button");
+    expect(regJson.files[0]?.sha256).toMatch(/^[0-9a-f]{64}$/);
   });
 });

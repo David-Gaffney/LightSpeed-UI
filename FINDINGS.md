@@ -171,3 +171,19 @@ A running engineering log of architectural decisions, ecosystem tradeoffs, tool 
   1. **Baseline Newly Available Features Used** — grouped under ascending `Baseline 2024`, `Baseline 2025`, and `Baseline 2026` headings (verifying row dates match their year heading).
   2. **CSS-Only Fallbacks** — cross-checked against Section 1 so legacy CSS fallback blocks (like `@supports not (scrollbar-color: auto)` in `apps/docs/src/styles/globals.css` and `image-set()` in `@lsui/themes`) are retired in order.
   3. **Active Polyfills** — cross-checked against Section 1 and reverse-scanned across `packages/*` so no unlisted `*polyfill*` package or import can slip in.
+
+### F-028 (Phase 1, Part 3): Using Astro 7's Native Rust `@astrojs/compiler-rs` Over Legacy WASM `@astrojs/compiler`
+- **Discovery**: Inspecting Astro `7.4.13`'s dependency tree showed Astro 7 replaced the older Go WASM `@astrojs/compiler` with **`@astrojs/compiler-rs`** (`0.5.3`, backed by native N-API bindings `@astrojs/compiler-binding-darwin-arm64`). Its synchronous `parse(source)` returns an OXC ESTree-compatible JSON AST (`frontmatter`, `body` JSX elements, `comments`, and exact `start`/`end` byte offsets) in ~0.2ms with zero WASM cold start.
+- **Solution**: Built `@lsui/ast` on `@astrojs/compiler-rs` (for `.astro` template `<slot>`s, root tags, `<script>`/`<style>` blocks, and frontmatter spans) + `ts-morph` (`28.0.0`, resolving discriminated `Props` unions and default destructuring values) + `postcss` (`8.5.33`, extracting theme tokens and rejecting hardcoded hex colors or `color-mix(in oklch)`).
+
+### F-029 (Phase 1, Part 3): `rewriteRelativeImportExtensions: true` for Seamless Node 26 + `tsc` Execution
+- **Issue**: Running `node scripts/sync-artifacts.ts` directly against unbuilt TypeScript source (`packages/ast/src/index.ts`) initially threw `ERR_MODULE_NOT_FOUND` on `./color.js` specifiers because Node 26's native TypeScript loader does not rewrite `.js` → `.ts`.
+- **Solution**: Enabled `"allowImportingTsExtensions": true` + `"rewriteRelativeImportExtensions": true` in `tsconfig.base.json` and used `.ts` relative specifiers in `packages/ast/src/*`. Node 26 and Vitest execute `.ts` source directly with zero build step, while `tsc` automatically rewrites specifiers to `.js` in emitted `dist/` bundles.
+
+### F-030 (Phase 1, Part 3): Preventing `:root` Token Collisions Inside Host Tailwind Docs Shells
+- **Issue**: Nimbus's Tailwind v4 `@theme` block in `apps/docs/src/styles/globals.css` defines `--color-primary`, `--color-border`, and `--radius-lg` inside `@layer theme` on `:root`. Because `@layer lsui` sits above `@layer theme`, an unguarded `:where(:root)` selector in `nordic.css` would overwrite Nimbus's own docs chrome colors outside `[data-lsui-preview]`.
+- **Solution**: Scoped root fallback selectors in `base.css`, `nordic.css`, and `editorial.css` to `:where(:root:not([data-mode])), [data-theme~="..."]`. Standalone Astro apps still receive default theme tokens on `:root`, Nimbus's `[data-mode]` docs shell stays untouched, and `<ComponentPreview>` applies `data-theme="nordic light"` / `"editorial dark"` cleanly on its preview container.
+
+### F-031 (Phase 1, Part 3): `nimbus-docs lint` Link Checking Against Newly Generated MDX Routes
+- **Nuance**: Running `nimbus-docs lint` immediately after `pnpm sync:artifacts` generated new `.mdx` files (`components/button.mdx`, `components/link-button.mdx`) initially flagged `/components/button/` as a broken internal link because Nimbus resolves link targets against the built route inventory from the previous `astro build`—and requires trailing slashes (`/components/button/`).
+- **Solution**: Standardized generated internal doc links with trailing slashes and ran `astro build` before `nimbus-docs lint`, passing `✓ 6 file(s) lint clean` and auto-generating `/components/button/index.md`, `/components/llms.txt`, and OG cards.
