@@ -3,9 +3,129 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { PACKAGE_NAME } from "@lsui/core";
 ---
 
-<BaseLayout title="LightSpeedUI Playground">
-  <main>
-    <h1>LightSpeedUI Playground</h1>
-    <p>Connected workspace package: <code>{PACKAGE_NAME}</code></p>
+<BaseLayout title="LightSpeedUI Playground" theme="nordic light">
+  <main data-layout="container" data-density="spacious" id="outer-spacious">
+    <header class="swatch-panel" data-surface="card">
+      <h1 class="display-heading">LightSpeedUI Playground</h1>
+      <p class="muted-copy">
+        Connected workspace package: <code>{PACKAGE_NAME}</code>
+      </p>
+    </header>
+
+    <div data-layout="split" style="margin-block-start: var(--space-lg);">
+      <!-- Nordic Light + Nested Dark & Compact Context -->
+      <section
+        id="nordic-zone"
+        class="swatch-panel"
+        data-theme="nordic light"
+        data-surface="card"
+        aria-labelledby="nordic-heading"
+      >
+        <h2 id="nordic-heading" class="display-heading">Nordic Theme</h2>
+        <p class="muted-copy">Calm technical clarity in light mode.</p>
+        <div class="action-row">
+          <span class="token-pill primary-pill">Primary Action</span>
+          <span class="token-pill secondary-pill">Secondary</span>
+        </div>
+
+        <aside
+          id="nordic-dark-compact"
+          class="swatch-panel nested-panel"
+          data-theme="dark"
+          data-density="compact"
+          aria-label="Nordic dark compact callout"
+        >
+          <strong>Nested Dark + Compact</strong>
+          <p class="muted-copy">
+            Inherits Nordic tokens and flips via <code>light-dark()</code>.
+          </p>
+          <span class="token-pill primary-pill">Dark Primary</span>
+        </aside>
+      </section>
+
+      <!-- Editorial Light + Combined Single-Element Editorial Dark -->
+      <section
+        id="editorial-zone"
+        class="swatch-panel"
+        data-theme="editorial light"
+        data-surface="card"
+        aria-labelledby="editorial-heading"
+      >
+        <h2 id="editorial-heading" class="display-heading">Editorial Theme</h2>
+        <p class="muted-copy">Warm archival paper &amp; literary serif headings.</p>
+        <div class="action-row">
+          <span class="token-pill primary-pill">Read Essay</span>
+          <span class="token-pill secondary-pill">Bookmark</span>
+        </div>
+
+        <aside
+          id="editorial-dark-zone"
+          class="swatch-panel nested-panel"
+          data-theme="editorial dark"
+          data-surface="muted"
+          aria-label="Editorial dark surface"
+        >
+          <strong>Single-Tag Editorial Dark</strong>
+          <p class="muted-copy">
+            Uses <code>data-theme="editorial dark"</code> without extra wrappers.
+          </p>
+          <span class="token-pill primary-pill">Subscribe</span>
+        </aside>
+      </section>
+    </div>
   </main>
 </BaseLayout>
+
+<style>
+  @layer lsui {
+    @layer components {
+      .swatch-panel {
+        padding: var(--space-md);
+        border: var(--border-width) solid var(--color-border);
+        border-radius: var(--radius-lg);
+      }
+
+      .nested-panel {
+        margin-block-start: var(--space-md);
+      }
+
+      .display-heading {
+        font-family: var(--font-heading);
+        font-size: var(--text-2xl);
+        line-height: var(--leading-tight);
+      }
+
+      .muted-copy {
+        margin-block-start: var(--space-xs);
+        color: var(--color-text-muted);
+      }
+
+      .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+        margin-block-start: var(--space-md);
+      }
+
+      .token-pill {
+        display: inline-flex;
+        align-items: center;
+        min-block-size: var(--control-height-md);
+        padding-inline: var(--control-pad-inline-md);
+        border-radius: var(--radius-md);
+        font-weight: var(--weight-medium);
+      }
+
+      .primary-pill {
+        background-color: var(--color-primary);
+        color: var(--color-on-primary);
+      }
+
+      .secondary-pill {
+        background-color: var(--color-secondary);
+        color: var(--color-on-secondary);
+        border: var(--border-width) solid var(--color-border-strong);
+      }
+    }
+  }
+</style>

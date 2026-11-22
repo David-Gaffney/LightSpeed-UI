@@ -1,10 +1,14 @@
 ---
+import "@lsui/themes/base.css";
+import "@lsui/themes/nordic.css";
+import "@lsui/themes/editorial.css";
+
 export interface Props {
   title: string;
   theme?: string;
 }
 
-const { title, theme = "nordic" } = Astro.props;
+const { title, theme = "nordic light" } = Astro.props;
 ---
 
 <!doctype html>
@@ -12,6 +16,8 @@ const { title, theme = "nordic" } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="text-scale" content="scale" />
     <title>{title}</title>
   </head>
   <body>

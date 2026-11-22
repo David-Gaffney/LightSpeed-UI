@@ -1,0 +1,489 @@
+/* LightSpeedUI (@lsui/themes) — Base Reset, Semantic Token Defaults & Ambient Context
+ *
+ * All rules live inside `@layer lsui` with explicit internal sub-layers:
+ *   reset -> tokens -> context -> base -> components
+ * Unlayered consumer styles and higher layers always win without `!important`.
+ *
+ * Baseline 2026 & modern-web-guidance invariants enforced here:
+ * 1. Never set `font-size` on `:root` or `html` so `<meta name="text-scale" content="scale">`
+ *    and user browser font preferences scale `1rem` natively.
+ * 2. Never `@property`-register design tokens as `<color>` so `light-dark()` expressions
+ *    remain live and re-resolve inside nested `[data-theme="dark" | "light"]` subtrees.
+ * 3. Always re-specify `background-color`, `color`, `accent-color`, and `caret-color`
+ *    whenever `color-scheme` is overridden on a subtree.
+ * 4. Always mix colors `in oklab` (never `in oklch`) to avoid Chromium low-chroma hue bug.
+ */
+
+@layer lsui {
+  @layer reset, tokens, context, base, components;
+
+  @layer reset {
+    /* Targeted element resets (avoiding unlayered `*` resets that block overrides) */
+    :where(html) {
+      color-scheme: light dark;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    :where(body) {
+      margin: 0;
+    }
+
+    :where(
+      h1, h2, h3, h4, h5, h6,
+      p, figure, blockquote, dl, dd, ul, ol, pre, hr
+    ) {
+      margin-block: 0;
+    }
+
+    :where(img, svg, video, canvas) {
+      display: block;
+      max-inline-size: 100%;
+      block-size: auto;
+    }
+
+    :where(button, input, select, textarea) {
+      font: inherit;
+      color: inherit;
+      letter-spacing: inherit;
+    }
+
+    :where(table) {
+      border-collapse: collapse;
+    }
+
+    :where([hidden]:not([hidden="until-found"])) {
+      display: none;
+    }
+  }
+
+  @layer tokens {
+    :root {
+      /* ---- Literal Spacing Scale (rem-based, scales with OS text-scale) ---- */
+      --space-0: 0rem;
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+
+      /* ---- Density-Reactive Semantic Spacing & Control Sizing (default: comfortable) ---- */
+      --lsui-density: comfortable;
+      --space-xs: var(--space-1);
+      --space-sm: var(--space-2);
+      --space-md: var(--space-4);
+      --space-lg: var(--space-6);
+      --space-xl: var(--space-8);
+      --space-section: var(--space-12);
+
+      --control-height-sm: 2rem;
+      --control-height-md: 2.5rem;
+      --control-height-lg: 3rem;
+      --control-pad-inline-sm: 0.75rem;
+      --control-pad-inline-md: 1rem;
+      --control-pad-inline-lg: 1.375rem;
+
+      /* ---- Typography Scale (rem + container-fluid clamp where max <= 2.5 * min) ---- */
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-heading: var(--font-body);
+      --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+
+      --text-xs: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: clamp(1.375rem, 1.15rem + 1cqi, 1.875rem);
+      --text-3xl: clamp(1.625rem, 1.25rem + 1.75cqi, 2.5rem);
+      --text-4xl: clamp(2rem, 1.4rem + 3cqi, 3.5rem);
+
+      /* Unitless line-heights so vertical rhythm scales proportionally at 200%+ zoom */
+      --leading-tight: 1.2;
+      --leading-snug: 1.35;
+      --leading-normal: 1.55;
+      --leading-relaxed: 1.7;
+
+      --weight-regular: 400;
+      --weight-medium: 500;
+      --weight-semibold: 600;
+      --weight-bold: 700;
+
+      /* ---- Geometry, Borders & Focus Indicators ---- */
+      --radius-xs: 0.125rem;
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-full: 9999px;
+
+      --border-width: 1px;
+      --ring-width: 2px;
+      --ring-offset: 2px;
+
+      /* ---- Layout Measures ---- */
+      --measure-prose: 65ch;
+      --container-max: 75rem;
+
+      /* ---- Motion (reactive to prefers-reduced-motion & data-motion) ---- */
+      --lsui-motion: full;
+      --duration-fast: 120ms;
+      --duration-normal: 200ms;
+      --duration-slow: 320ms;
+      --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+      /* ---- Fallback Neutral Color Tokens (overridden by installed theme.css) ---- */
+      --color-bg-light: oklch(0.99 0.004 250);
+      --color-bg-dark: oklch(0.16 0.012 255);
+      --color-text-light: oklch(0.2 0.015 255);
+      --color-text-dark: oklch(0.96 0.006 250);
+      --color-text-muted-light: oklch(0.44 0.018 255);
+      --color-text-muted-dark: oklch(0.76 0.012 250);
+
+      --color-surface-light: oklch(1 0 0);
+      --color-surface-dark: oklch(0.21 0.014 255);
+      --color-surface-muted-light: oklch(0.955 0.008 250);
+      --color-surface-muted-dark: oklch(0.25 0.016 255);
+      --color-surface-inverse-light: oklch(0.2 0.015 255);
+      --color-surface-inverse-dark: oklch(0.96 0.006 250);
+      --color-text-inverse-light: oklch(0.98 0.004 250);
+      --color-text-inverse-dark: oklch(0.17 0.014 255);
+
+      --color-primary-light: oklch(0.45 0.14 252);
+      --color-primary-dark: oklch(0.76 0.12 245);
+      --color-primary-hover-light: oklch(0.39 0.14 252);
+      --color-primary-hover-dark: oklch(0.82 0.11 245);
+      --color-on-primary-light: oklch(0.99 0 0);
+      --color-on-primary-dark: oklch(0.16 0.02 252);
+
+      --color-secondary-light: oklch(0.94 0.01 250);
+      --color-secondary-dark: oklch(0.28 0.018 255);
+      --color-secondary-hover-light: oklch(0.89 0.014 250);
+      --color-secondary-hover-dark: oklch(0.34 0.02 255);
+      --color-on-secondary-light: oklch(0.21 0.016 255);
+      --color-on-secondary-dark: oklch(0.95 0.008 250);
+
+      --color-accent-light: oklch(0.93 0.03 250);
+      --color-accent-dark: oklch(0.3 0.04 250);
+      --color-on-accent-light: oklch(0.22 0.03 252);
+      --color-on-accent-dark: oklch(0.95 0.01 250);
+
+      --color-border-light: oklch(0.88 0.01 252);
+      --color-border-dark: oklch(0.32 0.016 255);
+      /* >= 3:1 against bg & surface for WCAG 1.4.11 Non-text Contrast */
+      --color-border-strong-light: oklch(0.56 0.018 252);
+      --color-border-strong-dark: oklch(0.62 0.018 252);
+      --color-ring-light: oklch(0.45 0.14 252);
+      --color-ring-dark: oklch(0.76 0.12 245);
+
+      --color-info-light: oklch(0.45 0.14 245);
+      --color-info-dark: oklch(0.76 0.12 240);
+      --color-info-surface-light: oklch(0.95 0.025 245);
+      --color-info-surface-dark: oklch(0.26 0.04 245);
+      --color-on-info-surface-light: oklch(0.26 0.07 245);
+      --color-on-info-surface-dark: oklch(0.93 0.03 245);
+
+      --color-success-light: oklch(0.46 0.12 155);
+      --color-success-dark: oklch(0.77 0.12 155);
+      --color-success-surface-light: oklch(0.95 0.03 155);
+      --color-success-surface-dark: oklch(0.26 0.04 155);
+      --color-on-success-surface-light: oklch(0.25 0.06 155);
+      --color-on-success-surface-dark: oklch(0.93 0.03 155);
+
+      --color-warning-light: oklch(0.52 0.13 70);
+      --color-warning-dark: oklch(0.8 0.13 78);
+      --color-warning-surface-light: oklch(0.95 0.04 82);
+      --color-warning-surface-dark: oklch(0.27 0.045 72);
+      --color-on-warning-surface-light: oklch(0.27 0.07 65);
+      --color-on-warning-surface-dark: oklch(0.93 0.04 80);
+
+      --color-danger-light: oklch(0.48 0.18 26);
+      --color-danger-dark: oklch(0.76 0.15 24);
+      --color-danger-surface-light: oklch(0.95 0.03 24);
+      --color-danger-surface-dark: oklch(0.27 0.055 24);
+      --color-on-danger-surface-light: oklch(0.28 0.09 25);
+      --color-on-danger-surface-dark: oklch(0.94 0.03 24);
+
+      /* ---- Live `light-dark()` Semantic Color Expressions ---- */
+      --color-bg: light-dark(var(--color-bg-light), var(--color-bg-dark));
+      --color-text: light-dark(var(--color-text-light), var(--color-text-dark));
+      --color-text-muted: light-dark(var(--color-text-muted-light), var(--color-text-muted-dark));
+      --color-surface: light-dark(var(--color-surface-light), var(--color-surface-dark));
+      --color-surface-muted: light-dark(var(--color-surface-muted-light), var(--color-surface-muted-dark));
+      --color-surface-inverse: light-dark(var(--color-surface-inverse-light), var(--color-surface-inverse-dark));
+      --color-text-inverse: light-dark(var(--color-text-inverse-light), var(--color-text-inverse-dark));
+
+      --color-primary: light-dark(var(--color-primary-light), var(--color-primary-dark));
+      --color-primary-hover: light-dark(var(--color-primary-hover-light), var(--color-primary-hover-dark));
+      --color-on-primary: light-dark(var(--color-on-primary-light), var(--color-on-primary-dark));
+
+      --color-secondary: light-dark(var(--color-secondary-light), var(--color-secondary-dark));
+      --color-secondary-hover: light-dark(var(--color-secondary-hover-light), var(--color-secondary-hover-dark));
+      --color-on-secondary: light-dark(var(--color-on-secondary-light), var(--color-on-secondary-dark));
+
+      --color-accent: light-dark(var(--color-accent-light), var(--color-accent-dark));
+      --color-on-accent: light-dark(var(--color-on-accent-light), var(--color-on-accent-dark));
+
+      --color-border: light-dark(var(--color-border-light), var(--color-border-dark));
+      --color-border-strong: light-dark(var(--color-border-strong-light), var(--color-border-strong-dark));
+      --color-ring: light-dark(var(--color-ring-light), var(--color-ring-dark));
+
+      --color-info: light-dark(var(--color-info-light), var(--color-info-dark));
+      --color-info-surface: light-dark(var(--color-info-surface-light), var(--color-info-surface-dark));
+      --color-on-info-surface: light-dark(var(--color-on-info-surface-light), var(--color-on-info-surface-dark));
+
+      --color-success: light-dark(var(--color-success-light), var(--color-success-dark));
+      --color-success-surface: light-dark(var(--color-success-surface-light), var(--color-success-surface-dark));
+      --color-on-success-surface: light-dark(var(--color-on-success-surface-light), var(--color-on-success-surface-dark));
+
+      --color-warning: light-dark(var(--color-warning-light), var(--color-warning-dark));
+      --color-warning-surface: light-dark(var(--color-warning-surface-light), var(--color-warning-surface-dark));
+      --color-on-warning-surface: light-dark(var(--color-on-warning-surface-light), var(--color-on-warning-surface-dark));
+
+      --color-danger: light-dark(var(--color-danger-light), var(--color-danger-dark));
+      --color-danger-surface: light-dark(var(--color-danger-surface-light), var(--color-danger-surface-dark));
+      --color-on-danger-surface: light-dark(var(--color-on-danger-surface-light), var(--color-on-danger-surface-dark));
+
+      --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.06);
+      --shadow-md: 0 4px 12px oklch(0 0 0 / 0.08), 0 1px 3px oklch(0 0 0 / 0.05);
+      --shadow-lg: 0 12px 28px oklch(0 0 0 / 0.12), 0 4px 10px oklch(0 0 0 / 0.06);
+    }
+  }
+
+  @layer context {
+    /* 1. Ambient Theme / Color-Scheme Context (`data-theme`)
+     * Uses `~=` token matching so both `data-theme="dark"` and combined
+     * `data-theme="editorial dark"` work on a single element without extra wrappers.
+     * Re-specifies background-color, color, accent-color, and caret-color so
+     * inherited `<color>` properties re-evaluate `light-dark()` in the new scheme. */
+    [data-theme~="light"] {
+      color-scheme: only light;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      accent-color: var(--color-primary);
+      caret-color: var(--color-primary);
+    }
+
+    [data-theme~="dark"] {
+      color-scheme: only dark;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      accent-color: var(--color-primary);
+      caret-color: var(--color-primary);
+    }
+
+    [data-theme~="auto"] {
+      color-scheme: light dark;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      accent-color: var(--color-primary);
+      caret-color: var(--color-primary);
+    }
+
+    /* 2. Ambient Surface Context (`data-surface`) */
+    [data-surface="canvas"] {
+      --lsui-surface: canvas;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+    }
+
+    [data-surface="card"] {
+      --lsui-surface: card;
+      background-color: var(--color-surface);
+      color: var(--color-text);
+    }
+
+    [data-surface="muted"] {
+      --lsui-surface: muted;
+      background-color: var(--color-surface-muted);
+      color: var(--color-text);
+    }
+
+    [data-surface="hero"] {
+      --lsui-surface: hero;
+      background-color: color-mix(in oklab, var(--color-surface-muted) 75%, var(--color-accent));
+      color: var(--color-text);
+    }
+
+    [data-surface="inverse"] {
+      --lsui-surface: inverse;
+      background-color: var(--color-surface-inverse);
+      color: var(--color-text-inverse);
+      --color-text: var(--color-text-inverse);
+      --color-text-muted: color-mix(in oklab, var(--color-text-inverse) 78%, var(--color-surface-inverse));
+    }
+
+    /* 3. Ambient Density Context (`data-density`)
+     * Reassigns custom properties directly so nested density contexts always
+     * resolve from the nearest DOM ancestor without specificity collisions. */
+    [data-density="compact"] {
+      --lsui-density: compact;
+      --space-xs: 0.125rem;
+      --space-sm: var(--space-1);
+      --space-md: var(--space-2);
+      --space-lg: var(--space-4);
+      --space-xl: var(--space-6);
+      --space-section: var(--space-8);
+      --control-height-sm: 1.75rem;
+      --control-height-md: 2.125rem;
+      --control-height-lg: 2.5rem;
+      --control-pad-inline-sm: 0.625rem;
+      --control-pad-inline-md: 0.75rem;
+      --control-pad-inline-lg: 1rem;
+    }
+
+    [data-density="comfortable"] {
+      --lsui-density: comfortable;
+      --space-xs: var(--space-1);
+      --space-sm: var(--space-2);
+      --space-md: var(--space-4);
+      --space-lg: var(--space-6);
+      --space-xl: var(--space-8);
+      --space-section: var(--space-12);
+      --control-height-sm: 2rem;
+      --control-height-md: 2.5rem;
+      --control-height-lg: 3rem;
+      --control-pad-inline-sm: 0.75rem;
+      --control-pad-inline-md: 1rem;
+      --control-pad-inline-lg: 1.375rem;
+    }
+
+    [data-density="spacious"] {
+      --lsui-density: spacious;
+      --space-xs: var(--space-2);
+      --space-sm: var(--space-3);
+      --space-md: var(--space-6);
+      --space-lg: var(--space-8);
+      --space-xl: var(--space-12);
+      --space-section: var(--space-16);
+      --control-height-sm: 2.25rem;
+      --control-height-md: 2.875rem;
+      --control-height-lg: 3.5rem;
+      --control-pad-inline-sm: 0.875rem;
+      --control-pad-inline-md: 1.25rem;
+      --control-pad-inline-lg: 1.75rem;
+    }
+
+    /* 4. Ambient Contrast Context (`data-contrast` & OS `prefers-contrast: more`) */
+    @media (prefers-contrast: more) {
+      :root {
+        --color-text-muted: var(--color-text);
+        --color-border: var(--color-border-strong);
+        --ring-width: 3px;
+      }
+    }
+
+    [data-contrast="more"] {
+      --lsui-contrast: more;
+      --color-text-muted: var(--color-text);
+      --color-border: var(--color-border-strong);
+      --ring-width: 3px;
+    }
+
+    [data-contrast="normal"] {
+      --lsui-contrast: normal;
+      --ring-width: 2px;
+    }
+
+    /* 5. Ambient Motion Context (`data-motion` & OS `prefers-reduced-motion`) */
+    @media (prefers-reduced-motion: reduce) {
+      :root {
+        --lsui-motion: reduced;
+        --duration-fast: 0ms;
+        --duration-normal: 0ms;
+        --duration-slow: 0ms;
+      }
+    }
+
+    [data-motion="reduced"],
+    [data-motion="none"] {
+      --lsui-motion: none;
+      --duration-fast: 0ms;
+      --duration-normal: 0ms;
+      --duration-slow: 0ms;
+    }
+
+    [data-motion="full"] {
+      --lsui-motion: full;
+      --duration-fast: 120ms;
+      --duration-normal: 200ms;
+      --duration-slow: 320ms;
+    }
+
+    /* 6. Ambient Layout & Container Query Context (`data-layout`) */
+    [data-layout] {
+      container-type: inline-size;
+    }
+
+    [data-layout="container"] {
+      max-inline-size: var(--container-max);
+      margin-inline: auto;
+      padding-inline: var(--space-md);
+    }
+
+    [data-layout="prose"] {
+      max-inline-size: var(--measure-prose);
+    }
+
+    [data-layout="stack"] {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    [data-layout="grid"] {
+      display: grid;
+      gap: var(--space-md);
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    }
+
+    [data-layout="split"] {
+      display: grid;
+      gap: var(--space-lg);
+      grid-template-columns: 1fr;
+
+      @container (min-width: 42rem) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: center;
+      }
+    }
+
+    /* Windows High Contrast / Forced Colors Mode System Token Fallbacks */
+    @media (forced-colors: active) {
+      :root {
+        --color-bg: Canvas;
+        --color-surface: Canvas;
+        --color-surface-muted: Canvas;
+        --color-text: CanvasText;
+        --color-text-muted: CanvasText;
+        --color-primary: Highlight;
+        --color-on-primary: HighlightText;
+        --color-secondary: ButtonFace;
+        --color-on-secondary: ButtonText;
+        --color-border: CanvasText;
+        --color-border-strong: CanvasText;
+        --color-ring: Highlight;
+      }
+    }
+  }
+
+  @layer base {
+    :where(body) {
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      line-height: var(--leading-normal);
+      accent-color: var(--color-primary);
+      caret-color: var(--color-primary);
+    }
+
+    :where(:focus-visible) {
+      outline: var(--ring-width) solid var(--color-ring);
+      outline-offset: var(--ring-offset);
+    }
+  }
+}
