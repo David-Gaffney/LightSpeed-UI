@@ -1,0 +1,78 @@
+---
+export interface Props {
+  title?: string;
+  theme?: string;
+  surface?: string;
+  density?: "compact" | "comfortable" | "spacious";
+  hydration?: "none" | "optional" | "required";
+}
+
+const {
+  title,
+  theme,
+  surface,
+  density,
+  hydration = "none",
+} = Astro.props;
+---
+
+<figure class="lsui-preview-frame">
+  {(title !== undefined || hydration) && (
+    <figcaption class="lsui-preview-bar">
+      <span class="lsui-preview-title">{title ?? "Live Preview"}</span>
+      <span class="lsui-preview-badge">hydration: {hydration}</span>
+    </figcaption>
+  )}
+  <div
+    class="lsui-preview-stage"
+    data-lsui-preview
+    data-theme={theme}
+    data-surface={surface}
+    data-density={density}
+  >
+    <slot />
+  </div>
+</figure>
+
+<style>
+  .lsui-preview-frame {
+    margin-block: 1.5rem;
+    border: 1px solid var(--nb-border);
+    border-radius: var(--nb-radius);
+    overflow: hidden;
+    background: var(--nb-card);
+  }
+
+  .lsui-preview-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem 0.875rem;
+    border-block-end: 1px solid var(--nb-border);
+    background: var(--nb-muted);
+    font-family: var(--nb-font-mono);
+    font-size: 0.75rem;
+    color: var(--nb-muted-foreground);
+  }
+
+  .lsui-preview-title {
+    color: var(--nb-foreground);
+    font-weight: 500;
+  }
+
+  .lsui-preview-badge {
+    padding: 0.125rem 0.4375rem;
+    border-radius: var(--nb-radius-sm);
+    border: 1px solid var(--nb-border);
+    background: var(--nb-card);
+  }
+
+  .lsui-preview-stage {
+    container-type: inline-size;
+    padding: 1.5rem;
+    color: initial;
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+  }
+</style>

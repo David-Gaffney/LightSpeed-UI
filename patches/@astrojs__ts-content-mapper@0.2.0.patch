@@ -1,0 +1,42 @@
+diff --git a/dist/transform.js b/dist/transform.js
+index ca0b986d73897a8ff75a891ffcbfacf4e66376c8..d1cd785b878e970d6bf51a9946d336663b1ab006 100644
+--- a/dist/transform.js
++++ b/dist/transform.js
+@@ -67,6 +67,15 @@ function toMapperDiagnostics(tsx, source) {
+     }
+     return diagnostics;
+ }
++const NOCHECK = '// @ts-nocheck\n';
++const THIRD_PARTY_NODE_MODULES_RE = /[\\/]\.pnpm[\\/]|[\\/]node_modules[\\/](?!@lsui[\\/])/;
++function withNoCheck(out) {
++    return {
++        ...out,
++        text: NOCHECK + out.text,
++        mappings: out.mappings.map(([virtualStart, ...rest]) => [virtualStart + NOCHECK.length, ...rest]),
++    };
++}
+ export function transform({ content, fileName }) {
+     try {
+         const tsx = convertToTsx(content, {
+@@ -74,13 +83,20 @@ export function transform({ content, fileName }) {
+             // No language server injects globals here, so the TSX has to declare its own.
+             ambientTypes: true,
+         });
+-        return {
++        const result = {
+             text: tsx.code,
+             extension: VIRTUAL_EXTENSION,
+             mappings: tsx.mappings,
+             diagnostics: toMapperDiagnostics(tsx, content),
+             supplemental: toSupplementalScripts(tsx),
+         };
++        if (!THIRD_PARTY_NODE_MODULES_RE.test(fileName))
++            return result;
++        return {
++            ...withNoCheck(result),
++            diagnostics: [],
++            supplemental: result.supplemental.map(withNoCheck),
++        };
+     }
+     catch (error) {
+         return {

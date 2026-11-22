@@ -10,14 +10,17 @@
   },
   "scripts": {
     "build": "pnpm -r --filter './packages/*' run build",
+    "build:apps": "pnpm -r --filter './apps/*' run build",
     "typecheck": "pnpm -r --filter './packages/*' run typecheck",
+    "typecheck:apps": "pnpm -r --filter './apps/*' run typecheck",
     "changeset": "changeset",
     "changeset:status": "changeset status",
     "version-packages": "changeset version"
   },
   "devDependencies": {
+    "@astrojs/ts-content-mapper": "^0.2.0",
     "@changesets/cli": "^2.31.1",
     "@types/node": "^26.6.6",
-    "typescript": "^7.0.2"
+    "typescript": "7.1.0-beta"
   }
 }

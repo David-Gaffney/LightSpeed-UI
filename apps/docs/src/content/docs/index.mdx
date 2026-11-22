@@ -1,0 +1,18 @@
+---
+title: LightSpeedUI
+description: Astro-native UI platform built on Web Platform Baseline 2026 for Astro and EmDash CMS.
+sidebar:
+  order: 0
+---
+
+**LightSpeedUI (`lsui`)** is an open-code, Astro-native UI platform combining pure `.astro` components, composable `@lsui/behaviors` primitives, semantic CSS tokens (`@layer lsui`), Astro + EmDash CMS publishing primitives, automated Code-to-Figma sync, and 3-stage AST upgrades.
+
+<ComponentPreview title="Preview Isolation Check" hydration="none">
+  <button type="button">Native Unreset Button Inside Isolated Stage</button>
+</ComponentPreview>
+
+## Core Pillars
+
+- **Code as the Single Source of Truth**: `.astro` files and semantic CSS tokens generate documentation, `AGENTS.md`, AI Skills, MCP metadata, and Figma components automatically.
+- **Pure CSS & Zero-JS by Default**: Scoped `.astro` styles inside `@layer lsui` with ambient DOM `data-*` context (`data-theme`, `data-surface`, `data-density`) and Baseline 2026 HTML/CSS primitives.
+- **Composable Headless Behaviors**: Accessible TypeScript controllers in `@lsui/behaviors` wired via `mount()`.

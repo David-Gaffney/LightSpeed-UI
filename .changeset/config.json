@@ -20,5 +20,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@lsui/figma-sync"]
+  "ignore": ["@lsui/figma-sync", "@lsui/docs", "@lsui/playground"]
 }

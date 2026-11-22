@@ -1,3 +1,17 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# Declines unneeded install scripts for prebuilt native packages (pnpm 10/11/12)
+supportedArchitectures:
+  cpu:
+    - current
+    - wasm32
+allowBuilds:
+  esbuild: false
+  sharp: false
+ignoredBuiltDependencies:
+  - esbuild
+  - sharp
+patchedDependencies:
+  '@astrojs/ts-content-mapper@0.2.0': patches/@astrojs__ts-content-mapper@0.2.0.patch
