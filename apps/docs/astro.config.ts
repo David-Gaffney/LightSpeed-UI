@@ -10,7 +10,8 @@ const nimbusConfig = defineNimbusConfig({
   title: "LightSpeedUI",
   description: "Astro-native UI platform built on Web Platform Baseline 2026.",
   locale: "en",
-  github: null,
+  github: "https://github.com/David-Gaffney/LightSpeed-UI",
+  editPattern: "https://github.com/David-Gaffney/LightSpeed-UI/edit/main/apps/docs/{path}",
   socialImageAlt: "LightSpeedUI documentation preview",
   // The home page leads the sidebar; every other page joins it automatically.
   sidebar: {

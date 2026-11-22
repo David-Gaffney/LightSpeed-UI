@@ -1,0 +1,173 @@
+# LightSpeedUI (`lsui`) — Engineering Findings & Decisions Log
+
+A running engineering log of architectural decisions, ecosystem tradeoffs, tool quirks, and solutions discovered while designing and building **LightSpeedUI**—written as a practical reference for anyone building an Astro-native design system or open-code UI platform.
+
+---
+
+## Architecture & Planning Findings
+
+### F-001: Why Pure `shadcn` Copy-Paste Breaks Down for Interactive Astro UI
+- **Problem**: `shadcn/ui` ports in Astro often copy both the `.astro` markup *and* raw client-side interaction JavaScript into user repos. When a focus-trap, Safari keyboard, or ARIA bug is later discovered, every consumer project is stuck with stale, patched-by-hand scripts.
+- **Decision / Solution**: Use a **Hybrid Ownership Model**:
+  - Copy `.astro` markup, slots, and scoped styles into the user's repo (`src/components/ui/`) via CLI so markup and styling remain 100% open and editable.
+  - Keep headless interaction & accessibility state machines (`createPopover`, `createSelection`, `createRovingFocus`, `createDialog`, `createTabs`) in a versioned npm package (`@lsui/behaviors`), inspired by UI SDK and Bejamas UI's `@data-slot` split.
+
+### F-002: Bridging the Gap Between `@astrojs/upgrade` and Astryx Codemods
+- **Problem**:
+  - We inspected `@astrojs/upgrade`'s source (`packages/upgrade` in `withastro/astro`) and found it is purely a dependency-bumping CLI—it does not run codemods or touch source files.
+  - Conversely, Astryx's CLI runs AST codemods on consumer callsites, bit requires manually passing `OLD_VERSION` + manually pinning every package in `npm install`, and explicitly abandons components once ejected (`swizzled`).
+  - Worse, in a hybrid UI system, updating `@lsui/behaviors` in `package.json` without updating copied `.astro` files could cause markup and behavior hooks to drift out of sync.
+- **Decision / Solution**: Design a **3-stage `npx @lsui/upgrade` pipeline** backed by SHA-256 file hashes stored in `lsui.json`:
+  1. **Stage 1**: Ephemeral CLI discovers and bumps all `@lsui/*` npm packages in lockstep (like `@astrojs/upgrade`, with `--dry-run` and breaking-change prompts).
+  2. **Stage 2**: Compares local `.astro` files against `lsui.json` hashes—auto-updating untouched files while preserving user-customized files via 3-way merge/diff.
+  3. **Stage 3**: Runs AST codemods on callsites and tokens, inserting inline `TODO` comments and generating a codebase-specific `.lsui/UPGRADE.md` checklist where transforms are ambiguous.
+
+### F-003: One Shared AST Pipeline Instead of Separate Parsers
+- **Problem**: Supporting Docs-in-Code, `AGENTS.md` generation, AI Skill/MCP metadata, deterministic Code-to-Figma sync, and upgrade codemods could easily devolve into five brittle regex scripts—and TypeScript-only AST tools (`ts-morph` / Babel) cannot parse `.astro` templates or `<style>` blocks.
+- **Decision / Solution**: Build a single shared parser package (`@lsui/ast`) in Phase 1 combining **`@astrojs/compiler`** (for `.astro` frontmatter, markup, and `<slot />`s), **`ts-morph`** (for strict TypeScript `Props` unions), and **PostCSS** (for CSS tokens and `@layer` validation). Every downstream tool consumes this single Intermediate Representation (IR).
+
+### F-004: Native Astro Scoped `<style>` + `@layer lsui` Over CSS Modules or Tailwind
+- **Problem**: Evaluating how to author component CSS without framework lock-in:
+  - **CSS Modules (`.module.css`)** split single-file components into two files, add `class={styles.foo}` noise, and hash class names in ways that fight external theming.
+  - **Tailwind CSS** introduces utility lock-in and global Preflight reset expectations that non-Tailwind Astro users don't have.
+- **Decision / Solution**: Use Astro's built-in scoped `<style>` blocks (which scope at build time with `:where()` zero-specificity attributes and zero runtime JS) wrapped inside `@layer lsui` and driven strictly by semantic CSS custom properties (`--color-*`, `--space-*`, `--radius-*`) plus ambient DOM `data-*` attributes (`data-theme`, `data-surface`, `data-density`).
+
+### F-005: Plain HTML + `data-*` `mount()` Helper Over Light-DOM Custom Elements
+- **Problem**: Interactive `.astro` components need a client-side bridge to attach `@lsui/behaviors` across initial page loads and Astro `<ClientRouter />` View Transitions. Wrapping components in `<lsui-tabs>` custom elements looked appealing at first glance.
+- **Finding (via `modern-web-guidance`: `web-components`, `custom-elements`)**:
+  - Custom element tags add an extra non-semantic wrapper node in the DOM (which has no ARIA role of its own and can break parent CSS Grid/Flexbox layouts unless carefully mitigated).
+  - Browser HTML streaming can fire `connectedCallback` mid-parse *before* all child elements (such as tab panels or options) exist in the DOM.
+- **Decision / Solution**: Render pure semantic HTML tagged with `data-lsui-*` attributes and initialize behaviors via an idempotent, View-Transition-safe `mount(selector, setupFn)` helper that runs after DOM readiness and executes returned cleanup callbacks on page swap.
+
+### F-006: Keeping Figma in Sync Without Manual Drift (Early `Button` PoC)
+- **Problem**: Manual Figma component libraries silently drift from code, while syncing on every commit creates churn and clobbers designer adjustments. Furthermore, waiting until Phase 5 to test Figma generation risks discovering too late that our `.astro` prop/slot conventions don't map cleanly to Figma.
+- **Decision / Solution**:
+  - Adopt Astryx's **Figma Librarian** guardrails via **Figma MCP**: release-gated on stable versions, mandatory version-history checkpoint before edits, Astro `<slot />` → native Figma Slots, and stage-only edits (human clicks Publish).
+  - Run a **live 1-component Figma MCP proof-of-concept on `Button.astro` in Phase 1** so any AST/prop/token mapping friction is caught and fixed before building the rest of the catalog.
+
+### F-007: Adopting Nimbus Docs (`@cloudflare/nimbus-docs`) Without Adopting Tailwind
+- **Problem**: We wanted early auto-generated docs with native Astro `.astro` layout ownership, `/llms.txt`, `/<slug>/index.md` raw Markdown endpoints, and built-in docs linting—all of which Nimbus provides out of the box (unlike Starlight, whose layouts live inside `node_modules` and need plugins for `llms.txt`). However, Nimbus scaffolds its starter UI with **Tailwind CSS v4**, whose global reset could bleed into live LightSpeedUI previews and violate our zero-Tailwind goal.
+- **Decision / Solution**: Two-step dogfooding strategy:
+  1. **Phases 0–2**: Use Nimbus for `apps/docs` bit isolate `<ComponentPreview>` boxes from Tailwind's reset so LightSpeedUI components render in a pure CSS environment.
+  2. **Phase 3**: Because Nimbus puts all visible layouts and components directly in `apps/docs/src/` while keeping routing/`llms.txt`/search helpers in `@cloudflare/nimbus-docs`, replace Nimbus's starter Tailwind UI files with LightSpeedUI's own pure-CSS `DocsSidebar`, `PrevNext`, `TableOfContents`, `Callout`, `CodeGroup`, and `Prose`—making the entire monorepo 100% Tailwind-free.
+
+### F-008: Expiring Polyfill Ledger (`POLYFILL.md`) Ordered for Easy Removal
+- **Problem**: Targeting modern **Web Platform Baseline 2026** APIs (Invoker Commands `commandfor`, Popover API, CSS Anchor Positioning, `@starting-style`) requires conditional polyfills for older browsers today, bit teams almost never remember to delete polyfills once features become *Baseline Widely Available*.
+- **Decision / Solution**: Enforce a root `POLYFILL.md` file (verified by CI) sorted chronologically from **oldest *Baseline Newly Available* date at the top → newest at the bottom**, with direct `https://webstatus.dev/features/<id>` links and exact file paths where used. Features at the top of the table are always the next ones to graduate to *Widely Available* and be deleted.
+
+### F-009: Unifying Standalone Astro and EmDash CMS Component Naming
+- **Problem**: Astro's core has no standard component naming convention for publishing primitives (bylines, portable text, widget areas, marketing blocks), whereas **EmDash CMS** (built on Astro) already establishes `PortableText`, `Blocks`, `Byline`, `PostCard`, `Pagination`, `WidgetArea`, and block names (`Hero`, `Features`, `Pricing`, `CTA`, `FAQ`, `Split`, `Logos`, `Contact`)—along with gotchas like EmDash image fields being `{ id, src, alt }` objects rather than URL strings.
+- **Decision / Solution**: Adopt EmDash's component/block names as the standard LightSpeedUI publishing vocabulary, and type component props to accept **both** plain Astro/`astro:content` data shapes and EmDash objects seamlessly.
+
+---
+
+## Implementation Findings (Phase-by-Phase)
+
+### F-010 (Phase 0, Part 1): Changesets Fixed Lockstep Group vs. Private Internal Packages
+- **Issue / Nuance**: `@changesets/cli` refuses to include `"private": true` packages inside a `"fixed"` version group, and `changeset status` requires at least one commit on `baseBranch: "main"` to compute package diffs.
+- **Solution**:
+  - Placed all 10 public packages (`@lsui/ast`, `@lsui/behaviors`, `@lsui/core`, `@lsui/blocks`, `@lsui/themes`, `@lsui/icons`, `@lsui/cli`, `@lsui/codemods`, `@lsui/mcp`, `@lsui/skill`) in a single `"fixed"` array in `.changeset/config.json`, and explicitly added internal-only packages (`@lsui/figma-sync`, and upcoming `apps/*` in Part 2) to `"ignore"`.
+  - Verified with a synthetic patch changeset on `@lsui/behaviors` alone: `changeset status` confirmed all 10 public `@lsui/*` packages bump together in lockstep.
+
+### F-011 (Phase 0, Part 1): Isolating Browser/Astro Types from Node Globals & Topological Builds
+- **Issue / Nuance**: Installing `@types/node` at the monorepo root can accidentally expose Node globals (`process`, `Buffer`, Node `Timeout` return types) inside browser-side packages like `@lsui/behaviors` if TypeScript auto-discovers root `@types`.
+- **Solution**:
+  - Kept `tsconfig.base.json` restricted to `["ES2024", "DOM", "DOM.Iterable"]` and opted into `"types": ["node"]` **only** inside Node-targeted package `tsconfig.json` files (`ast`, `cli`, `codemods`, `mcp`, `figma-sync`). Browser/Astro packages (`behaviors`, `core`, `blocks`, `themes`, `icons`, `skill`) stay strictly browser/ESM-clean.
+  - Wired `workspace:*` dependency edges up front so `pnpm -r --filter './packages/*' run build` automatically builds packages in three parallel topological waves without needing extra task-runner bloat in Phase 0.
+
+### F-012 (Phase 0, Part 1): Upgrading to Node 26 LTS & TypeScript `7.0.2` (Native Go `tsc`) + Astro Peer Nuance
+- **Issue**: Initial `package.json` used outdated version memory (`@types/node@^22.15.0`, `typescript@^5.9.3`) instead of querying live `npm` dist-tags. Querying `npm view` revealed `@types/node@26.6.6` (matching Node 26 LTS) and `typescript@7.0.2` (the native Go compiler, shipping `@typescript/typescript-darwin-arm64`, etc.).
+- **Nuance Discovered**:
+  - `typescript@7.0.2` removes the legacy JavaScript compiler API from its root export (`"."` only exports `./lib/version.cjs`, moving experimental AST APIs under `./unstable/ast` and `./unstable/sync`).
+  - Meanwhile, `@astrojs/check@0.9.12` (published by Astro for `.astro` Volar typechecking) still declares `peerDependencies: { "typescript": "^5.0.0 || ^6.0.0" }` because its language server calls the JS TypeScript compiler API. (`ts-morph@28.0.0` bundles its own internal compiler inside `@ts-morph/common` and is unaffected.)
+- **Solution**:
+  - Upgraded the monorepo root and all 11 `@lsui/*` packages to **Node `>=26.0.0`**, **`@types/node@^26.6.6`**, and **`typescript@^7.0.2`** (`target: "ESNext"`), giving near-instant native Go `tsc` builds and typechecks.
+  - Strictly exclude TypeScript `5.x` everywhere in our repo: any Astro app (`apps/playground`, `apps/docs`) that invokes `@astrojs/check` will pin **`typescript@^6.0.3`** locally in that app's `devDependencies` until `@astrojs/check` adds TS 7 support, and any peer range we author will start at `>=6.0.0` / `^7.0.2`.
+
+### F-013 (Phase 0, Part 1): Pure ESM-Only (`"type": "module"`), Zero CommonJS
+- **Decision**: Ship **100% ESM-only** across the entire monorepo—no CommonJS (`require` / `module.exports`) and no dual `.cjs` + `.mjs` build bloat.
+- **Implementation Note (`.js` under `"type": "module"` vs `.mjs`)**: Every `package.json` declares `"type": "module"` with `"module": "ESNext"` in `tsconfig.base.json`. In Node, Astro, Vite, and browsers, `"type": "module"` makes standard `.js` / `.d.ts` outputs native ESM (identical to `.mjs` / `.d.mts`, without forcing `.mts` source extensions everywhere), and Node 26 LTS natively supports `require(esm)` anyway if a legacy tool ever loads a package synchronously.
+
+### F-014 (Phase 0, Part 2): Replacing `astro check` + TS 5/6 with `typescript@7.1.0-beta` & `@astrojs/ts-content-mapper`
+- **Problem**: `astro build` strips TypeScript without type-checking, while `@astrojs/check@0.9.12` relies on the legacy JavaScript TypeScript 5/6 compiler API.
+- **Solution**: Upgraded root TypeScript to **`7.1.0-beta`** (which introduces `contentMappers` in native Go `tsc`) paired with **`@astrojs/ts-content-mapper@^0.2.0`**. Running `astro sync && tsc --noEmit --runExternalCode` checks both `.ts` and `.astro` files directly inside native `tsc` in ~18ms under `astro/tsconfigs/strictest`—eliminating `@astrojs/check` and TypeScript 5/6 from the entire monorepo. Verified with a negative prop test (`<BaseLayout title={123}>`), which immediately failed with `TS2322` at the exact `.astro` line/column.
+
+### F-015 (Phase 0, Part 2): `skipLibCheck` Does Not Cover Third-Party `.astro` Source Files in `node_modules`
+- **Issue**: When running `tsc --noEmit --runExternalCode` in `apps/docs`, our own files passed cleanly, bit `@cloudflare/nimbus-docs`'s internal `Icon.astro` and `NimbusHead.astro` inside `node_modules/.pnpm` failed with unused `@ts-expect-error` and virtual module errors. Because `.astro` packages ship source files rather than `.d.ts` files, TypeScript's `skipLibCheck: true` does not skip them (`withastro/astro#18471`).
+- **Solution**: Created a minimal `pnpm patch` (`lsui/patches/@astrojs__ts-content-mapper@0.2.0.patch`) that prepends `// @ts-nocheck\n` (shifting source-map offsets by `NOCHECK.length`) **only** for third-party `node_modules` paths (`/[\\/]\.pnpm[\\/]|[\\/]node_modules[\\/](?!@lsui[\\/])/`). Exported `Props` types on third-party components still type-check at callsites, while 100% of `@lsui/*` and `apps/*` `.astro` files remain strictly checked.
+
+### F-016 (Phase 0, Part 2): Nested `pnpm-workspace.yaml` Trap in `@cloudflare/create-nimbus-docs`
+- **Issue**: Scaffolding Nimbus into `apps/docs` writes a nested `apps/docs/pnpm-workspace.yaml` containing `packages: []` (alongside `wasm32` architecture and `esbuild`/`sharp` build-script policies). Left in place, `pnpm` treats `apps/docs` as an independent workspace root and breaks `workspace:*` links to `@lsui/*`.
+- **Solution**: Merged `supportedArchitectures`, `allowBuilds`, and `ignoredBuiltDependencies` into the root `lsui/pnpm-workspace.yaml` and deleted `apps/docs/pnpm-workspace.yaml`.
+
+### F-017 (Phase 0, Part 2): Isolating `<ComponentPreview>` Inside Nimbus Without Shadow DOM or Iframes
+- **Issue**: Rendering pure-CSS LightSpeedUI components inside Nimbus docs pages faces two CSS bleed sources:
+  1. Tailwind v4's Preflight reset inside `@layer base` (`globals.css`).
+  2. Nimbus's `prose.css` rules targeting classless tags (`.docs-content :where(details:not([class]))`, `ul:not([class])`, etc.)—which match Astro components because Astro scopes via `data-astro-cid-*` attributes rather than adding `class` attributes.
+- **Solution** (via `modern-web-guidance` `css` guide):
+  1. Declared `@layer theme, base, lsui, components, utilities;` at the top of `globals.css` and added `[data-lsui-preview] :where(*, *::before, *::after) { all: revert-layer; box-sizing: border-box; }` inside `@layer base`—reverting Tailwind Preflight back to browser defaults while allowing `@layer lsui` component styles above `@layer base` to apply normally.
+  2. Wrapped `prose.css` in `@scope (.docs-content) to ([data-lsui-preview])` and replaced inner `.docs-content` prefixes with `:scope` (avoiding the `@scope` gotcha where `.docs-content` inside `@scope (.docs-content)` only matches a nested `.docs-content` descendant). Previews stay in regular Light DOM with `container-type: inline-size` so accessibility tools, View Transitions, and container queries work natively.
+
+### F-018 (Phase 0, Part 3): Astro 7 `isRunByAgent()` Auto-Backgrounding Breaks Playwright `webServer` Without `--ignore-lock`
+- **Issue**: Running `pnpm test:e2e` inside an AI coding agent environment failed immediately with `Error: Process from config.webServer exited early`. Inspecting `astro/dist/cli/preview/index.js` in `astro@7.4.13` revealed why: Astro 7 checks `isRunByAgent()` (detecting agent env vars like `OPENCODE_SESSION_ID` / `CLAUDECODE`) and **automatically forks `astro preview` into a detached background daemon**, exiting the foreground process with code `0`—which Playwright interprets as the server crashing!
+- **Solution**: Astro 7 explicitly yields agent auto-backgrounding when `--ignore-lock` is passed (`withastro/astro#17903`). Using `astro preview --port 4322 --ignore-lock` inside `playwright.config.ts` keeps preview servers in the foreground under both human terminals and AI coding agents.
+
+### F-019 (Phase 0, Part 3): Bidirectional `POLYFILL.md` Governance & Native Node 26 TypeScript Scripts
+- **Design**: Wrote `lsui/scripts/check-polyfills.ts` in erasable TypeScript so Node 26 LTS executes it directly (`node scripts/check-polyfills.ts`) in ~20ms with zero `tsx` wrapper dependency, while Vitest imports the exact same `validatePolyfillLedger()` function for unit testing.
+- **What It Catches**: Not only verifies that `POLYFILL.md` entries are sorted oldest → newest *Baseline Newly Available* date with valid `https://webstatus.dev/features/<id>` URLs and existing `Used In` files, bit also reverse-scans `packages/*/package.json` and `packages/*/src/**/*.{ts,js,mjs,astro}` to fail CI if someone adds or imports a `*polyfill*` package without registering it in `POLYFILL.md`.
+
+### F-020 (Phase 1, Part 1): Live `light-dark()` Subtree Inheritance + Deterministic Figma Mode Pairs
+- **Gotcha** (via `modern-web-guidance` `component-specific-light-dark-theme`): `light-dark()` resolves at computed-value time. If design tokens are `@property`-registered with `syntax: '<color>'`, `:root` resolves `light-dark()` once and passes down a single color—breaking nested `<section data-theme="dark">` callouts. In addition, inherited built-in `<color>` properties (`color`, `accent-color`, `caret-color`) must be re-specified on any element overriding `color-scheme`.
+- **Solution**:
+  - Kept all `--color-*` semantic tokens unregistered (`--color-primary: light-dark(var(--color-primary-light), var(--color-primary-dark))`) and re-declared `background-color`, `color`, `accent-color`, and `caret-color` on `[data-theme~="light" | "dark" | "auto"]`.
+  - Storing explicit `--color-*-light` and `--color-*-dark` custom properties alongside `light-dark()` doubles as a clean AST hook: PostCSS in `@lsui/ast` can extract exact Light and Dark mode columns for Figma Variables without running a browser!
+
+### F-021 (Phase 1, Part 1): Composable `[data-theme~="..."]` Tokens & Nesting-Safe Ambient Density
+- **Problem**:
+  1. Using exact `[data-theme="dark"]` and `[data-theme="editorial"]` selectors forces authors to write two nested wrapper tags (`<div data-theme="editorial"><section data-theme="dark">`) to combine a theme preset with a color-scheme override.
+  2. Selector-based density overrides (`:where([data-density="compact"]) .btn`) break when density containers are nested (`spacious` → `compact`), because equal-specificity rules resolve by stylesheet order rather than DOM proximity.
+- **Solution**:
+  1. Used whitespace-token attribute matching (`[data-theme~="editorial"]` in `@layer lsui.tokens` and `[data-theme~="dark"]` in `@layer lsui.context`), enabling single-tag `<aside data-theme="editorial dark">` alongside standalone `data-theme="dark"` or `data-theme="editorial"`.
+  2. Implemented `[data-density="compact" | "comfortable" | "spacious"]` by reassigning semantic spacing/sizing tokens (`--space-md`, `--control-height-md`, etc.) directly on the container—standard CSS inheritance guarantees the nearest DOM ancestor always wins.
+
+### F-022 (Phase 1, Part 1): Avoiding Chromium `color-mix(in oklch)` Hue Shift & Preserving OS `text-scale`
+- **Gotchas** (via `modern-web-guidance` `color` & `respect-os-text-scale`):
+  1. Mixing neutrals/low-chroma colors with `color-mix(in oklch, ...)` triggers a Chromium powerless-hue bug (`565837690`) that tints greys pink (`0deg`).
+  2. Setting `html { font-size: 16px }` blocks `<meta name="text-scale" content="scale">` from scaling `1rem` to the user's OS accessibility setting.
+- **Solution**: Enforced `color-mix(in oklab, ...)` everywhere, kept `:root`/`html` `font-size` unset, capped fluid `clamp()` typography at `max <= 2.5 * min` using `rem + cqi`, and locked all three rules into `packages/themes/tests/themes.test.ts` so regressions fail unit tests automatically.
+
+### F-023 (Phase 1, Part 1): Light/Dark CSS Images (`light-dark-image`) with Subtree-Aware `image-set()` Fallback
+- **Feature**: CSS `light-dark()` for `<image>` values (<https://webstatus.dev/features/light-dark-image>, Baseline Newly Available `2026-09-14`) lets `background-image`, `mask-image`, and theme backdrops (`--image-hero-backdrop`) switch automatically with `color-scheme`.
+- **Gotchas** (via `modern-web-guidance` `dark-mode`):
+  1. For browsers without `light-dark()` image support, the zero-JS fallback uses `image-set(var(--image-light) var(--lsui-img-light), var(--image-dark) var(--lsui-img-dark))` where the inactive branch resolves to `type("image/do-not-use")` (so only the active image is downloaded).
+  2. **Never set the active option to `type("")`**—browsers treat an empty MIME string as unsupported and drop *every* image! It must be empty whitespace (`--lsui-img-light: ;`).
+  3. Unlike native `light-dark()`, custom-property `image-set()` switches do **not** automatically react to `color-scheme` overrides on a subtree—so `[data-theme~="light"]`, `[data-theme~="dark"]`, and `[data-theme~="auto"]` must also flip `--lsui-img-light` and `--lsui-img-dark`.
+- **Solution**: Added `--image-hero-backdrop` + `[data-lsui-themed-image]` (`--image-light` / `--image-dark`) in `@lsui/themes`, flipped `--lsui-img-light`/`--lsui-img-dark` on every `[data-theme~=...]` context rule, and added a unit test banning `type("")` alongside a live Chromium E2E test verifying light vs. nested-dark image switching.
+
+### F-024 (Phase 1, Part 2): Separating `<Button>` and `<LinkButton>` + Tokenized `--cursor-interactive`
+- **Problem**: Polymorphic buttons that render `<a role="button">` (as warned against in Base UI's docs) destroy native link semantics (breaking screen-reader link lists, `Cmd+Click`, and right-click "Open in New Tab"), mix incompatible attributes (`disabled`, `type="submit"` vs. `href`), and complicate AST → Figma prop extraction. Meanwhile, teams often debate `cursor: default` (W3C/OS standard for buttons) vs. `cursor: pointer`.
+- **Solution**:
+  - Split **`Button.astro`** (always `<button>`, defaults to `type="button"`, `href?: never`) and **`LinkButton.astro`** (always `<a>`, never `role="button"`, omits `href` + sets `role="link" aria-disabled="true"` when `disabled`) sharing a single `@layer lsui.components` stylesheet (`button.css`).
+  - Tokenized button cursor via `--cursor-interactive: default` while keeping `cursor: pointer` on `LinkButton`, giving users an immediate visual cue between actions and navigation while letting any project opt into hand cursors globally in 1 CSS line.
+
+### F-025 (Phase 1, Part 2): Zero-JS Static Buttons + Conditional Polyfills for Declarative Triggers (`POLYFILL.md`)
+- **Question Investigated**: Why was `POLYFILL.md` initially empty after adding `light-dark-image`, and which Baseline Newly Available features actually have JS polyfills?
+- **Findings via Live `api.webstatus.dev/v1/features/*`**:
+  - `light-dark()` for colors (`2024-05-13`) already graduated to **Baseline Widely Available** (`2026-11-13`), while `light-dark-image` (`2026-09-14`, Newly Available) has **no JS polyfill** (handled via our pure-CSS `image-set()` fallback, now also listed in a "CSS-Only Fallbacks" note in `POLYFILL.md`).
+  - Conversely, `<Button>`'s declarative overlay attributes—**Popover (`popovertarget`, `2025-01-27`)** and **Invoker Commands (`commandfor`/`command`, `2025-12-12`)**—are *Baseline Newly Available* and have official polyfills (`@oddbird/popover-polyfill` and `invokers-polyfill`).
+- **Solution**:
+  - Leveraged Astro 7's conditional `<script>` rendering (`{hasInvoker && <script>...}`) so ordinary `<Button>`s emit **0 `<script>` tags and 0 bytes of JS**, while buttons using `commandfor` or `popovertarget` emit a tiny feature-check that dynamically imports `@oddbird/popover-polyfill` or `invokers-polyfill` **only** in browsers lacking native support.
+  - Logged both in `POLYFILL.md` (`2025-01-27` → `2025-12-12`) and added `pnpm check:polyfills -- --online` querying `https://api.webstatus.dev/v1/features/<id>` to alert automatically when any polyfill graduates to *Widely Available*.
+
+### F-026 (Phase 1, Part 2): Compile-Time Accessibility Guards Under `typescript@7.1.0-beta` + `strictest`
+- **Design**: Used discriminated TypeScript unions and template literal types on `Button.astro` and `LinkButton.astro` (verified in 16ms via `@astrojs/ts-content-mapper`):
+  1. `<Button iconOnly>` without `aria-label` fails `tsc` (`Property '"aria-label"' is missing`).
+  2. Custom Invoker commands (`command="--my-action"`) are typed as `` BuiltInInvokerCommand | `--${string}` ``, catching unprefixed custom commands at compile time.
+  3. Enforced `--target-min-size` (`24px` desktop WCAG 2.5.8, automatically `44px` under `@media (pointer: coarse)` WCAG 2.5.5) via `min-block-size` / `min-inline-size` so buttons never clip scaled text.
+
+### F-027 (Phase 1, Part 2): Evolving `POLYFILL.md` into a 3-Section `BASELINE.md` Ledger
+- **Insight**: Tracking only JavaScript npm polyfills misses two other categories of temporary Baseline debt: (1) *Newly Available* features used progressively without a polyfill (e.g., `@scope`, View Transitions), and (2) *CSS-only fallback blocks* (`::-webkit-scrollbar`, `image-set()` MIME switches) that can be deleted once their Baseline feature hits the 30-month *Widely Available* mark.
+- **Solution**: Replaced `POLYFILL.md` with **`lsui/BASELINE.md`** and `lsui/scripts/check-baseline.ts` (`pnpm check:baseline` / `pnpm check:baseline -- --online`), enforcing three oldest → newest sections:
+  1. **Baseline Newly Available Features Used** — grouped under ascending `Baseline 2024`, `Baseline 2025`, and `Baseline 2026` headings (verifying row dates match their year heading).
+  2. **CSS-Only Fallbacks** — cross-checked against Section 1 so legacy CSS fallback blocks (like `@supports not (scrollbar-color: auto)` in `apps/docs/src/styles/globals.css` and `image-set()` in `@lsui/themes`) are retired in order.
+  3. **Active Polyfills** — cross-checked against Section 1 and reverse-scanned across `packages/*` so no unlisted `*polyfill*` package or import can slip in.

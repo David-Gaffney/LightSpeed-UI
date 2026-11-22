@@ -1,19 +1,59 @@
-# Dependencies
+# Dependencies & Package Managers
 node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Build outputs
+# Build & Framework Outputs
 dist/
+dist-ssr/
 .astro/
 .nimbus/
+.wrangler/
+.vercel/
+.netlify/
+.output/
 *.tsbuildinfo
 
-# Test & coverage artifacts
+# CLI / Migration Scratch & Merge Backups
+.lsui/
+*.orig
+*.rej
+
+# Local CMS / EmDash Test Data (when testing EmDash integration)
+*.db
+*.db-shm
+*.db-wal
+uploads/
+
+# Testing, Coverage & Browser Traces
 coverage/
+*.lcov
 playwright-report/
+playwright/.cache/
+blob-report/
 test-results/
 
-# Environment & OS
+# Environment & Secrets
 .env
 .env.*
 !.env.example
+.dev.vars
+.dev.vars.*
+*.pem
+
+# OS & Editor Files
 .DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+.idea/
+*.swp
+*.swo
+*~
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

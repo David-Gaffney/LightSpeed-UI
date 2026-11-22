@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "description": "LightSpeedUI (lsui) — Astro-native UI platform",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/David-Gaffney/LightSpeed-UI.git"
+  },
   "type": "module",
   "packageManager": "pnpm@12.20.0",
   "engines": {
