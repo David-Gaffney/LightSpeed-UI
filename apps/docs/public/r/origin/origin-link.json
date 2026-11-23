@@ -1,0 +1,19 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry-item.json",
+  "name": "origin/origin-link",
+  "title": "OriginLink",
+  "level": "origin",
+  "type": "registry:ui",
+  "description": "Unstyled accessible navigation primitive rendering a genuine `<a>` element without ever overriding link semantics with `role=\"button\"`.",
+  "category": "Primitives",
+  "hydration": "optional",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "packages/origin/src/primitives/button/LinkButton.astro",
+      "target": "src/components/origin/origin-link/LinkButton.astro",
+      "sha256": "9536dea9f1d871f73dbeaf1cb67bf630a350002d6916824b4c10293715b133f4",
+      "content": "---\n/**\n * @title OriginLink\n * @level origin\n * @description Unstyled accessible navigation primitive rendering a genuine `<a>` element without ever overriding link semantics with `role=\"button\"`.\n * @category Primitives\n * @hydration optional\n * @accessibility\n * - Preserves native `<a>` link role, browser URL preview, right-click context menu, and `Cmd+Click` new-tab behavior.\n * - When `disabled` is `true`, omits `href` and sets `role=\"link\"` + `aria-disabled=\"true\"` per W3C HTML-AAM.\n * - Enforces an explicit `aria-label` at compile time when `iconOnly` is `true`.\n * @keyboard\n * - `Enter`: Follows `href` (blocked when `disabled` / `aria-disabled=\"true\"`).\n * @slots\n * - `default`: Link label content.\n * - `icon-start`: Optional leading icon content.\n * - `icon-end`: Optional trailing icon content.\n */\n\nimport type { HTMLAttributes } from \"astro/types\";\nimport { linkAttrs } from \"../../attrs/button-attrs.ts\";\n\ntype NativeAnchorAttributes = Omit<HTMLAttributes<\"a\">, \"href\" | \"role\">;\n\ninterface BaseOriginLinkProps extends NativeAnchorAttributes {\n  /** Conditionally renders the primitive when `true`. */\n  render?: boolean | undefined;\n}\n\ntype DisabledUnion =\n  | {\n      /** Destination URL navigated to on activation. */\n      href: string | URL;\n      /** Active link state (`false` by default). */\n      disabled?: false | undefined;\n    }\n  | {\n      /** Omitted from rendered `<a>` when `disabled` is `true`. */\n      href?: string | URL | undefined;\n      /** Renders an accessible disabled link (`role=\"link\" aria-disabled=\"true\"` without `href`). */\n      disabled: true;\n    };\n\ntype IconOnlyUnion =\n  | {\n      iconOnly?: false | undefined;\n      \"aria-label\"?: string | undefined;\n    }\n  | {\n      iconOnly: true;\n      \"aria-label\": string;\n    };\n\nexport type Props = BaseOriginLinkProps & DisabledUnion & IconOnlyUnion;\n\nconst {\n  href,\n  disabled = false,\n  render = true,\n  iconOnly = false,\n  ...rest\n} = Astro.props;\n\nconst rawAriaDisabled = rest[\"aria-disabled\"];\nconst ariaDisabledNormalized: boolean | \"true\" | \"false\" | undefined =\n  rawAriaDisabled === true || rawAriaDisabled === \"true\"\n    ? \"true\"\n    : rawAriaDisabled === false || rawAriaDisabled === \"false\"\n      ? \"false\"\n      : undefined;\n\nconst computedAttrs = linkAttrs({\n  href,\n  disabled,\n  ariaDisabled: ariaDisabledNormalized,\n});\nconst isAriaDisabled = computedAttrs[\"aria-disabled\"] === \"true\";\n---\n\n{\n  render && (\n    <>\n      <a\n        data-icon-only={iconOnly ? \"\" : undefined}\n        {...computedAttrs}\n        {...rest}\n      >\n        <slot name=\"icon-start\" />\n        <slot />\n        <slot name=\"icon-end\" />\n      </a>\n\n      {isAriaDisabled && (\n        <script>\n          import { ensureAriaDisabledGuard } from \"@lsui/origin/aria-disabled\";\n          ensureAriaDisabledGuard();\n        </script>\n      )}\n    </>\n  )\n}\n"
+    }
+  ]
+}

@@ -3,7 +3,8 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { validateBaselineLedger } from "../scripts/check-baseline.ts";
-import { PACKAGE_NAME as CORE_NAME } from "../packages/core/src/index.ts";
+import { PACKAGE_NAME as LIFTOFF_NAME } from "../packages/liftoff/src/index.ts";
+import { PACKAGE_NAME as ORIGIN_NAME } from "../packages/origin/src/index.ts";
 
 const tempDirs: string[] = [];
 
@@ -31,7 +32,8 @@ afterEach(() => {
 
 describe("workspace & BASELINE.md 3-section governance", () => {
   it("resolves workspace packages cleanly", () => {
-    expect(CORE_NAME).toBe("@lsui/core");
+    expect(ORIGIN_NAME).toBe("@lsui/origin");
+    expect(LIFTOFF_NAME).toBe("@lsui/liftoff");
   });
 
   it("accepts a valid 3-section BASELINE.md ordered by Baseline Year and date (oldest -> newest)", () => {

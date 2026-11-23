@@ -1,119 +1,79 @@
 # LightSpeedUI (`lsui`) — Implementation Plan
 
-A phased engineering plan to build **LightSpeedUI** inside `./lsui` while enforcing four non-negotiable architectural invariants from day one.
+A phased engineering plan to build **LightSpeedUI** as a **four-level Astro UI Platform** (`Origin` · `Liftoff` · `Landing` · `Apogee`) while enforcing strict architectural and review gates.
 
 ---
 
 ## Execution & Review Protocol (Mandatory)
 
-1. **Stop After Every Part**: Execution **must stop at the end of every numbered Part** (e.g., after *Phase 0, Part 1*; *Phase 0, Part 2*; *Phase 1, Part 1*, etc.) to present what was built, show verification output, and wait for review/direction before proceeding.
-2. **Continuous `FINDINGS.md` Log**: Every architectural decision, tool quirk, browser/AST edge case, and how we solved it must be logged in `FINDINGS.md` as we go, serving as a practical engineering playbook for anyone building a similar system.
+1. **Design Plan Before Any Component / Block / Feature**: **Before beginning implementation on any new primitive (`Origin`), component (`Liftoff`), block/template (`Landing`), or experience (`Apogee`), always present its concrete design plan first** (semantics, props, slots, keyboard/screen-reader behavior, `modern-web-guidance` guidance, tokens/variants, and Baseline/polyfill impact) and **wait for user direction and approval**.
+2. **Stop After Every Part**: Execution **must stop at the end of every numbered Part** (`Phase X, Part Y`) to show what was built, present verification output, and wait for review before proceeding.
+3. **Continuous `FINDINGS.md` Log**: Log every architectural decision, tool quirk, browser/AST edge case, and solution in `FINDINGS.md` as we go.
 
 ---
 
-## Locked Architectural Decisions
+## Locked Platform Levels & Architectural Decisions
 
-- **Name, Scope & Repo**: **LightSpeedUI**, CLI `lsui`, npm scope `@lsui/*`, initialized in `./lsui` (Node `>=26.0.0`, pure ESM `"type": "module"`, `typescript@7.1.0-beta` + `@astrojs/ts-content-mapper`).
-- **Component Styling**: Pure `.astro` scoped `<style>` blocks inside `@layer lsui` driven by semantic CSS variables—**no Tailwind** and **no CSS Modules**.
-- **CMS & Naming Conventions**: Follow Astro conventions where standard, and **EmDash CMS** naming conventions (`PortableText`, `Blocks`, `Byline`, `PostCard`, `Pagination`, `WidgetArea`, `Hero`, `Features`, `Pricing`, `Testimonials`, `Stats`, `FAQ`, `CTA`, `Split`, `Logos`, `Contact`) wherever Astro has none. Every component works in **both standalone Astro (`astro:content` / MDX / plain props) and Astro + EmDash**.
-- **Client Behavior Wiring**: Plain semantic HTML + `data-*` markers wired via a View-Transition-safe `mount()` helper from `@lsui/behaviors` (no Custom Element wrapper tags).
-- **Early Auto-Docs (`apps/docs` on Nimbus)**: Stand up `apps/docs` using **[Nimbus](https://nimbus-docs.com/)** (`@cloudflare/nimbus-docs`) for owned `.astro` layouts, `/llms.txt`, `/<slug>/index.md` Markdown routes, and `nimbus-docs check` linting:
-  - **Phase 0–2**: Isolate live `<ComponentPreview>` demos from Nimbus's initial Tailwind CSS reset so LightSpeedUI components are tested in a pure CSS environment.
-  - **Phase 3 Dogfooding**: Replace Nimbus's scaffolded Tailwind UI components in `apps/docs/src/` with LightSpeedUI's own pure-CSS `DocsSidebar`, `PrevNext`, `TableOfContents`, `Callout`, `CodeGroup`, and `Prose`—eliminating Tailwind from `apps/docs` while keeping Nimbus's routing/search/`llms.txt` plumbing.
-- **Early Figma Proof-of-Concept**: Test live **Code → Figma MCP** generation in **Phase 1** on `Button.astro` to uncover AST/token/slot mapping issues immediately, then build the full release-gated Librarian in Phase 5.
+1. **Level 1 — `Origin` (`@lsui/origin`)**: Unstyled accessible `.astro` primitives (`OriginButton`, `OriginLink`, etc.) + headless TypeScript behaviors (`mount()`, `announce()` using Baseline 2026 `Element.ariaNotify()` / `Document.ariaNotify()` with lazy `aria-live` fallback, keyboard handlers, `aria-disabled` focus guards, conditional polyfills, and `buttonAttrs()` / `linkAttrs()` rendering-flexibility helpers). Zero visual CSS.
+2. **Level 2 — `Liftoff` (`@lsui/liftoff` + `@lsui/themes`)**: Copy-paste styled `.astro` components (`Button`, `LinkButton`, Core UI, Content/Publishing, Docs) layered strictly atop `Origin`, introducing `@layer lsui` semantic CSS tokens (`Nordic`, `Editorial`), tokenized `--cursor-interactive`, and ambient `data-*` contexts (**no Tailwind**, **no CSS Modules**).
+3. **Level 3 — `Landing` (`@lsui/landing`)**: Astro + EmDash CMS page blocks, composed sections, and full-page templates layered strictly atop `Liftoff` (`Origin ← Liftoff ← Landing` strict one-way dependency rule).
+4. **Level 4 — `Apogee` (`@lsui/apogee`)**: Independent higher-order interactive experiences beyond standard UI kits (e.g., Guided Website Tours `<Tour />`, Kanban / Sortable Transfer Boards, Spotlight / Command Centers), consuming `@lsui/origin` behaviors without coupling to `Landing`.
+5. **Nimbus Docs Section Tabs (`apps/docs`)**: Five dedicated top-header section tabs (**`Overview` · `Origin` · `Liftoff` · `Landing` · `Apogee`**) with scoped per-level sidebars, CSS-isolated `<ComponentPreview>` demos, and Phase 3 dogfooding to eliminate starter Tailwind UI from `apps/docs`.
 
 ---
 
 ## Non-Negotiable Invariants
 
-1. **Code is the Single Source of Truth**: `.astro` component files and CSS token files are canonical. Documentation, registry manifests, AI Skill, MCP data, `AGENTS.md`, upgrade codemods, and Figma components are all generated from source—never maintained by hand in parallel.
-2. **Deterministic Code-to-Figma Generation**: Component TypeScript `Props`, Astro `<slot />`s, and semantic CSS tokens must stay strictly parseable so an automated Figma MCP runner builds and updates Figma components and variables without guesswork.
-3. **Composable UI-SDK-Style Behaviors**: Interactive logic (`createPopover`, `createSelection`, `createRovingFocus`, `createDialog`, `createTabs`) lives in a headless, versioned TypeScript package (`@lsui/behaviors`) decoupled from editable `.astro` markup.
-4. **Baseline 2026, `modern-web-guidance` Audits & Strict 3-Section `BASELINE.md` Ledger**:
-   - All HTML, CSS, and JS target **Web Platform Baseline 2026** and are consulted/audited with the **`modern-web-guidance` skill** *before* implementation.
-   - Root **`BASELINE.md`** (verified by `pnpm check:baseline` and `pnpm check:baseline -- --online`) maintains three sections arranged **oldest *Baseline Newly Available* date at the top → newest at the bottom** so features graduating to *Widely Available* sit at the top for easy retirement:
-     1. **Baseline Newly Available Features Used** (grouped under ascending `Baseline 2024`, `Baseline 2025`, `Baseline 2026` headers).
-     2. **CSS-Only Fallbacks** (zero-JS CSS fallback rules where no JS polyfill exists).
-     3. **Active Polyfills** (conditional JS polyfills; unlisted `*polyfill*` packages/imports fail CI).
-   - Every entry lists its *Baseline Newly Available* date, direct `https://webstatus.dev/features/<id>` link, compatibility mechanism, and exact repo file paths.
+1. **Code is the Single Source of Truth**: `.astro` files and CSS token files generate Nimbus docs across all 4 levels, registry manifests, AI Skill, MCP data, `AGENTS.md`, upgrade codemods, and Figma specs—never maintained by hand in parallel.
+2. **Deterministic Code-to-Figma Generation**: Styled `Liftoff`/`Landing` TypeScript `Props`, `<slot />`s, and `@lsui/themes` tokens stay strictly parseable for automated Figma MCP sync.
+3. **Strict Level Layering**: `Origin ← Liftoff ← Landing` enforced by `@lsui/ast` (lower levels never import higher levels, and `Origin` primitives never carry visual CSS); `Apogee` stays modular and independent.
+4. **Baseline 2026, `modern-web-guidance` Audits & 3-Section `BASELINE.md` Ledger**: Consult `modern-web-guidance` before every HTML/CSS/JS task and maintain `BASELINE.md` (Section 1: Newly Available by Baseline Year; Section 2: CSS-Only Fallbacks; Section 3: Active Polyfills — all sorted oldest → newest and verified by `pnpm check:baseline`).
 
 ---
 
-## Target Workspace Structure (`./lsui`)
-
-```text
-lsui/
-├── BASELINE.md        # 3-section Baseline ledger (Newly Available by year, CSS Fallbacks, Active Polyfills)
-├── apps/
-│   ├── docs/          # Early Nimbus + Astro docs site auto-driven by packages/ast
-│   └── playground/    # Clean consumer Astro (+ EmDash test) app for E2E verification
-├── packages/
-│   ├── ast/           # Shared parser (@astrojs/compiler + ts-morph + PostCSS)
-│   ├── behaviors/     # Headless UI-SDK-style interaction & a11y primitives (@lsui/behaviors)
-│   ├── core/          # Canonical .astro components (UI, Content, Docs)
-│   ├── blocks/        # Page sections (Hero, Pricing, Features, Split, CTA, FAQ, etc.)
-│   ├── themes/        # Token stylesheets + DESIGN.md + TOKENS.md presets (@lsui/themes)
-│   ├── icons/         # Astro-native icon set (@lsui/icons)
-│   ├── cli/           # lsui init, add, theme, and 3-stage @lsui/upgrade commands
-│   ├── codemods/      # Versioned AST transforms & .lsui/UPGRADE.md generator
-│   ├── mcp/           # Consumer Framework MCP server (@lsui/mcp)
-│   ├── skill/         # Distributable AI Skill (SKILL.md + Astro/EmDash rules)
-│   └── figma-sync/    # Figma MCP PoC (Phase 1) + release-gated Librarian (Phase 5)
-└── pnpm-workspace.yaml
-```
-
----
-
-## Phased Roadmap (Stop After Every Part)
+## Phased Roadmap (Stop After Every Part; Propose Before Every Component/Block)
 
 ### Phase 0: `./lsui` Repo & Tooling Bootstrap
-**Goal:** Initialize `./lsui` git repo, monorepo workspace, apps, test harness, and governance checks before writing UI code.
-
-- [x] **Part 1 — Monorepo, TypeScript & Fixed Changesets**: Initialize `./lsui` (`git init`, `.gitignore`, `pnpm-workspace.yaml`, strict `tsconfig.base.json` with `typescript@7.1.0-beta` + `@astrojs/ts-content-mapper`), create the `@lsui/*` package skeletons, and configure Changesets as a **fixed lockstep version group**.
-- [x] **Part 2 — Scaffold `apps/playground` & `apps/docs` (Nimbus)**: Set up a clean Astro consumer app in `apps/playground` and scaffold `apps/docs` with `@cloudflare/create-nimbus-docs`, adding a CSS-isolated `<ComponentPreview>` wrapper so Nimbus's starter Tailwind styles never bleed into LightSpeedUI demos.
-- [x] **Part 3 — Test Harness & `BASELINE.md` Governance**: Configure **Vitest** (unit tests), **Playwright + `@axe-core/playwright`** (E2E + WCAG checks against `apps/playground`), and create `lsui/BASELINE.md` with an automated validator script (`pnpm check:baseline`) verifying ascending Baseline year/date order and `https://webstatus.dev` links.
+- [x] **Part 1 — Monorepo, TypeScript & Fixed Changesets**: Initialized `./lsui` (Node `>=26.0.0`, pure ESM, `typescript@7.1.0-beta` + `@astrojs/ts-content-mapper`), package graph, and fixed lockstep Changesets.
+- [x] **Part 2 — Scaffold `apps/playground` & `apps/docs` (Nimbus)**: Set up consumer `apps/playground` and Nimbus `apps/docs` with CSS-isolated `<ComponentPreview>` (`@layer base` `revert-layer` + `@scope`) and 5-tab top header (`Overview`, `Origin`, `Liftoff`, `Landing`, `Apogee`).
+- [x] **Part 3 — Test Harness & `BASELINE.md` Governance**: Configured Vitest, Playwright + `@axe-core/playwright` WCAG 2.2 AA E2E tests, and 3-section `BASELINE.md` + `pnpm check:baseline` (`--online` `api.webstatus.dev` graduation checker).
 
 ---
 
-### Phase 1: Authoring Contract, Tokens, AST Engine, Live Docs & `Button` Figma PoC
-**Goal:** Prove the entire single-source-of-truth loop—including live docs and live Figma MCP generation—on `Button.astro` and 2 themes before scaling components.
-
-- [x] **Part 1 — Token & Ambient Context CSS Foundation (`@lsui/themes`)**: Consult `modern-web-guidance`, build the `@layer lsui` base reset, semantic token contract (`--color-*`, `--space-*`, `--radius-*`, `--font-*`, plus [CSS `light-dark()` `<image>` tokens](https://webstatus.dev/features/light-dark-image) with zero-JS `image-set()` fallback), `rem` fluid scaling, container-query conventions, ambient DOM context rules (`data-theme`, `data-surface`, `data-density`, `data-contrast`, `data-motion`, `data-layout`), and **2 starter themes** (`Nordic` and `Editorial`) with `DESIGN.md` and `TOKENS.md`.
-- [x] **Part 2 — Canonical `.astro` Contract, `Button.astro` & `LinkButton.astro` (`@lsui/core`)**: Define the JSDoc frontmatter contract (`@title`, `@category`, `@hydration`, `@accessibility`), separate `<Button>` vs. `<LinkButton>` semantics (`--cursor-interactive`, `>= 24px`/`44px` hit targets, Baseline 2026 `commandfor`/`popovertarget` triggers + conditional polyfills in `BASELINE.md`), and verify with Playwright/a11y tests in `apps/playground`.
-- [x] **Part 3 — Shared AST Extractor (`@lsui/ast`) & Live `apps/docs` Wiring**: Parse `Button.astro` and `LinkButton.astro` (`@astrojs/compiler-rs` + `ts-morph`) and `theme.css` (PostCSS) into a unified Component IR that automatically generates live pages in `apps/docs`, registry JSON, `AGENTS.md` / `COMPONENTS.md` / `TOKENS.md`, and validated Figma Component Spec JSON.
-- [ ] **Part 4 — Live 1-Component Figma MCP Proof-of-Concept (`@lsui/figma-sync`)**: Connect to Figma MCP to push `Nordic`/`Editorial` tokens → Figma Variables and `Button.astro` → Figma Component Set (variants, booleans, text, icon swap, native slots), refining the `.astro` authoring contract for any live edge cases found.
+### Phase 1: Four-Level Foundation, Tokens, `Button` Slice, AST Engine & Figma PoC
+- [x] **Part 1 — Token & Ambient Context CSS Foundation (`@lsui/themes`)**: Built `@layer lsui` reset/tokens/context/base, `light-dark()` color & `<image>` tokens, 6 ambient `data-*` contexts, and `Nordic` & `Editorial` themes (`DESIGN.md` + `TOKENS.md`).
+- [x] **Part 2 — `Origin` Foundation + Layered `Button` & `LinkButton` (`@lsui/origin` & `@lsui/liftoff`)**: Built `Origin` `announce()` (`Element.ariaNotify()` / `Document.ariaNotify()` + `aria-live` fallback), `mount()`, `buttonAttrs()`/`linkAttrs()`, unstyled `OriginButton` & `OriginLink`, and layered `Liftoff` `Button` & `LinkButton` on top.
+- [x] **Part 3 — Multi-Level AST Extractor (`@lsui/ast`) & 4-Level `apps/docs` Wiring**: Built `@lsui/ast` (`@astrojs/compiler-rs` + `ts-morph` + PostCSS) enforcing `Origin ← Liftoff ← Landing` boundaries and auto-generating `Origin`/`Liftoff`/`Landing`/`Apogee` docs, level-namespaced registry JSON, `AGENTS.md`/`COMPONENTS.md`/`TOKENS.md`, and `figma-spec.json`.
+- [ ] **Part 4 — Live 1-Component Figma MCP Proof-of-Concept (`@lsui/figma-sync`)**: Connect to Figma Remote MCP (`https://mcp.figma.com/mcp` `use_figma`—or local Desktop Plugin bridge fallback) to push `Nordic`/`Editorial` tokens → Figma Variables and `Liftoff` `Button` → Figma Component Set, refining the AST contract for any live edge cases found.
 
 ---
 
-### Phase 2: Headless Behavior Engine (`@lsui/behaviors`)
-**Goal:** Build composable client-side interaction primitives on Baseline 2026 APIs with polyfill fallbacks, accessibility, and Astro View Transitions support.
+### Phase 2: Level 1 — `Origin` Behavior & Primitive Expansion (`@lsui/origin`)
+*(Present design plan for each primitive/controller and get approval before coding)*
 
-- [ ] **Part 1 — Lifecycle & Focus Primitives**: Build `mount()` (View-Transition-safe setup/cleanup), `createRovingFocus()`, `createFocusTrap()`, `createDismissableLayer()`, and `createTypeahead()` with unit + browser focus tests.
-- [ ] **Part 2 — Overlay & Selection Controllers + Polyfill Wiring**: Build `createDialog()` (native `<dialog>` + Invoker Commands `command`/`commandfor`), `createPopover()` (Popover API + CSS Anchor Positioning), `createTabs()`, and `createSelection()`, wiring any conditional polyfills into `BASELINE.md` and verifying with `modern-web-guidance` + Playwright `axe-core` suites.
-
----
-
-### Phase 3: Astro + EmDash Vertical Slice (`@lsui/core` & `@lsui/blocks`)
-**Goal:** Prove all 4 domains end-to-end across standalone Astro (`astro:content`) and Astro + EmDash CMS, and dogfood LightSpeedUI into `apps/docs`.
-
-- [ ] **Part 1 — Core Static & Interactive UI**: Build `Input`, `Card`, `Badge`, `Dialog`, `Popover`, `Tabs`, and `Select` (composed from `Popover` + `Selection` + `Typeahead` + `RovingFocus`), auto-updating `apps/docs`.
-- [ ] **Part 2 — Content & Publishing Components (Astro + EmDash)**: Build `Prose`, `PortableText`, `Blocks`, `TableOfContents`, `Byline`, `PostCard`, and `Pagination`, verified against both `astro:content` entries and EmDash data shapes (`{ id, src, alt }` images, Portable Text, bylines).
-- [ ] **Part 3 — Documentation Components & `apps/docs` Tailwind Removal**: Build `Callout`, `CodeGroup`, `DocsSidebar`, and `PrevNext`, then swap them into `apps/docs/src/` to replace Nimbus's starter Tailwind UI so the entire monorepo is 100% Tailwind-free.
-- [ ] **Part 4 — Marketing Page Blocks (`@lsui/blocks`)**: Build `Hero`, `Features`, `Pricing`, `CTA`, and `FAQ` blocks responding to ambient `data-theme` / `data-surface` / `data-density` containers.
+- [ ] **Part 1 — Focus, Keyboard & Selection Controllers**: Propose and build `createRovingFocus()`, `createFocusTrap()`, `createDismissableLayer()`, `createSelection()`, and `createTypeahead()` in `@lsui/origin` with unit + browser focus tests.
+- [ ] **Part 2 — Unstyled Overlay, Disclosure & Form Primitives**: Propose and build unstyled `OriginDialog` (`<dialog>` + Invoker Commands), `OriginPopover` (Popover API + Anchor Positioning), `OriginTabs`, `OriginSelect`, and `OriginInput` primitives in `@lsui/origin`, updating `BASELINE.md` and `Origin` docs.
 
 ---
 
-### Phase 4: CLI, Registry & 3-Stage Upgrade Engine
-**Goal:** Deliver open-code installation (`npx lsui`) and safe, automated upgrades (`npx @lsui/upgrade`).
+### Phase 3: Level 2 — `Liftoff` Styled Component Catalog (`@lsui/liftoff`)
+*(Present design plan for each component batch and get approval before coding)*
 
-- [ ] **Part 1 — `lsui init`, `add`, and `theme install` (`@lsui/cli`)**: Install components/blocks/themes from official or `@scope/name` registries into consumer projects, write SHA-256 hashes to `lsui.json`, and generate consumer `AGENTS.md` / `COMPONENTS.md`.
-- [ ] **Part 2 — 3-Stage `@lsui/upgrade` & AST Codemods (`@lsui/codemods`)**: Implement Stage 1 (lockstep `@lsui/*` dependency bumps + `--dry-run`), Stage 2 (hash-checked component sync + 3-way merge/diff for customized files), and Stage 3 (AST transforms + inline `TODO`s + repo-filtered `.lsui/UPGRADE.md`), tested E2E on `apps/playground`.
+- [ ] **Part 1 — Core UI Components**: Propose and build themed `Input`, `Card`, `Badge`, `Dialog`, `Popover`, `Tabs`, and `Select` in `@lsui/liftoff` layered atop `@lsui/origin`.
+- [ ] **Part 2 — Content & Publishing Components (Astro + EmDash)**: Propose and build `Prose`, `PortableText`, `Blocks`, `TableOfContents`, `Byline`, `PostCard`, and `Pagination` verified against both `astro:content` and EmDash data shapes.
+- [ ] **Part 3 — Documentation Components & `apps/docs` Tailwind Removal**: Propose and build `Callout`, `CodeGroup`, `DocsSidebar`, and `PrevNext` in `@lsui/liftoff`, then dogfood them into `apps/docs/src/` to remove Nimbus's starter Tailwind UI completely.
 
 ---
 
-### Phase 5: AI Skill, Framework MCP & Full Release-Gated Figma Librarian
-**Goal:** Ship the AI agent ecosystem and promote the Phase 1 Figma PoC into the full release-gated Figma Librarian.
+### Phase 4: Level 3 (`Landing`) & Level 4 (`Apogee`) Initial Flagships
+*(Present design plan for every block, template, and Apogee experience before coding)*
 
-- [ ] **Part 1 — Distributable AI Skill (`@lsui/skill`)**: Generate and validate `SKILL.md` + Astro/EmDash component and theming guides (`npx lsui skill install`).
-- [ ] **Part 2 — Consumer Framework MCP Server (`@lsui/mcp`)**: Expose registry search, exact `Props`/slot/a11y/hydration inspection, active theme token lookup, and component validation over MCP.
-- [ ] **Part 3 — Full Release-Gated Figma Librarian (`@lsui/figma-sync`)**: Expand the Phase 1 PoC to sync the full catalog on stable releases only, enforcing mandatory Figma version-history checkpoints before edits, preserving non-conflicting designer tweaks, and staging changes for manual Publish.
+- [ ] **Part 1 — Level 3 `Landing` Blocks & Template (`@lsui/landing`)**: Propose and build Astro + EmDash marketing & publishing blocks (`Hero`, `Features`, `Pricing`, `CTA`, `FAQ`, `ArticleGrid`) + 1 starter page template layered strictly atop `@lsui/liftoff`.
+- [ ] **Part 2 — Level 4 `Apogee` Flagship Experiences (`@lsui/apogee`)**: Propose and build initial independent `Apogee` capabilities—starting with Guided Website Tour (`<Tour />` using Anchor Positioning + Popover + `ariaNotify()`) and an accessible Pointer/Keyboard Kanban Transfer Board (`createTransfer` + `ariaNotify()`).
+
+---
+
+### Phase 5: Level-Aware CLI, 3-Stage Upgrades, AI Skill, MCP & Figma Librarian
+- [ ] **Part 1 — Level-Aware CLI (`@lsui/cli`)**: Build `lsui init`, `lsui add` (`origin/*`, `liftoff/*` default, `landing/*`, `apogee/*`), and `lsui theme install`, recording SHA-256 hashes in `lsui.json` and updating consumer `AGENTS.md`.
+- [ ] **Part 2 — 3-Stage `@lsui/upgrade` & Codemods (`@lsui/codemods`)**: Implement Stage 1 (lockstep `@lsui/*` package bumps + `--dry-run`), Stage 2 (hash-checked component sync + 3-way merge/diff), and Stage 3 (AST transforms + `TODO`s + `.lsui/UPGRADE.md`).
+- [ ] **Part 3 — AI Skill (`@lsui/skill`), Framework MCP (`@lsui/mcp`) & Full Figma Librarian (`@lsui/figma-sync`)**: Ship the installable AI Skill, multi-level MCP server, and release-gated Figma Librarian with version-history checkpoints.

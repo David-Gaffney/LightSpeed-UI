@@ -1,0 +1,167 @@
+/* LightSpeedUI Level 2 (@lsui/liftoff) — Shared Visual Styles for <Button> and <LinkButton>
+ *
+ * Layers semantic token styling (`@layer lsui.components`) on top of Level 1 (@lsui/origin)
+ * unstyled primitives. Consumes semantic CSS custom properties exclusively.
+ */
+
+@layer lsui {
+  @layer components {
+    [data-lsui-button] {
+      --btn-height: var(--control-height-md);
+      --btn-pad-inline: var(--control-pad-inline-md);
+      --btn-font-size: var(--text-sm);
+      --btn-gap: var(--space-2);
+
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--btn-gap);
+      box-sizing: border-box;
+
+      /* Flexible block sizing (never fixed height) + WCAG 2.5.8 / 2.5.5 target floor */
+      min-block-size: max(var(--btn-height), var(--target-min-size, 1.5rem));
+      min-inline-size: var(--target-min-size, 1.5rem);
+      padding-block: var(--space-1);
+      padding-inline: var(--btn-pad-inline);
+
+      border: var(--border-width) solid transparent;
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: var(--btn-font-size);
+      font-weight: var(--weight-medium);
+      line-height: var(--leading-snug);
+      text-align: center;
+      text-decoration: none;
+      user-select: none;
+      vertical-align: middle;
+
+      transition:
+        background-color var(--duration-fast) var(--ease-standard),
+        border-color var(--duration-fast) var(--ease-standard),
+        color var(--duration-fast) var(--ease-standard),
+        box-shadow var(--duration-fast) var(--ease-standard),
+        scale var(--duration-fast) var(--ease-standard);
+    }
+
+    button[data-lsui-button],
+    [data-lsui-simulated-button][data-lsui-button] {
+      cursor: var(--cursor-interactive, default);
+    }
+
+    a[data-lsui-button][href] {
+      cursor: pointer;
+    }
+
+    [data-lsui-button] :where(svg) {
+      inline-size: 1.125em;
+      block-size: 1.125em;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+
+    /* ---- Sizes ---- */
+    [data-lsui-button][data-size="sm"] {
+      --btn-height: var(--control-height-sm);
+      --btn-pad-inline: var(--control-pad-inline-sm);
+      --btn-font-size: var(--text-xs);
+      --btn-gap: var(--space-1);
+      border-radius: var(--radius-sm);
+    }
+
+    [data-lsui-button][data-size="md"] {
+      --btn-height: var(--control-height-md);
+      --btn-pad-inline: var(--control-pad-inline-md);
+      --btn-font-size: var(--text-sm);
+    }
+
+    [data-lsui-button][data-size="lg"] {
+      --btn-height: var(--control-height-lg);
+      --btn-pad-inline: var(--control-pad-inline-lg);
+      --btn-font-size: var(--text-base);
+      --btn-gap: var(--space-3);
+    }
+
+    [data-lsui-button][data-icon-only] {
+      padding-inline: 0;
+      min-inline-size: max(var(--btn-height), var(--target-min-size, 1.5rem));
+    }
+
+    /* ---- Variants ---- */
+    [data-lsui-button][data-variant="primary"] {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+      border-color: transparent;
+
+      &:hover:not(:disabled):not([aria-disabled="true"]) {
+        background-color: var(--color-primary-hover);
+        box-shadow: var(--shadow-sm);
+      }
+    }
+
+    [data-lsui-button][data-variant="secondary"] {
+      background-color: var(--color-secondary);
+      color: var(--color-on-secondary);
+      border-color: var(--color-border);
+
+      &:hover:not(:disabled):not([aria-disabled="true"]) {
+        background-color: var(--color-secondary-hover);
+        border-color: var(--color-border-strong);
+      }
+    }
+
+    [data-lsui-button][data-variant="outline"] {
+      background-color: transparent;
+      color: var(--color-text);
+      border-color: var(--color-border-strong);
+
+      &:hover:not(:disabled):not([aria-disabled="true"]) {
+        background-color: color-mix(in oklab, var(--color-text) 8%, transparent);
+        border-color: var(--color-text);
+        box-shadow: var(--shadow-sm);
+      }
+    }
+
+    [data-lsui-button][data-variant="ghost"] {
+      background-color: transparent;
+      color: var(--color-text);
+      border-color: transparent;
+
+      &:hover:not(:disabled):not([aria-disabled="true"]) {
+        background-color: color-mix(in oklab, var(--color-text) 9%, transparent);
+      }
+    }
+
+    [data-lsui-button][data-variant="danger"] {
+      background-color: var(--color-danger);
+      color: var(--color-on-danger);
+      border-color: transparent;
+
+      &:hover:not(:disabled):not([aria-disabled="true"]) {
+        background-color: var(--color-danger-hover);
+        box-shadow: var(--shadow-sm);
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      [data-lsui-button]:active:not(:disabled):not([aria-disabled="true"]) {
+        scale: 0.98;
+      }
+    }
+
+    :where([data-motion="reduced"], [data-motion="none"]) [data-lsui-button]:active {
+      scale: none;
+    }
+
+    [data-lsui-button]:focus-visible {
+      outline: var(--ring-width) solid var(--color-ring);
+      outline-offset: var(--ring-offset);
+    }
+
+    [data-lsui-button]:where(:disabled, [aria-disabled="true"]) {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  }
+}

@@ -4,10 +4,11 @@
   "commit": false,
   "fixed": [
     [
+      "@lsui/origin",
+      "@lsui/liftoff",
+      "@lsui/landing",
+      "@lsui/apogee",
       "@lsui/ast",
-      "@lsui/behaviors",
-      "@lsui/core",
-      "@lsui/blocks",
       "@lsui/themes",
       "@lsui/icons",
       "@lsui/cli",

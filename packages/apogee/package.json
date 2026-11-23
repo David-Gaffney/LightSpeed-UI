@@ -1,0 +1,20 @@
+{
+  "name": "@lsui/apogee",
+  "version": "0.0.1",
+  "description": "Level 4 (Apogee) — Independent higher-order interactive experiences and site enhancements (Guided Tours, Kanban, Spotlight)",
+  "type": "module",
+  "dependencies": {
+    "@lsui/origin": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

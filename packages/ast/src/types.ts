@@ -1,3 +1,5 @@
+export type PlatformLevel = "origin" | "liftoff" | "landing" | "apogee";
+
 export type HydrationMode = "none" | "optional" | "required";
 
 export type FigmaPropKind =
@@ -35,6 +37,9 @@ export interface SourceFileRef {
 export interface ComponentIR {
   slug: string;
   name: string;
+  level: PlatformLevel;
+  packageName: string;
+  importSpecifier: string;
   description: string;
   category: string;
   hydration: HydrationMode;
@@ -89,6 +94,7 @@ export interface BaseTokensIR {
 export interface FigmaComponentSpec {
   name: string;
   slug: string;
+  level: PlatformLevel;
   description: string;
   rootTag: string;
   variantAxes: Array<{
@@ -144,7 +150,8 @@ export interface RegistryItem {
   $schema: string;
   name: string;
   title: string;
-  type: "registry:ui";
+  level: PlatformLevel;
+  type: "registry:ui" | "registry:block";
   description: string;
   category: string;
   hydration: HydrationMode;

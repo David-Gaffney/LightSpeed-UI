@@ -1,0 +1,107 @@
+---
+/**
+ * @title Button
+ * @level liftoff
+ * @description Themed, copy-paste action button built atop OriginButton. Adds semantic token variants, sizes, hover/press/focus states, and WCAG 2.5.8 / 2.5.5 minimum target sizing. For URL navigation, use LinkButton instead.
+ * @category Actions
+ * @hydration optional
+ * @accessibility
+ * - Delegates HTML semantics, safe `type="button"` default, `aria-disabled` focus preservation, and declarative triggers directly to `@lsui/origin` (`OriginButton`).
+ * - Enforces >= 24x24px minimum target on desktop and >= 44x44px on coarse touch pointers (`--target-min-size`).
+ * - Icon-only buttons (`iconOnly`) require an explicit `aria-label` at compile time.
+ * @keyboard
+ * - `Enter` / `Space`: Activates the button (and dispatches `command` / toggles `popovertarget` when configured).
+ * @slots
+ * - `default`: Visible button label text.
+ * - `icon-start`: Optional leading decorative icon (`aria-hidden="true"` on SVGs).
+ * - `icon-end`: Optional trailing decorative icon (`aria-hidden="true"` on SVGs).
+ */
+
+import OriginButton from "@lsui/origin/Button.astro";
+import type { InvokerCommand } from "@lsui/origin";
+import type { HTMLAttributes } from "astro/types";
+import type { ButtonVariant, ControlSize } from "../../contract.ts";
+import "./button.css";
+
+type NativeButtonAttributes = Omit<
+  HTMLAttributes<"button">,
+  "type" | "command" | "commandfor" | "popovertarget" | "popovertargetaction"
+>;
+
+interface BaseButtonProps extends NativeButtonAttributes {
+  /** Visual style token variant. */
+  variant?: ButtonVariant | undefined;
+  /** Control height and padding scale. */
+  size?: ControlSize | undefined;
+  /** Safe element tag override (`"button"` default; `"a"` is forbidden—use `LinkButton` instead). */
+  as?: "button" | "span" | "div" | undefined;
+  /** Native button behavior (`"button"` by default so forms never submit accidentally). */
+  type?: "button" | "submit" | "reset" | undefined;
+  /** Disables the button and removes it from tab order. Use `aria-disabled="true"` when focus must remain reachable. */
+  disabled?: boolean | undefined;
+  /** Conditionally renders the component when `true` (omits markup when `false`). */
+  render?: boolean | undefined;
+  /** Target element ID for the HTML Invoker Commands API (`https://webstatus.dev/features/invoker-commands`). */
+  commandfor?: string | undefined;
+  /** Built-in or `--custom` command dispatched to `commandfor`. */
+  command?: InvokerCommand | undefined;
+  /** Target element ID for the HTML Popover API (`https://webstatus.dev/features/popover`). */
+  popovertarget?: string | undefined;
+  /** Popover action performed when clicked. */
+  popovertargetaction?: "toggle" | "show" | "hide" | undefined;
+  /** Never pass `href` to `<Button>`; use `<LinkButton href="...">` to preserve native link semantics. */
+  href?: never;
+}
+
+export type Props = BaseButtonProps &
+  (
+    | {
+        iconOnly?: false | undefined;
+        "aria-label"?: string | undefined;
+      }
+    | {
+        iconOnly: true;
+        "aria-label": string;
+      }
+  );
+
+const {
+  variant = "primary",
+  size = "md",
+  iconOnly = false,
+  "aria-label": ariaLabel,
+  ...rest
+} = Astro.props;
+
+const hasStartSlot = Astro.slots.has("icon-start");
+const hasEndSlot = Astro.slots.has("icon-end");
+---
+
+{
+  iconOnly ? (
+    <OriginButton
+      data-lsui-button=""
+      data-variant={variant}
+      data-size={size}
+      iconOnly={true}
+      aria-label={ariaLabel as string}
+      {...rest}
+    >
+      {hasStartSlot && <slot name="icon-start" slot="icon-start" />}
+      <slot />
+      {hasEndSlot && <slot name="icon-end" slot="icon-end" />}
+    </OriginButton>
+  ) : (
+    <OriginButton
+      data-lsui-button=""
+      data-variant={variant}
+      data-size={size}
+      aria-label={ariaLabel}
+      {...rest}
+    >
+      {hasStartSlot && <slot name="icon-start" slot="icon-start" />}
+      <slot />
+      {hasEndSlot && <slot name="icon-end" slot="icon-end" />}
+    </OriginButton>
+  )
+}

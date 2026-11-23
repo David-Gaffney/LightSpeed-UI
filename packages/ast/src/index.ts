@@ -3,11 +3,11 @@ export const PACKAGE_NAME = "@lsui/ast";
 export { parseCssColorToRgba } from "./color.ts";
 export {
   buildAiContextFiles,
-  buildDocsMdxPages,
+  buildDocsMdxByLevel,
   buildFigmaSpec,
   buildRegistryArtifacts,
 } from "./generators.ts";
-export { parseCoreComponents } from "./parse-component.ts";
+export { parsePlatformComponents } from "./parse-component.ts";
 export { parseThemesPackage, validateComponentCss } from "./parse-css.ts";
 export type {
   BaseTokensIR,
@@ -17,6 +17,7 @@ export type {
   FigmaPropKind,
   FigmaSpec,
   HydrationMode,
+  PlatformLevel,
   PropIR,
   RegistryItem,
   RgbaColor,

@@ -1306,7 +1306,8 @@
     {
       "name": "Button",
       "slug": "button",
-      "description": "Triggers an in-page action, form submission, or declarative dialog/popover command. For URL navigation, use LinkButton instead.",
+      "level": "liftoff",
+      "description": "Themed, copy-paste action button built atop OriginButton. Adds semantic token variants, sizes, hover/press/focus states, and WCAG 2.5.8 / 2.5.5 minimum target sizing. For URL navigation, use LinkButton instead.",
       "rootTag": "button",
       "variantAxes": [
         {
@@ -1360,6 +1361,10 @@
       ],
       "skippedProps": [
         {
+          "name": "as",
+          "reason": "Polymorphic HTML tag override"
+        },
+        {
           "name": "type",
           "reason": "Form submission behavior ('button' | 'submit' | 'reset')"
         },
@@ -1396,7 +1401,8 @@
     {
       "name": "LinkButton",
       "slug": "link-button",
-      "description": "Navigates to a URL using a semantic `<a>` element styled to match Button variants. Never overrides link semantics with `role=\"button\"`.",
+      "level": "liftoff",
+      "description": "Themed navigation link built atop OriginLink. Applies Button visual variants and sizes to a genuine `<a>` element without ever overriding link semantics with `role=\"button\"`.",
       "rootTag": "a",
       "variantAxes": [
         {

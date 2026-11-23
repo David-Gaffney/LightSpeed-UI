@@ -10,10 +10,11 @@
     "typecheck": "astro sync && tsc --noEmit --runExternalCode"
   },
   "dependencies": {
-    "@lsui/behaviors": "workspace:*",
-    "@lsui/blocks": "workspace:*",
-    "@lsui/core": "workspace:*",
+    "@lsui/apogee": "workspace:*",
     "@lsui/icons": "workspace:*",
+    "@lsui/landing": "workspace:*",
+    "@lsui/liftoff": "workspace:*",
+    "@lsui/origin": "workspace:*",
     "@lsui/themes": "workspace:*",
     "astro": "^7.4.13"
   }

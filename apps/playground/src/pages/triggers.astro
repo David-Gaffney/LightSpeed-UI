@@ -1,15 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Button from "@lsui/core/Button.astro";
-import LinkButton from "@lsui/core/LinkButton.astro";
+import OriginButton from "@lsui/origin/Button.astro";
+import Button from "@lsui/liftoff/Button.astro";
+import LinkButton from "@lsui/liftoff/LinkButton.astro";
 ---
 
 <BaseLayout title="Declarative Triggers | LightSpeedUI Playground" theme="nordic light">
   <main data-layout="container" style="padding-block: var(--space-lg);">
-    <h1>Declarative Baseline 2026 Triggers</h1>
+    <h1>Origin &amp; Liftoff Interactive Primitives</h1>
     <p style="margin-block: var(--space-sm); color: var(--color-text-muted);">
-      Verifies Invoker Commands (<code>commandfor</code> / <code>command</code>), Popover API
-      (<code>popovertarget</code>), and focusable <code>aria-disabled</code> behavior.
+      Verifies Invoker Commands, Popover API, focusable <code>aria-disabled</code>,
+      <code>OriginButton</code> tag flexibility, and <code>ariaNotify()</code> announcements.
     </p>
 
     <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-block-start: var(--space-md);">
@@ -28,6 +29,10 @@ import LinkButton from "@lsui/core/LinkButton.astro";
       <LinkButton id="disabled-link-btn" href="/never" variant="ghost" disabled>
         Disabled LinkButton
       </LinkButton>
+
+      <OriginButton id="origin-span-btn" as="span" style="padding: 0.5rem; border: 1px dashed var(--color-border-strong);">
+        Unstyled Origin Span Button
+      </OriginButton>
 
       <LinkButton href="/" variant="ghost">Back Home</LinkButton>
     </div>
@@ -55,3 +60,16 @@ import LinkButton from "@lsui/core/LinkButton.astro";
     </div>
   </main>
 </BaseLayout>
+
+<script>
+  import { announce, mount } from "@lsui/origin";
+
+  mount("#origin-span-btn", (el) => {
+    const onClick = () => {
+      el.setAttribute("data-activated", "true");
+      announce("Origin span button activated", { target: el });
+    };
+    el.addEventListener("click", onClick);
+    return () => el.removeEventListener("click", onClick);
+  });
+</script>

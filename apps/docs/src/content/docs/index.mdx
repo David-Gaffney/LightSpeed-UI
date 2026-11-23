@@ -1,18 +1,28 @@
 ---
 title: LightSpeedUI
-description: Astro-native UI platform built on Web Platform Baseline 2026 for Astro and EmDash CMS.
+description: Four-level Astro-native UI platform built on Web Platform Baseline 2026 for standalone Astro and EmDash CMS.
 sidebar:
   order: 0
+  label: Introduction
 ---
 
-**LightSpeedUI (`lsui`)** is an open-code, Astro-native UI platform combining pure `.astro` components, composable `@lsui/behaviors` primitives, semantic CSS tokens (`@layer lsui`), Astro + EmDash CMS publishing primitives, automated Code-to-Figma sync, and 3-stage AST upgrades.
+**LightSpeedUI (`lsui`)** is a complete **Astro UI Platform** organized into four clearly separated levels—from unstyled accessible primitives and headless behaviors up to themed copy-paste components, CMS page blocks, and independent interactive experiences.
 
 <ComponentPreview title="Preview Isolation Check" hydration="none">
   <button type="button">Native Unreset Button Inside Isolated Stage</button>
 </ComponentPreview>
 
-## Core Pillars
+## Four Platform Levels
 
-- **Code as the Single Source of Truth**: `.astro` files and semantic CSS tokens generate documentation, `AGENTS.md`, AI Skills, MCP metadata, and Figma components automatically.
-- **Pure CSS & Zero-JS by Default**: Scoped `.astro` styles inside `@layer lsui` with ambient DOM `data-*` context (`data-theme`, `data-surface`, `data-density`) and Baseline 2026 HTML/CSS primitives.
-- **Composable Headless Behaviors**: Accessible TypeScript controllers in `@lsui/behaviors` wired via `mount()`.
+Use the header tabs above—or jump directly to each level:
+
+| Level | Package | Role & Goal |
+| :--- | :--- | :--- |
+| **1. [Origin](/origin/)** | `@lsui/origin` | Unstyled accessible `.astro` primitives, headless behaviors, keyboard interaction, `ariaNotify()` screen reader announcements, `aria-disabled` focus guards, and rendering flexibility. |
+| **2. [Liftoff](/liftoff/)** | `@lsui/liftoff` + `@lsui/themes` | Copy-paste styled `.astro` components layered strictly atop **Origin**, introducing semantic CSS tokens (`@layer lsui`), **Nordic** & **Editorial** themes, and ambient `data-*` contexts. |
+| **3. [Landing](/landing/)** | `@lsui/landing` | Composed page blocks, marketing/publishing/docs sections, and full-page templates layered strictly atop **Liftoff** for Astro and **EmDash CMS**. |
+| **4. [Apogee](/apogee/)** | `@lsui/apogee` | Independent higher-order interactive experiences and site enhancements beyond standard UI kits (Guided Website Tours, Kanban boards, Spotlight centers). |
+
+## Strict Layering Rule
+
+Levels 1–3 enforce a strict one-way dependency chain (**`Origin ← Liftoff ← Landing`**)—lower levels never import from higher levels—while **Apogee** remains modular and independent so any Astro site can adopt higher-order features without lock-in.

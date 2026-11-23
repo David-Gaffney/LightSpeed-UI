@@ -2,30 +2,64 @@
   "$schema": "https://lightspeedui.dev/schema/registry.json",
   "name": "lightspeed-ui",
   "homepage": "https://lightspeedui.dev",
+  "levels": [
+    "origin",
+    "liftoff",
+    "landing",
+    "apogee"
+  ],
   "items": [
     {
-      "name": "button",
-      "title": "Button",
+      "name": "origin/origin-button",
+      "slug": "origin-button",
+      "title": "OriginButton",
+      "level": "origin",
       "type": "registry:ui",
-      "category": "Actions",
+      "category": "Primitives",
       "hydration": "optional",
-      "description": "Triggers an in-page action, form submission, or declarative dialog/popover command. For URL navigation, use LinkButton instead.",
-      "dependencies": [
-        "@lsui/behaviors"
-      ],
-      "registryUrl": "/r/button.json"
+      "description": "Unstyled accessible action primitive providing safe `<button>` defaults (`type=\"button\"`), optional non-anchor tag rendering (`as`), keyboard activation, focusable `aria-disabled`, and declarative Invoker/Popover triggers.",
+      "dependencies": [],
+      "registryUrl": "/r/origin/origin-button.json"
     },
     {
-      "name": "link-button",
-      "title": "LinkButton",
+      "name": "origin/origin-link",
+      "slug": "origin-link",
+      "title": "OriginLink",
+      "level": "origin",
+      "type": "registry:ui",
+      "category": "Primitives",
+      "hydration": "optional",
+      "description": "Unstyled accessible navigation primitive rendering a genuine `<a>` element without ever overriding link semantics with `role=\"button\"`.",
+      "dependencies": [],
+      "registryUrl": "/r/origin/origin-link.json"
+    },
+    {
+      "name": "liftoff/button",
+      "slug": "button",
+      "title": "Button",
+      "level": "liftoff",
       "type": "registry:ui",
       "category": "Actions",
       "hydration": "optional",
-      "description": "Navigates to a URL using a semantic `<a>` element styled to match Button variants. Never overrides link semantics with `role=\"button\"`.",
+      "description": "Themed, copy-paste action button built atop OriginButton. Adds semantic token variants, sizes, hover/press/focus states, and WCAG 2.5.8 / 2.5.5 minimum target sizing. For URL navigation, use LinkButton instead.",
       "dependencies": [
-        "@lsui/behaviors"
+        "@lsui/origin"
       ],
-      "registryUrl": "/r/link-button.json"
+      "registryUrl": "/r/liftoff/button.json"
+    },
+    {
+      "name": "liftoff/link-button",
+      "slug": "link-button",
+      "title": "LinkButton",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Actions",
+      "hydration": "optional",
+      "description": "Themed navigation link built atop OriginLink. Applies Button visual variants and sizes to a genuine `<a>` element without ever overriding link semantics with `role=\"button\"`.",
+      "dependencies": [
+        "@lsui/origin"
+      ],
+      "registryUrl": "/r/liftoff/link-button.json"
     }
   ]
 }

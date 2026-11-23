@@ -1,0 +1,145 @@
+---
+/**
+ * @title OriginButton
+ * @level origin
+ * @description Unstyled accessible action primitive providing safe `<button>` defaults (`type="button"`), optional non-anchor tag rendering (`as`), keyboard activation, focusable `aria-disabled`, and declarative Invoker/Popover triggers.
+ * @category Primitives
+ * @hydration optional
+ * @accessibility
+ * - Renders `<button type="button">` by default; when `as="span" | "div"` is passed for custom container constraints, attaches `role="button"`, `tabindex`, and native `Enter`/`Space` keyboard activation.
+ * - Forbids `as="a"` and `href` at compile time so `<a>` link semantics are never clobbered by `role="button"`.
+ * - Supports both `disabled` (removed from tab order) and `aria-disabled="true"` (remains focusable in toolbars/async flows while blocking activation).
+ * - Enforces an explicit `aria-label` at compile time when `iconOnly` is `true`.
+ * @keyboard
+ * - `Enter` / `Space`: Activates the control (native on `<button>`, delegated on `as="span" | "div"`).
+ * @slots
+ * - `default`: Button label content.
+ * - `icon-start`: Optional leading icon content.
+ * - `icon-end`: Optional trailing icon content.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+import { buttonAttrs } from "../../attrs/button-attrs.ts";
+import type { InvokerCommand } from "../../contract.ts";
+
+type NativeButtonAttributes = Omit<
+  HTMLAttributes<"button">,
+  "type" | "command" | "commandfor" | "popovertarget" | "popovertargetaction"
+>;
+
+interface BaseOriginButtonProps extends NativeButtonAttributes {
+  /** Safe element tag override (`"button"` default; `"a"` is forbidden—use `OriginLink` instead). */
+  as?: "button" | "span" | "div" | undefined;
+  /** Native button behavior (`"button"` by default so forms never submit accidentally). */
+  type?: "button" | "submit" | "reset" | undefined;
+  /** Disables the control and removes it from tab order. */
+  disabled?: boolean | undefined;
+  /** Conditionally renders the primitive when `true`. */
+  render?: boolean | undefined;
+  /** Target element ID for the HTML Invoker Commands API. */
+  commandfor?: string | undefined;
+  /** Built-in or `--custom` command dispatched to `commandfor`. */
+  command?: InvokerCommand | undefined;
+  /** Target element ID for the HTML Popover API. */
+  popovertarget?: string | undefined;
+  /** Popover action performed when clicked. */
+  popovertargetaction?: "toggle" | "show" | "hide" | undefined;
+  /** Never pass `href` to `OriginButton`; use `OriginLink` to preserve native link semantics. */
+  href?: never;
+}
+
+export type Props = BaseOriginButtonProps &
+  (
+    | {
+        iconOnly?: false | undefined;
+        "aria-label"?: string | undefined;
+      }
+    | {
+        iconOnly: true;
+        "aria-label": string;
+      }
+  );
+
+const {
+  as: Tag = "button",
+  type = "button",
+  disabled = false,
+  render = true,
+  iconOnly = false,
+  commandfor,
+  command,
+  popovertarget,
+  popovertargetaction,
+  ...rest
+} = Astro.props;
+
+const rawAriaDisabled = rest["aria-disabled"];
+const ariaDisabledNormalized: boolean | "true" | "false" | undefined =
+  rawAriaDisabled === true || rawAriaDisabled === "true"
+    ? "true"
+    : rawAriaDisabled === false || rawAriaDisabled === "false"
+      ? "false"
+      : undefined;
+
+const isAriaDisabled =
+  ariaDisabledNormalized === "true" || (Tag !== "button" && disabled);
+const isSimulatedButton = Tag !== "button";
+const hasInvoker = typeof commandfor === "string" && commandfor.length > 0;
+const hasPopover =
+  typeof popovertarget === "string" && popovertarget.length > 0;
+
+const computedAttrs = buttonAttrs({
+  as: Tag,
+  type,
+  disabled,
+  ariaDisabled: ariaDisabledNormalized,
+  commandfor,
+  command,
+  popovertarget,
+  popovertargetaction,
+});
+---
+
+{
+  render && (
+    <>
+      <Tag
+        data-icon-only={iconOnly ? "" : undefined}
+        {...computedAttrs}
+        {...rest}
+      >
+        <slot name="icon-start" />
+        <slot />
+        <slot name="icon-end" />
+      </Tag>
+
+      {hasInvoker && (
+        <script>
+          import { ensureInvokerCommandsPolyfill } from "@lsui/origin/polyfills";
+          void ensureInvokerCommandsPolyfill();
+        </script>
+      )}
+
+      {hasPopover && (
+        <script>
+          import { ensurePopoverPolyfill } from "@lsui/origin/polyfills";
+          void ensurePopoverPolyfill();
+        </script>
+      )}
+
+      {isAriaDisabled && (
+        <script>
+          import { ensureAriaDisabledGuard } from "@lsui/origin/aria-disabled";
+          ensureAriaDisabledGuard();
+        </script>
+      )}
+
+      {isSimulatedButton && (
+        <script>
+          import { ensureSimulatedButtonKeys } from "@lsui/origin/aria-disabled";
+          ensureSimulatedButtonKeys();
+        </script>
+      )}
+    </>
+  )
+}

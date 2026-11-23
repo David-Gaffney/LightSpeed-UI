@@ -1,0 +1,31 @@
+---
+title: Platform Levels
+description: How Origin, Liftoff, Landing, and Apogee separate concerns and compose cleanly in Astro.
+sidebar:
+  order: 1
+---
+
+LightSpeedUI separates concerns across four distinct levels so you only adopt as much opinion as your Astro project needs.
+
+## Dependency Architecture
+
+```text
+Level 3: Landing (@lsui/landing)  ──▶  Blocks, CMS sections & templates
+   │
+   ▼  imports
+Level 2: Liftoff (@lsui/liftoff)  ──▶  Themed copy-paste .astro components + @lsui/themes tokens
+   │
+   ▼  imports
+Level 1: Origin  (@lsui/origin)   ──▶  Unstyled .astro primitives + headless behaviors + ariaNotify()
+
+
+Level 4: Apogee  (@lsui/apogee)   ──▶  Independent rich experiences (Tours, Kanban, Spotlight)
+                                       (consumes @lsui/origin behaviors without coupling to Landing)
+```
+
+## Choosing Your Entry Point
+
+- Reach for **[Origin](/origin/)** when your team has a bespoke CSS system and wants pure Astro accessibility, keyboard navigation, focus management, and `ariaNotify()` announcements with zero visual CSS.
+- Reach for **[Liftoff](/liftoff/)** when you want editable, token-themed `.astro` UI, content, and docs components (`Nordic`, `Editorial`, or your own theme) ready to drop into an app or publication.
+- Reach for **[Landing](/landing/)** when you want complete marketing heroes, pricing tables, blog grids, and EmDash CMS page templates assembled from `Liftoff` components.
+- Reach for **[Apogee](/apogee/)** when you want standalone interactive capabilities like a guided `<Tour />` or multi-column Kanban board.

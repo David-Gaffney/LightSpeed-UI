@@ -1,0 +1,20 @@
+{
+  "name": "@lsui/landing",
+  "version": "0.0.1",
+  "description": "Level 3 (Landing) — Astro + EmDash page blocks, composed sections, and full-page templates built atop @lsui/liftoff",
+  "type": "module",
+  "dependencies": {
+    "@lsui/liftoff": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

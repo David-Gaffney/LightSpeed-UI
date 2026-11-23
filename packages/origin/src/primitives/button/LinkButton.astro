@@ -1,0 +1,101 @@
+---
+/**
+ * @title OriginLink
+ * @level origin
+ * @description Unstyled accessible navigation primitive rendering a genuine `<a>` element without ever overriding link semantics with `role="button"`.
+ * @category Primitives
+ * @hydration optional
+ * @accessibility
+ * - Preserves native `<a>` link role, browser URL preview, right-click context menu, and `Cmd+Click` new-tab behavior.
+ * - When `disabled` is `true`, omits `href` and sets `role="link"` + `aria-disabled="true"` per W3C HTML-AAM.
+ * - Enforces an explicit `aria-label` at compile time when `iconOnly` is `true`.
+ * @keyboard
+ * - `Enter`: Follows `href` (blocked when `disabled` / `aria-disabled="true"`).
+ * @slots
+ * - `default`: Link label content.
+ * - `icon-start`: Optional leading icon content.
+ * - `icon-end`: Optional trailing icon content.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+import { linkAttrs } from "../../attrs/button-attrs.ts";
+
+type NativeAnchorAttributes = Omit<HTMLAttributes<"a">, "href" | "role">;
+
+interface BaseOriginLinkProps extends NativeAnchorAttributes {
+  /** Conditionally renders the primitive when `true`. */
+  render?: boolean | undefined;
+}
+
+type DisabledUnion =
+  | {
+      /** Destination URL navigated to on activation. */
+      href: string | URL;
+      /** Active link state (`false` by default). */
+      disabled?: false | undefined;
+    }
+  | {
+      /** Omitted from rendered `<a>` when `disabled` is `true`. */
+      href?: string | URL | undefined;
+      /** Renders an accessible disabled link (`role="link" aria-disabled="true"` without `href`). */
+      disabled: true;
+    };
+
+type IconOnlyUnion =
+  | {
+      iconOnly?: false | undefined;
+      "aria-label"?: string | undefined;
+    }
+  | {
+      iconOnly: true;
+      "aria-label": string;
+    };
+
+export type Props = BaseOriginLinkProps & DisabledUnion & IconOnlyUnion;
+
+const {
+  href,
+  disabled = false,
+  render = true,
+  iconOnly = false,
+  ...rest
+} = Astro.props;
+
+const rawAriaDisabled = rest["aria-disabled"];
+const ariaDisabledNormalized: boolean | "true" | "false" | undefined =
+  rawAriaDisabled === true || rawAriaDisabled === "true"
+    ? "true"
+    : rawAriaDisabled === false || rawAriaDisabled === "false"
+      ? "false"
+      : undefined;
+
+const computedAttrs = linkAttrs({
+  href,
+  disabled,
+  ariaDisabled: ariaDisabledNormalized,
+});
+const isAriaDisabled = computedAttrs["aria-disabled"] === "true";
+---
+
+{
+  render && (
+    <>
+      <a
+        data-icon-only={iconOnly ? "" : undefined}
+        {...computedAttrs}
+        {...rest}
+      >
+        <slot name="icon-start" />
+        <slot />
+        <slot name="icon-end" />
+      </a>
+
+      {isAriaDisabled && (
+        <script>
+          import { ensureAriaDisabledGuard } from "@lsui/origin/aria-disabled";
+          ensureAriaDisabledGuard();
+        </script>
+      )}
+    </>
+  )
+}

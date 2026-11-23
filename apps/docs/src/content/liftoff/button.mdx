@@ -1,0 +1,71 @@
+---
+title: Button
+description: Themed, copy-paste action button built atop OriginButton. Adds semantic token variants, sizes, hover/press/focus states, and WCAG 2.5.8 / 2.5.5 minimum target sizing. For URL navigation, use LinkButton instead.
+sidebar:
+  order: 1
+---
+
+import Button from "@lsui/liftoff/Button.astro";
+
+<ComponentPreview title="Nordic Light — Liftoff Button Variants" theme="nordic light" hydration="optional">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+    <Button variant="primary">Primary</Button>
+    <Button variant="secondary">Secondary</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="ghost">Ghost</Button>
+    <Button variant="danger">Danger</Button>
+    <Button disabled variant="secondary">Disabled</Button>
+  </div>
+</ComponentPreview>
+
+<ComponentPreview title="Editorial Dark — Sizes & Icon-Only" theme="editorial dark" hydration="optional">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+    <Button size="sm" variant="primary">Small</Button>
+    <Button size="md" variant="primary">Medium</Button>
+    <Button size="lg" variant="primary">Large</Button>
+    <Button size="md" variant="outline" iconOnly aria-label="Add item">+</Button>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx lsui add button
+```
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `variant` | `"primary" \| "secondary" \| "outline" \| "ghost" \| "danger"` | `"primary"` | No | Visual style token variant. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | No | Control height and padding scale. |
+| `as` | `"button" \| "span" \| "div"` | — | No | Safe element tag override (`"button"` default; `"a"` is forbidden—use `LinkButton` instead). |
+| `type` | `"button" \| "submit" \| "reset"` | — | No | Native button behavior (`"button"` by default so forms never submit accidentally). |
+| `disabled` | `boolean` | — | No | Disables the button and removes it from tab order. Use `aria-disabled="true"` when focus must remain reachable. |
+| `render` | `boolean` | — | No | Conditionally renders the component when `true` (omits markup when `false`). |
+| `commandfor` | `string` | — | No | Target element ID for the HTML Invoker Commands API (`https://webstatus.dev/features/invoker-commands`). |
+| `command` | `any` | — | No | Built-in or `--custom` command dispatched to `commandfor`. |
+| `popovertarget` | `string` | — | No | Target element ID for the HTML Popover API (`https://webstatus.dev/features/popover`). |
+| `popovertargetaction` | `"toggle" \| "show" \| "hide"` | — | No | Popover action performed when clicked. |
+| `iconOnly` | `boolean` | `false` | Required when iconOnly is true |  |
+| `aria-label` | `string` | — | Required when iconOnly is true | Screen-reader accessible name |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `icon-start` | Optional leading decorative icon (`aria-hidden="true"` on SVGs). |
+| `default` | Visible button label text. |
+| `icon-end` | Optional trailing decorative icon (`aria-hidden="true"` on SVGs). |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Delegates HTML semantics, safe `type="button"` default, `aria-disabled` focus preservation, and declarative triggers directly to `@lsui/origin` (`OriginButton`).
+- Enforces >= 24x24px minimum target on desktop and >= 44x44px on coarse touch pointers (`--target-min-size`).
+- Icon-only buttons (`iconOnly`) require an explicit `aria-label` at compile time.
+
+### Keyboard Interactions
+
+- `Enter` / `Space`: Activates the button (and dispatches `command` / toggles `popovertarget` when configured).

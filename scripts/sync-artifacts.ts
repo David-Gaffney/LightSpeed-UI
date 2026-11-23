@@ -3,33 +3,31 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   buildAiContextFiles,
-  buildDocsMdxPages,
+  buildDocsMdxByLevel,
   buildFigmaSpec,
   buildRegistryArtifacts,
-  parseCoreComponents,
+  parsePlatformComponents,
   parseThemesPackage,
 } from "../packages/ast/src/index.ts";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const checkOnly = process.argv.includes("--check");
 
-const corePkgDir = path.join(rootDir, "packages/core");
 const themesPkgDir = path.join(rootDir, "packages/themes");
 
-const components = parseCoreComponents({ corePkgDir, monorepoRoot: rootDir });
+const components = parsePlatformComponents({ monorepoRoot: rootDir });
 const { base: baseTokens, themes } = parseThemesPackage(themesPkgDir);
 
 const figmaSpec = buildFigmaSpec({ components, baseTokens, themes });
 const registry = buildRegistryArtifacts({ components, monorepoRoot: rootDir });
 const aiDocs = buildAiContextFiles({ components, themes });
-const docsMdx = buildDocsMdxPages(components);
+const levelDocs = buildDocsMdxByLevel(components);
 
 const outputs = new Map<string, string>();
 
-// 1. Live Nimbus Docs MDX pages (`apps/docs/src/content/docs/...`)
-outputs.set("apps/docs/src/content/docs/components/index.mdx", docsMdx.indexMdx);
-for (const [slug, mdx] of Object.entries(docsMdx.pages)) {
-  outputs.set(`apps/docs/src/content/docs/components/${slug}.mdx`, mdx);
+// 1. Live Nimbus Docs MDX pages across all 4 level collections (`origin`, `liftoff`, `landing`, `apogee`)
+for (const [relPath, mdx] of Object.entries(levelDocs)) {
+  outputs.set(relPath, mdx);
 }
 
 // 2. Static Registry JSON endpoints (`apps/docs/public/r/...`)
@@ -37,9 +35,9 @@ outputs.set(
   "apps/docs/public/r/index.json",
   `${JSON.stringify(registry.indexJson, null, 2)}\n`,
 );
-for (const [slug, item] of Object.entries(registry.items)) {
+for (const [relJsonPath, item] of Object.entries(registry.itemsByPath)) {
   outputs.set(
-    `apps/docs/public/r/${slug}.json`,
+    `apps/docs/public/r/${relJsonPath}`,
     `${JSON.stringify(item, null, 2)}\n`,
   );
 }
@@ -84,10 +82,10 @@ if (checkOnly) {
     process.exit(1);
   }
   console.log(
-    `✓ All ${outputs.size} AST-generated artifacts are in sync (${components.length} components, ${themes.length} themes).`,
+    `✓ All ${outputs.size} AST-generated artifacts are in sync (${components.length} platform items, ${themes.length} themes).`,
   );
 } else {
   console.log(
-    `✓ Generated ${outputs.size} artifacts from AST (${components.length} components, ${themes.length} themes).`,
+    `✓ Generated ${outputs.size} artifacts from AST (${components.length} platform items, ${themes.length} themes).`,
   );
 }

@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": [
+    "src/index.ts",
+    "src/contract.ts",
+    "src/announce.ts",
+    "src/mount.ts",
+    "src/polyfills.ts",
+    "src/aria-disabled.ts",
+    "src/attrs/**/*.ts"
+  ]
+}

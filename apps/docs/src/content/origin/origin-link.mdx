@@ -1,0 +1,51 @@
+---
+title: OriginLink
+description: Unstyled accessible navigation primitive rendering a genuine `<a>` element without ever overriding link semantics with `role="button"`.
+sidebar:
+  order: 2
+---
+
+import OriginLink from "@lsui/origin/LinkButton.astro";
+
+<ComponentPreview title="Origin — Unstyled Semantic <a> & Accessible Disabled Link" hydration="optional">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;">
+    <OriginLink href="/liftoff/button/">Active Semantic Link</OriginLink>
+    <OriginLink disabled>Disabled Link (role="link" aria-disabled="true")</OriginLink>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx lsui add origin/origin-link
+```
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `render` | `boolean` | `true` | No | Conditionally renders the primitive when `true`. |
+| `href` | `string \| URL` | — | Conditionally required by discriminated union | Destination URL navigated to on activation. |
+| `disabled` | `boolean` | `false` | Required when disabled is true | Active link state (`false` by default). |
+| `iconOnly` | `boolean` | `false` | Required when iconOnly is true |  |
+| `aria-label` | `string` | — | Required when iconOnly is true | Screen-reader accessible name |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `icon-start` | Optional leading icon content. |
+| `default` | Link label content. |
+| `icon-end` | Optional trailing icon content. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Preserves native `<a>` link role, browser URL preview, right-click context menu, and `Cmd+Click` new-tab behavior.
+- When `disabled` is `true`, omits `href` and sets `role="link"` + `aria-disabled="true"` per W3C HTML-AAM.
+- Enforces an explicit `aria-label` at compile time when `iconOnly` is `true`.
+
+### Keyboard Interactions
+
+- `Enter`: Follows `href` (blocked when `disabled` / `aria-disabled="true"`).

@@ -8,12 +8,14 @@ import type {
   ComponentIR,
   FigmaPropKind,
   HydrationMode,
+  PlatformLevel,
   PropIR,
   SlotIR,
   SourceFileRef,
 } from "./types.ts";
 
 const NON_VISUAL_PROPS: Record<string, string> = {
+  as: "Polymorphic HTML tag override",
   href: "Navigation destination attribute (no visual Figma axis)",
   target: "Browser navigation target",
   rel: "Link relationship metadata",
@@ -44,6 +46,7 @@ function toKebabSlug(name: string): string {
 
 interface ParsedFrontmatterDoc {
   title: string;
+  level: PlatformLevel;
   description: string;
   category: string;
   hydration: HydrationMode;
@@ -52,7 +55,15 @@ interface ParsedFrontmatterDoc {
   slots: Map<string, string>;
 }
 
-function parseContractJsDoc(frontmatterCode: string, filePath: string): ParsedFrontmatterDoc {
+function isPlatformLevel(v: string): v is PlatformLevel {
+  return v === "origin" || v === "liftoff" || v === "landing" || v === "apogee";
+}
+
+function parseContractJsDoc(
+  frontmatterCode: string,
+  filePath: string,
+  expectedLevel: PlatformLevel,
+): ParsedFrontmatterDoc {
   const match = /\/\*\*([\s\S]*?)\*\//.exec(frontmatterCode);
   if (!match?.[1]) {
     throw new Error(
@@ -65,6 +76,7 @@ function parseContractJsDoc(frontmatterCode: string, filePath: string): ParsedFr
     .map((line) => line.replace(/^\s*\*\s?/, "").trim());
 
   let title = "";
+  let levelRaw = "";
   let description = "";
   let category = "";
   let hydration = "";
@@ -79,6 +91,9 @@ function parseContractJsDoc(frontmatterCode: string, filePath: string): ParsedFr
 
     if (line.startsWith("@title ")) {
       title = line.slice("@title ".length).trim();
+      activeList = "none";
+    } else if (line.startsWith("@level ")) {
+      levelRaw = line.slice("@level ".length).trim();
       activeList = "none";
     } else if (line.startsWith("@description ")) {
       description = line.slice("@description ".length).trim();
@@ -120,6 +135,11 @@ function parseContractJsDoc(frontmatterCode: string, filePath: string): ParsedFr
       `${filePath}: JSDoc contract must define @title, @description, and @category.`,
     );
   }
+  if (!isPlatformLevel(levelRaw) || levelRaw !== expectedLevel) {
+    throw new Error(
+      `${filePath}: JSDoc @level must be "${expectedLevel}", found "${levelRaw || "(missing)"}".`,
+    );
+  }
   if (hydration !== "none" && hydration !== "optional" && hydration !== "required") {
     throw new Error(
       `${filePath}: Invalid @hydration "${hydration}". Expected 'none' | 'optional' | 'required'.`,
@@ -128,6 +148,7 @@ function parseContractJsDoc(frontmatterCode: string, filePath: string): ParsedFr
 
   return {
     title,
+    level: levelRaw,
     description,
     category,
     hydration,
@@ -142,6 +163,13 @@ interface TemplateSummary {
   slotNames: string[];
   scriptCount: number;
   inlineStyles: string[];
+}
+
+function resolveKnownTag(tagName: string): string | null {
+  if (/^[a-z]/.test(tagName)) return tagName;
+  if (tagName === "Tag" || tagName === "OriginButton") return "button";
+  if (tagName === "OriginLink") return "a";
+  return null;
 }
 
 function inspectTemplateAst(bodyNodes: unknown[], source: string): TemplateSummary {
@@ -191,8 +219,9 @@ function inspectTemplateAst(bodyNodes: unknown[], source: string): TemplateSumma
         slotSet.add(slotName);
         return;
       }
-      if (!rootTag && tagName && /^[a-z]/.test(tagName)) {
-        rootTag = tagName;
+      if (!rootTag && tagName) {
+        const mapped = resolveKnownTag(tagName);
+        if (mapped) rootTag = mapped;
       }
     }
 
@@ -269,32 +298,33 @@ function extractPropsFromFrontmatter(
   project: Project,
   astroFilePath: string,
   frontmatterCode: string,
-): { props: PropIR[]; styleImports: string[]; behaviorDeps: string[] } {
+): { props: PropIR[]; styleImports: string[]; lsuiDeps: string[] } {
   const virtualFilePath = path.join(
     path.dirname(astroFilePath),
     `__ast_${path.basename(astroFilePath)}.ts`,
   );
-  // Provide minimal Astro global so `Astro.props` resolves cleanly in isolation
   const sourceFile = project.createSourceFile(
     virtualFilePath,
-    `declare const Astro: { props: Props };\n${frontmatterCode}`,
+    `declare const Astro: { props: Props; slots: { has(name: string): boolean } };\n${frontmatterCode}`,
     { overwrite: true },
   );
 
   try {
     const styleImports: string[] = [];
-    const behaviorDeps = new Set<string>();
+    const lsuiDeps = new Set<string>();
 
     for (const imp of sourceFile.getImportDeclarations()) {
       const spec = imp.getModuleSpecifierValue();
       if (spec.endsWith(".css")) {
         styleImports.push(spec);
-      } else if (spec.startsWith("@lsui/behaviors")) {
-        behaviorDeps.add("@lsui/behaviors");
+      } else if (spec.startsWith("@lsui/")) {
+        const parts = spec.split("/");
+        if (parts[0] && parts[1]) {
+          lsuiDeps.add(`${parts[0]}/${parts[1]}`);
+        }
       }
     }
 
-    // Extract default values from `const { variant = "primary", ... } = Astro.props`
     const defaults = new Map<string, string>();
     for (const varDecl of sourceFile.getVariableDeclarations()) {
       const initText = varDecl.getInitializer()?.getText().trim();
@@ -313,8 +343,6 @@ function extractPropsFromFrontmatter(
       }
     }
 
-    // Collect property signatures explicitly authored in this component's frontmatter
-    // (avoiding 250+ inherited DOM HTMLAttributes)
     interface AuthoredPropMeta {
       name: string;
       descriptions: string[];
@@ -369,7 +397,6 @@ function extractPropsFromFrontmatter(
 
     for (const alias of sourceFile.getTypeAliases()) {
       for (const typeLit of alias.getDescendantsOfKind(SyntaxKind.TypeLiteral)) {
-        // Check if this TypeLiteral is a discriminated branch (e.g. `{ iconOnly: true; "aria-label": string }`)
         const propsInLiteral = typeLit.getProperties();
         let discriminator: string | undefined;
         for (const p of propsInLiteral) {
@@ -384,13 +411,14 @@ function extractPropsFromFrontmatter(
       }
     }
 
-    // Resolve final `Props` type to inspect combined property types accurately
     const propsSymbol =
       sourceFile.getTypeAlias("Props")?.getType() ??
       sourceFile.getInterface("Props")?.getType();
 
     if (!propsSymbol) {
-      throw new Error(`${astroFilePath}: Component must export an interface or type named 'Props'.`);
+      throw new Error(
+        `${astroFilePath}: Component must export an interface or type named 'Props'.`,
+      );
     }
 
     const props: PropIR[] = [];
@@ -398,7 +426,9 @@ function extractPropsFromFrontmatter(
     for (const [name, meta] of authored.entries()) {
       const mergedPropSymbol = propsSymbol.getProperty(name);
       const resolvedType = mergedPropSymbol
-        ? project.getTypeChecker().getTypeOfSymbolAtLocation(mergedPropSymbol, sourceFile)
+        ? project
+            .getTypeChecker()
+            .getTypeOfSymbolAtLocation(mergedPropSymbol, sourceFile)
         : meta.types[0]!;
 
       const rawTypeText = resolvedType
@@ -410,7 +440,9 @@ function extractPropsFromFrontmatter(
       const figma = classifyPropForFigma(name, resolvedType, forbidden);
 
       const isStrictlyRequired =
-        !meta.optionalInAllBranches && meta.requiredBranches.length === 0 && meta.branchCount === 1;
+        !meta.optionalInAllBranches &&
+        meta.requiredBranches.length === 0 &&
+        meta.branchCount === 1;
       const conditionalRequirement =
         !isStrictlyRequired && !meta.optionalInAllBranches
           ? meta.requiredBranches.length > 0
@@ -418,12 +450,23 @@ function extractPropsFromFrontmatter(
             : "Conditionally required by discriminated union"
           : undefined;
 
-      // Format clean union text when literalValues exist
+      // Also format non-visual literal unions cleanly (like `as?: "button" | "span" | "div"` or `type?: "button" | "submit" | "reset"`)
+      let cleanLiteralUnion: string | undefined;
+      const nonNull = resolvedType.getNonNullableType();
+      if (nonNull.isUnion()) {
+        const parts = nonNull.getUnionTypes().filter((t) => !t.isUndefined());
+        if (parts.length > 0 && parts.every((t) => t.isStringLiteral())) {
+          cleanLiteralUnion = parts
+            .map((t) => `"${t.getLiteralValue() as string}"`)
+            .join(" | ");
+        }
+      }
+
       const displayType = forbidden
         ? "never"
         : figma.literalValues
           ? figma.literalValues.map((v) => `"${v}"`).join(" | ")
-          : rawTypeText || "boolean";
+          : cleanLiteralUnion ?? (rawTypeText || "boolean");
 
       props.push({
         name,
@@ -442,7 +485,7 @@ function extractPropsFromFrontmatter(
     return {
       props,
       styleImports,
-      behaviorDeps: [...behaviorDeps],
+      lsuiDeps: [...lsuiDeps],
     };
   } finally {
     sourceFile.deleteImmediatelySync();
@@ -462,128 +505,208 @@ function findAstroFiles(dir: string, out: string[] = []): string[] {
   return out.sort();
 }
 
+const LEVEL_CONFIG: Array<{
+  level: PlatformLevel;
+  pkgFolder: string;
+  packageName: string;
+  enforceStrictOneWayAllowedDeps: Set<string>;
+}> = [
+  {
+    level: "origin",
+    pkgFolder: "origin",
+    packageName: "@lsui/origin",
+    enforceStrictOneWayAllowedDeps: new Set(["@lsui/origin"]),
+  },
+  {
+    level: "liftoff",
+    pkgFolder: "liftoff",
+    packageName: "@lsui/liftoff",
+    enforceStrictOneWayAllowedDeps: new Set([
+      "@lsui/origin",
+      "@lsui/themes",
+      "@lsui/icons",
+      "@lsui/liftoff",
+    ]),
+  },
+  {
+    level: "landing",
+    pkgFolder: "landing",
+    packageName: "@lsui/landing",
+    enforceStrictOneWayAllowedDeps: new Set([
+      "@lsui/origin",
+      "@lsui/themes",
+      "@lsui/icons",
+      "@lsui/liftoff",
+      "@lsui/landing",
+    ]),
+  },
+  {
+    level: "apogee",
+    pkgFolder: "apogee",
+    packageName: "@lsui/apogee",
+    enforceStrictOneWayAllowedDeps: new Set([
+      "@lsui/origin",
+      "@lsui/themes",
+      "@lsui/icons",
+      "@lsui/liftoff",
+      "@lsui/apogee",
+    ]),
+  },
+];
+
 /**
- * Parses all `.astro` components inside a package (`packages/core`) into `ComponentIR[]`.
+ * Parses all `.astro` primitives, components, blocks, and Apogee features across all 4 levels,
+ * enforcing the `Origin <- Liftoff <- Landing` one-way dependency invariant.
  */
-export function parseCoreComponents(options: {
-  corePkgDir: string;
+export function parsePlatformComponents(options: {
   monorepoRoot: string;
 }): ComponentIR[] {
-  const { corePkgDir, monorepoRoot } = options;
-  const componentsDir = path.join(corePkgDir, "src/components");
-  const astroFiles = findAstroFiles(componentsDir);
-
-  const project = new Project({
-    tsConfigFilePath: path.join(corePkgDir, "tsconfig.json"),
-    skipAddingFilesFromTsConfig: true,
-  });
-
+  const { monorepoRoot } = options;
   const results: ComponentIR[] = [];
 
-  for (const astroPath of astroFiles) {
-    const rawSource = readFileSync(astroPath, "utf-8");
-    const parsed = parseAstro(rawSource);
+  for (const cfg of LEVEL_CONFIG) {
+    const pkgDir = path.join(monorepoRoot, "packages", cfg.pkgFolder);
+    const srcDir = path.join(pkgDir, "src");
+    const astroFiles = findAstroFiles(srcDir);
+    if (astroFiles.length === 0) continue;
 
-    const errors = parsed.diagnostics.filter((d) => d.severity === "error");
-    if (errors.length > 0) {
-      throw new Error(
-        `${astroPath}: Astro compiler parse error: ${errors.map((e) => e.text).join("; ")}`,
+    const project = new Project({
+      tsConfigFilePath: path.join(pkgDir, "tsconfig.json"),
+      skipAddingFilesFromTsConfig: true,
+    });
+
+    for (const astroPath of astroFiles) {
+      const rawSource = readFileSync(astroPath, "utf-8");
+      const parsed = parseAstro(rawSource);
+
+      const errors = parsed.diagnostics.filter((d) => d.severity === "error");
+      if (errors.length > 0) {
+        throw new Error(
+          `${astroPath}: Astro compiler parse error: ${errors.map((e) => e.text).join("; ")}`,
+        );
+      }
+
+      const fm = parsed.ast.frontmatter as
+        | { start?: number; end?: number }
+        | null
+        | undefined;
+      if (!fm || typeof fm.start !== "number" || typeof fm.end !== "number") {
+        throw new Error(`${astroPath}: Missing frontmatter block.`);
+      }
+
+      const frontmatterCode = rawSource
+        .slice(fm.start, fm.end)
+        .replace(/^---/, "")
+        .replace(/---$/, "");
+
+      const doc = parseContractJsDoc(frontmatterCode, astroPath, cfg.level);
+      const template = inspectTemplateAst(
+        Array.isArray(parsed.ast.body) ? parsed.ast.body : [],
+        rawSource,
       );
-    }
 
-    const fm = parsed.ast.frontmatter as
-      | { start?: number; end?: number }
-      | null
-      | undefined;
-    if (!fm || typeof fm.start !== "number" || typeof fm.end !== "number") {
-      throw new Error(`${astroPath}: Missing frontmatter block.`);
-    }
-
-    const frontmatterCode = rawSource
-      .slice(fm.start, fm.end)
-      .replace(/^---/, "")
-      .replace(/---$/, "");
-
-    const doc = parseContractJsDoc(frontmatterCode, astroPath);
-    const template = inspectTemplateAst(
-      Array.isArray(parsed.ast.body) ? parsed.ast.body : [],
-      rawSource,
-    );
-
-    // Validate inline <style> blocks if present
-    for (const inlineCss of template.inlineStyles) {
-      validateComponentCss(astroPath, inlineCss);
-    }
-
-    // Validate 1:1 match between template <slot>s and @slots JSDoc
-    for (const slotName of template.slotNames) {
-      if (!doc.slots.has(slotName)) {
+      if (cfg.level === "origin" && template.inlineStyles.length > 0) {
         throw new Error(
-          `${astroPath}: Template renders <slot${slotName === "default" ? "" : ` name="${slotName}"`} /> without a matching '- \`${slotName}\`: ...' entry in @slots JSDoc.`,
+          `${astroPath}: Level 1 (Origin) primitives must remain unstyled (found inline <style>).`,
         );
       }
-    }
-    for (const docSlot of doc.slots.keys()) {
-      if (!template.slotNames.includes(docSlot)) {
+      for (const inlineCss of template.inlineStyles) {
+        validateComponentCss(astroPath, inlineCss);
+      }
+
+      for (const slotName of template.slotNames) {
+        if (!doc.slots.has(slotName)) {
+          throw new Error(
+            `${astroPath}: Template renders <slot${slotName === "default" ? "" : ` name="${slotName}"`} /> without a matching '- \`${slotName}\`: ...' entry in @slots JSDoc.`,
+          );
+        }
+      }
+      for (const docSlot of doc.slots.keys()) {
+        if (!template.slotNames.includes(docSlot)) {
+          throw new Error(
+            `${astroPath}: @slots JSDoc documents '${docSlot}', which does not exist in template markup.`,
+          );
+        }
+      }
+
+      const { props, styleImports, lsuiDeps } = extractPropsFromFrontmatter(
+        project,
+        astroPath,
+        frontmatterCode,
+      );
+
+      if (cfg.level === "origin" && styleImports.length > 0) {
         throw new Error(
-          `${astroPath}: @slots JSDoc documents '${docSlot}', which does not exist in template markup.`,
+          `${astroPath}: Level 1 (Origin) primitives must remain unstyled (found CSS import ${styleImports.join(", ")}).`,
         );
       }
-    }
 
-    const { props, styleImports, behaviorDeps } = extractPropsFromFrontmatter(
-      project,
-      astroPath,
-      frontmatterCode,
-    );
+      const dependencies = new Set<string>(lsuiDeps);
+      const scriptMatchRe = /from\s+["'](@lsui\/[a-z0-9-]+)/g;
+      let sm: RegExpExecArray | null;
+      while ((sm = scriptMatchRe.exec(rawSource)) !== null) {
+        if (sm[1]) dependencies.add(sm[1]);
+      }
 
-    // Also scan template <script> blocks for `@lsui/behaviors` imports
-    const dependencies = new Set<string>(behaviorDeps);
-    if (rawSource.includes("@lsui/behaviors")) {
-      dependencies.add("@lsui/behaviors");
-    }
+      // Enforce one-way level dependency boundary
+      for (const dep of dependencies) {
+        if (!cfg.enforceStrictOneWayAllowedDeps.has(dep)) {
+          throw new Error(
+            `${astroPath}: Level '${cfg.level}' (${cfg.packageName}) cannot depend on higher/disallowed level package '${dep}'.`,
+          );
+        }
+      }
+      dependencies.delete(cfg.packageName);
 
-    const files: SourceFileRef[] = [
-      {
-        path: path.relative(monorepoRoot, astroPath).split(path.sep).join("/"),
-        fileName: path.basename(astroPath),
-        sha256: sha256(rawSource),
-      },
-    ];
+      const files: SourceFileRef[] = [
+        {
+          path: path.relative(monorepoRoot, astroPath).split(path.sep).join("/"),
+          fileName: path.basename(astroPath),
+          sha256: sha256(rawSource),
+        },
+      ];
 
-    for (const cssRel of styleImports) {
-      const cssAbs = path.resolve(path.dirname(astroPath), cssRel);
-      const cssContent = readFileSync(cssAbs, "utf-8");
-      validateComponentCss(cssAbs, cssContent);
-      files.push({
-        path: path.relative(monorepoRoot, cssAbs).split(path.sep).join("/"),
-        fileName: path.basename(cssAbs),
-        sha256: sha256(cssContent),
+      for (const cssRel of styleImports) {
+        const cssAbs = path.resolve(path.dirname(astroPath), cssRel);
+        const cssContent = readFileSync(cssAbs, "utf-8");
+        validateComponentCss(cssAbs, cssContent);
+        files.push({
+          path: path.relative(monorepoRoot, cssAbs).split(path.sep).join("/"),
+          fileName: path.basename(cssAbs),
+          sha256: sha256(cssContent),
+        });
+      }
+
+      const slots: SlotIR[] = template.slotNames.map((name) => ({
+        name,
+        description: doc.slots.get(name) ?? "",
+        figmaKind: name.startsWith("icon") ? "INSTANCE_SWAP" : "SLOT",
+      }));
+
+      const baseFileName = path.basename(astroPath); // e.g. Button.astro
+      results.push({
+        slug: toKebabSlug(doc.title),
+        name: doc.title,
+        level: cfg.level,
+        packageName: cfg.packageName,
+        importSpecifier: `${cfg.packageName}/${baseFileName}`,
+        description: doc.description,
+        category: doc.category,
+        hydration: doc.hydration,
+        rootTag: template.rootTag,
+        sourcePath: path
+          .relative(monorepoRoot, astroPath)
+          .split(path.sep)
+          .join("/"),
+        files,
+        dependencies: [...dependencies].sort(),
+        props,
+        slots,
+        accessibility: doc.accessibility,
+        keyboard: doc.keyboard,
+        conditionalScriptCount: template.scriptCount,
       });
     }
-
-    const slots: SlotIR[] = template.slotNames.map((name) => ({
-      name,
-      description: doc.slots.get(name) ?? "",
-      figmaKind: name.startsWith("icon") ? "INSTANCE_SWAP" : "SLOT",
-    }));
-
-    results.push({
-      slug: toKebabSlug(doc.title),
-      name: doc.title,
-      description: doc.description,
-      category: doc.category,
-      hydration: doc.hydration,
-      rootTag: template.rootTag,
-      sourcePath: path.relative(monorepoRoot, astroPath).split(path.sep).join("/"),
-      files,
-      dependencies: [...dependencies].sort(),
-      props,
-      slots,
-      accessibility: doc.accessibility,
-      keyboard: doc.keyboard,
-      conditionalScriptCount: template.scriptCount,
-    });
   }
 
   return results;

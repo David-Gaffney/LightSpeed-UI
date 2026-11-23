@@ -1,0 +1,136 @@
+---
+/**
+ * @title LinkButton
+ * @level liftoff
+ * @description Themed navigation link built atop OriginLink. Applies Button visual variants and sizes to a genuine `<a>` element without ever overriding link semantics with `role="button"`.
+ * @category Actions
+ * @hydration optional
+ * @accessibility
+ * - Delegates native `<a>` link semantics and accessible `disabled` link handling (`role="link" aria-disabled="true"` without `href`) to `@lsui/origin` (`OriginLink`).
+ * - Enforces >= 24x24px minimum target on desktop and >= 44x44px on coarse touch pointers (`--target-min-size`).
+ * - Icon-only link buttons (`iconOnly`) require an explicit `aria-label` at compile time.
+ * @keyboard
+ * - `Enter`: Follows the link `href` (blocked when `disabled` / `aria-disabled="true"`).
+ * @slots
+ * - `default`: Visible link label text.
+ * - `icon-start`: Optional leading decorative icon (`aria-hidden="true"` on SVGs).
+ * - `icon-end`: Optional trailing decorative icon (`aria-hidden="true"` on SVGs).
+ */
+
+import OriginLink from "@lsui/origin/LinkButton.astro";
+import type { HTMLAttributes } from "astro/types";
+import type { ButtonVariant, ControlSize } from "../../contract.ts";
+import "./button.css";
+
+type NativeAnchorAttributes = Omit<HTMLAttributes<"a">, "href" | "role">;
+
+interface BaseLinkButtonProps extends NativeAnchorAttributes {
+  /** Visual style token variant matching Button. */
+  variant?: ButtonVariant | undefined;
+  /** Control height and padding scale. */
+  size?: ControlSize | undefined;
+  /** Conditionally renders the component when `true` (omits markup when `false`). */
+  render?: boolean | undefined;
+}
+
+type DisabledUnion =
+  | {
+      /** Destination URL navigated to on activation. */
+      href: string | URL;
+      /** Active link state (`false` by default). */
+      disabled?: false | undefined;
+    }
+  | {
+      /** Omitted from rendered `<a>` when `disabled` is `true`. */
+      href?: string | URL | undefined;
+      /** Renders an accessible disabled link (`role="link" aria-disabled="true"` without `href`). */
+      disabled: true;
+    };
+
+type IconOnlyUnion =
+  | {
+      iconOnly?: false | undefined;
+      "aria-label"?: string | undefined;
+    }
+  | {
+      iconOnly: true;
+      "aria-label": string;
+    };
+
+export type Props = BaseLinkButtonProps & DisabledUnion & IconOnlyUnion;
+
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  disabled = false,
+  iconOnly = false,
+  "aria-label": ariaLabel,
+  ...rest
+} = Astro.props;
+
+const hasStartSlot = Astro.slots.has("icon-start");
+const hasEndSlot = Astro.slots.has("icon-end");
+---
+
+{
+  disabled ? (
+    iconOnly ? (
+      <OriginLink
+        href={href}
+        disabled={true}
+        iconOnly={true}
+        aria-label={ariaLabel as string}
+        data-lsui-button=""
+        data-variant={variant}
+        data-size={size}
+        {...rest}
+      >
+        {hasStartSlot && <slot name="icon-start" slot="icon-start" />}
+        <slot />
+        {hasEndSlot && <slot name="icon-end" slot="icon-end" />}
+      </OriginLink>
+    ) : (
+      <OriginLink
+        href={href}
+        disabled={true}
+        aria-label={ariaLabel}
+        data-lsui-button=""
+        data-variant={variant}
+        data-size={size}
+        {...rest}
+      >
+        {hasStartSlot && <slot name="icon-start" slot="icon-start" />}
+        <slot />
+        {hasEndSlot && <slot name="icon-end" slot="icon-end" />}
+      </OriginLink>
+    )
+  ) : iconOnly ? (
+    <OriginLink
+      href={href as string | URL}
+      iconOnly={true}
+      aria-label={ariaLabel as string}
+      data-lsui-button=""
+      data-variant={variant}
+      data-size={size}
+      {...rest}
+    >
+      {hasStartSlot && <slot name="icon-start" slot="icon-start" />}
+      <slot />
+      {hasEndSlot && <slot name="icon-end" slot="icon-end" />}
+    </OriginLink>
+  ) : (
+    <OriginLink
+      href={href as string | URL}
+      aria-label={ariaLabel}
+      data-lsui-button=""
+      data-variant={variant}
+      data-size={size}
+      {...rest}
+    >
+      {hasStartSlot && <slot name="icon-start" slot="icon-start" />}
+      <slot />
+      {hasEndSlot && <slot name="icon-end" slot="icon-end" />}
+    </OriginLink>
+  )
+}

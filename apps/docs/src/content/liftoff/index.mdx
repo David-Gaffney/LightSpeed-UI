@@ -1,0 +1,22 @@
+---
+title: Liftoff (Level 2)
+description: Copy-paste themed .astro components built strictly atop Origin primitives and semantic CSS tokens.
+sidebar:
+  order: 0
+  label: Overview
+---
+
+**Liftoff (`@lsui/liftoff` + `@lsui/themes`)** is Level 2—where theming, semantic design tokens, and copy-paste styled `.astro` components are introduced on top of [Origin](/origin/) (comparable in role to **shadcn/ui**, tailored natively for Astro).
+
+## Core Goals of Liftoff
+
+- **Strict Layering on Origin (`Origin <- Liftoff`)**: Every `Liftoff` component delegates HTML semantics, ARIA states, keyboard handling, and polyfills to `@lsui/origin`, adding only `variant`/`size` props and `@layer lsui` token styles.
+- **Token-Driven Design Systems (`@lsui/themes`)**: Ships complete visual systems (**Nordic** and **Editorial**, with `DESIGN.md` and `TOKENS.md`) built on live `light-dark()` color & image tokens—zero Tailwind, zero CSS Modules.
+- **Ambient DOM Context**: Containers set `data-theme`, `data-surface`, `data-density`, `data-contrast`, `data-motion`, and `data-layout` so nested components adapt automatically via CSS without prop-drilling.
+
+## Catalog
+
+| Name | Category | Element | Hydration | Summary |
+| :--- | :--- | :--- | :--- | :--- |
+| [`Button`](/liftoff/button/) | Actions | `<button>` | `optional` | Themed, copy-paste action button built atop OriginButton. Adds semantic token variants, sizes, hover/press/focus states, and WCAG 2.5.8 / 2.5.5 minimum target sizing. For URL navigation, use LinkButton instead. |
+| [`LinkButton`](/liftoff/link-button/) | Actions | `<a>` | `optional` | Themed navigation link built atop OriginLink. Applies Button visual variants and sizes to a genuine `<a>` element without ever overriding link semantics with `role="button"`. |

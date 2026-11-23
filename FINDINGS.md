@@ -187,3 +187,28 @@ A running engineering log of architectural decisions, ecosystem tradeoffs, tool 
 ### F-031 (Phase 1, Part 3): `nimbus-docs lint` Link Checking Against Newly Generated MDX Routes
 - **Nuance**: Running `nimbus-docs lint` immediately after `pnpm sync:artifacts` generated new `.mdx` files (`components/button.mdx`, `components/link-button.mdx`) initially flagged `/components/button/` as a broken internal link because Nimbus resolves link targets against the built route inventory from the previous `astro build`—and requires trailing slashes (`/components/button/`).
 - **Solution**: Standardized generated internal doc links with trailing slashes and ran `astro build` before `nimbus-docs lint`, passing `✓ 6 file(s) lint clean` and auto-generating `/components/button/index.md`, `/components/llms.txt`, and OG cards.
+
+### F-032 (Architecture Revision): Four-Level Platform Separation (`Origin` · `Liftoff` · `Landing` · `Apogee`) & Nimbus Section Tabs
+- **Problem**: Treating behaviors, unstyled primitives, themed UI components, CMS page blocks, and complex add-on widgets (like Website Tours or Kanban boards) as one flat catalog blurs responsibilities—forcing users who only want unstyled accessible primitives to inherit theme opinions, or cluttering core UI with specialized interactive experiences.
+- **Decision / Solution**: Separated LightSpeedUI into four explicit platform levels enforced by `@lsui/ast`:
+  1. **Level 1 — `Origin` (`@lsui/origin`)**: Unstyled accessible `.astro` primitives (`OriginButton`, `OriginLink`), pure attribute builders (`buttonAttrs`, `linkAttrs`), keyboard/focus engines, `mount()`, and `announce()`. Zero visual CSS (`@lsui/ast` throws if any `Origin` primitive imports or embeds `<style>`).
+  2. **Level 2 — `Liftoff` (`@lsui/liftoff` + `@lsui/themes`)**: Copy-paste themed `.astro` components (`Button`, `LinkButton`, etc.) layered strictly atop `@lsui/origin`.
+  3. **Level 3 — `Landing` (`@lsui/landing`)**: Astro + EmDash CMS page blocks, composed sections, and templates layered strictly atop `@lsui/liftoff` (`Origin ← Liftoff ← Landing`).
+  4. **Level 4 — `Apogee` (`@lsui/apogee`)**: Independent higher-order interactive experiences (Guided Website Tours, Kanban boards, Spotlight centers) that consume `@lsui/origin` behaviors without coupling to `Landing`.
+  - Configured Nimbus `apps/docs` with 5 multi-collection Top Header Section Tabs (`Overview` · `Origin` · `Liftoff` · `Landing` · `Apogee`) via `sidebar: { scope: "section" }`, giving each level its own scoped sidebar and `/<level>/llms.txt` index.
+
+### F-033 (Level 1 — `Origin`): Why `Element.ariaNotify()` / `Document.ariaNotify()` Beats Hidden `aria-live` Nodes for `announce()`
+- **Investigation**: We inspected UI SDK's Kanban showcase (`https://ui-sdk-showcase-seven.vercel.app`) and `@ui-sdk/core`'s `announce()` implementation to see how drag/transfer screen-reader announcements work today:
+  - UI SDK's Kanban composes `createTransfer` + `createRovingFocus` + `spatialMove` + `transferMessage` and calls `announce(text, { priority: "assertive" })` on pickup, move, and drop.
+  - Under the hood, UI SDK still appends hidden `[data-ui-sdk-announcer]` `aria-live="polite" | "assertive"` `<div>`s to `document.body`—which requires a separate `prepareAnnouncements(doc)` pre-mount workaround (because screen readers often drop text injected in the same tick a live region mounts) **and** breaks when a modal `<dialog>` opens via `.showModal()`, because `document.body` children outside the modal become `inert` and are silenced!
+- **Why `ariaNotify()` Is Better (`https://webstatus.dev/features/arianotify`, Baseline Newly Available `2026-09-14`)**:
+  - Supported across Chrome 141+, Edge 141+, Firefox 150+, and Safari 27+.
+  - Fires imperative screen-reader announcements (`priority: "normal" | "high"`) with **zero hidden DOM nodes**, **zero `prepareAnnouncements()` timing races**, and **full compatibility inside top-layer `<dialog>` / `[popover]` elements**.
+  - Calling `target.ariaNotify(msg, { priority })` on the active interactive element (avoiding `<html>`/`<body>`, which browsers ignore in the a11y tree) automatically inherits the nearest ancestor `lang` attribute so screen readers pick the right voice/accent!
+- **Recommended `Origin` Implementation (`packages/origin/src/announce.ts`)**:
+  1. If `options.target` is a non-`html`/`body` element with `typeof target.ariaNotify === "function"`, call `target.ariaNotify(text, { priority })`.
+  2. Else if `typeof doc.ariaNotify === "function"`, call `doc.ariaNotify(text, { priority })`.
+  3. Else lazily create a visually-hidden `aria-live` region (`polite` / `assertive`) for pre-Baseline-2026 browsers—and track `2026-09-14` `ariaNotify()` in `BASELINE.md` so the fallback can be deleted once `arianotify` graduates to *Widely Available*.
+
+### F-034 (Phase 1, Part 4 Prep): Figma Desktop MCP (Read-Only) vs. Remote Figma MCP (`use_figma` Write-to-Canvas)
+- **Discovery**: Checking Figma's official MCP server documentation revealed that Figma's local Desktop MCP server (`http://127.0.0.1:3845/mcp`) is **read-only** (design-to-code & Code Connect only; no `use_figma`). Creating/editing variables, components, variants, and slots via `use_figma` requires Figma's **Remote MCP server (`https://mcp.figma.com/mcp`)** and edit access on the target Figma Design file (with a local Figma Desktop Development Plugin bridge available as an offline fallback if needed).

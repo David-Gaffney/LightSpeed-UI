@@ -22,9 +22,9 @@ Every *Baseline Newly Available* web platform feature currently used in the repo
 
 | Baseline Newly Available | Feature | WebStatus Link | Compatibility Strategy | Used In |
 | :--- | :--- | :--- | :--- | :--- |
-| 2025-01-27 | Popover | https://webstatus.dev/features/popover | Active polyfill (`@oddbird/popover-polyfill`) | `packages/behaviors/src/polyfills.ts`, `packages/core/src/components/button/Button.astro` |
+| 2025-01-27 | Popover | https://webstatus.dev/features/popover | Active polyfill (`@oddbird/popover-polyfill`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro` |
 | 2025-10-14 | View transitions | https://webstatus.dev/features/view-transitions | Progressive enhancement (snaps without animation) | `apps/docs/src/styles/globals.css` |
-| 2025-12-12 | Invoker commands | https://webstatus.dev/features/invoker-commands | Active polyfill (`invokers-polyfill`) | `packages/behaviors/src/polyfills.ts`, `packages/core/src/components/button/Button.astro` |
+| 2025-12-12 | Invoker commands | https://webstatus.dev/features/invoker-commands | Active polyfill (`invokers-polyfill`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro` |
 | 2025-12-12 | `scrollbar-color` | https://webstatus.dev/features/scrollbar-color | CSS fallback (`::-webkit-scrollbar`) | `apps/docs/src/styles/globals.css` |
 
 ### Baseline 2026
@@ -32,6 +32,7 @@ Every *Baseline Newly Available* web platform feature currently used in the repo
 | Baseline Newly Available | Feature | WebStatus Link | Compatibility Strategy | Used In |
 | :--- | :--- | :--- | :--- | :--- |
 | 2026-03-24 | `@scope` | https://webstatus.dev/features/scope | Docs preview prose isolation | `apps/docs/src/styles/prose.css` |
+| 2026-09-14 | `ariaNotify()` | https://webstatus.dev/features/arianotify | JS fallback (lazy `aria-live` region in `announce()`) | `packages/origin/src/announce.ts` |
 | 2026-09-14 | `light-dark()` image values | https://webstatus.dev/features/light-dark-image | CSS fallback (`image-set()` MIME switch) | `packages/themes/src/base.css`, `packages/themes/src/themes/nordic/theme.css`, `packages/themes/src/themes/editorial/theme.css` |
 
 ---
@@ -54,5 +55,5 @@ Conditional JavaScript polyfills loaded only when native browser support is abse
 
 | Baseline Newly Available | Feature | WebStatus Link | Polyfill | Used In |
 | :--- | :--- | :--- | :--- | :--- |
-| 2025-01-27 | Popover | https://webstatus.dev/features/popover | `@oddbird/popover-polyfill` (conditional: `!Object.hasOwn(HTMLElement.prototype, "popover")`) | `packages/behaviors/src/polyfills.ts`, `packages/core/src/components/button/Button.astro` |
-| 2025-12-12 | Invoker commands | https://webstatus.dev/features/invoker-commands | `invokers-polyfill` (conditional: `!("commandForElement" in HTMLButtonElement.prototype)`) | `packages/behaviors/src/polyfills.ts`, `packages/core/src/components/button/Button.astro` |
+| 2025-01-27 | Popover | https://webstatus.dev/features/popover | `@oddbird/popover-polyfill` (conditional: `!Object.hasOwn(HTMLElement.prototype, "popover")`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro` |
+| 2025-12-12 | Invoker commands | https://webstatus.dev/features/invoker-commands | `invokers-polyfill` (conditional: `!("commandForElement" in HTMLButtonElement.prototype)`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro` |

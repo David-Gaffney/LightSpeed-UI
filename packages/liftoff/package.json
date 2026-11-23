@@ -1,0 +1,29 @@
+{
+  "name": "@lsui/liftoff",
+  "version": "0.0.1",
+  "description": "Level 2 (Liftoff) — Copy-paste themed .astro components built atop @lsui/origin primitives and @lsui/themes semantic tokens",
+  "type": "module",
+  "sideEffects": ["**/*.css"],
+  "dependencies": {
+    "@lsui/origin": "workspace:*",
+    "@lsui/themes": "workspace:*"
+  },
+  "devDependencies": {
+    "astro": "^7.4.13"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./Button.astro": "./src/components/button/Button.astro",
+    "./LinkButton.astro": "./src/components/button/LinkButton.astro",
+    "./components/button": "./src/components/button/index.ts",
+    "./components/button/*": "./src/components/button/*"
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "astro sync && tsc -p tsconfig.check.json --noEmit --runExternalCode"
+  }
+}

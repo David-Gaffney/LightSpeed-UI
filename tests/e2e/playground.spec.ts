@@ -195,15 +195,30 @@ test.describe("LightSpeedUI Playground (Themes, Button/LinkButton & WCAG 2.2 AA)
     const ariaDisabledBtn = page.locator("#aria-disabled-btn");
     await ariaDisabledBtn.focus();
     await expect(ariaDisabledBtn).toBeFocused();
+    // Verify Origin simulated <span role="button"> keyboard Space/Enter + mount() + ariaNotify()
+    const originSpan = page.locator("#origin-span-btn");
+    await expect(originSpan).toHaveAttribute("role", "button");
+    await expect(originSpan).toHaveAttribute("tabindex", "0");
+    await originSpan.focus();
+    await page.keyboard.press("Enter");
+    await expect(originSpan).toHaveAttribute("data-activated", "true");
   });
 });
 
-test.describe("Nimbus Docs <ComponentPreview> CSS Isolation & Auto-Generated Pages", () => {
-  test("reverts Tailwind Preflight inside [data-lsui-preview] and renders AST-generated Button docs + registry JSON", async ({
+test.describe("Nimbus Docs 4-Level Separation & <ComponentPreview> CSS Isolation", () => {
+  test("renders 5 Top Header Tabs (Overview, Origin, Liftoff, Landing, Apogee) and isolated previews", async ({
     page,
     request,
   }) => {
     await page.goto("http://localhost:4321/");
+
+    // Verify all 5 platform section tabs render in the desktop header nav
+    const headerTabs = page.locator('header nav[aria-label="Sections"]').first();
+    await expect(headerTabs.getByRole("link", { name: "Overview" })).toBeVisible();
+    await expect(headerTabs.getByRole("link", { name: "Origin" })).toBeVisible();
+    await expect(headerTabs.getByRole("link", { name: "Liftoff" })).toBeVisible();
+    await expect(headerTabs.getByRole("link", { name: "Landing" })).toBeVisible();
+    await expect(headerTabs.getByRole("link", { name: "Apogee" })).toBeVisible();
 
     const previewButton = page.locator("[data-lsui-preview] button");
     await expect(previewButton).toBeVisible();
@@ -219,26 +234,30 @@ test.describe("Nimbus Docs <ComponentPreview> CSS Isolation & Auto-Generated Pag
     expect(styles.borderTopWidth).toBeGreaterThan(0);
     expect(styles.paddingLeft).toBeGreaterThan(0);
 
-    // Verify AST-generated /components/button/ docs page renders live Nordic & Editorial previews
-    await page.goto("http://localhost:4321/components/button/");
+    // Verify Level 1 (Origin) & Level 2 (Liftoff) dedicated section pages
+    await page.goto("http://localhost:4321/origin/origin-button/");
+    await expect(
+      page.getByRole("heading", { name: "OriginButton", level: 1 }),
+    ).toBeVisible();
+
+    await page.goto("http://localhost:4321/liftoff/button/");
     await expect(
       page.getByRole("heading", { name: "Button", level: 1 }),
     ).toBeVisible();
     await expect(
       page.locator('[data-lsui-preview][data-theme="nordic light"] button[data-variant="primary"]'),
     ).toBeVisible();
-    await expect(
-      page.locator('[data-lsui-preview][data-theme="editorial dark"] button[data-size="lg"]'),
-    ).toBeVisible();
 
-    // Verify static registry JSON endpoint generated from AST
-    const regRes = await request.get("http://localhost:4321/r/button.json");
-    expect(regRes.ok()).toBe(true);
-    const regJson = (await regRes.json()) as {
-      name: string;
+    // Verify level-namespaced static registry JSON endpoints
+    const originReg = await request.get("http://localhost:4321/r/origin/origin-button.json");
+    expect(originReg.ok()).toBe(true);
+    const liftoffReg = await request.get("http://localhost:4321/r/liftoff/button.json");
+    expect(liftoffReg.ok()).toBe(true);
+    const regJson = (await liftoffReg.json()) as {
+      level: string;
       files: Array<{ sha256: string }>;
     };
-    expect(regJson.name).toBe("button");
+    expect(regJson.level).toBe("liftoff");
     expect(regJson.files[0]?.sha256).toMatch(/^[0-9a-f]{64}$/);
   });
 });

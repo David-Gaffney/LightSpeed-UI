@@ -1,17 +1,39 @@
 import { defineCollection } from "astro:content";
-// `z` re-exported from `astro:content` is deprecated; import it from
-// `astro/zod` (the pattern nimbus-docs' own schema helpers document).
 import { z } from "astro/zod";
 import { docsCollection, partialsCollection } from "@cloudflare/nimbus-docs/content";
+
+const sharedSchemaFields = {
+  audience: z.literal("human").optional(),
+};
 
 export const collections = {
   docs: defineCollection(
     docsCollection({
-      schemaFields: {
-        // Nimbus docs are agent-friendly by default. Set `audience: human`
-        // to flag a page that's written primarily for human readers.
-        audience: z.literal("human").optional(),
-      },
+      schemaFields: sharedSchemaFields,
+    }),
+  ),
+  origin: defineCollection(
+    docsCollection({
+      base: "origin",
+      schemaFields: sharedSchemaFields,
+    }),
+  ),
+  liftoff: defineCollection(
+    docsCollection({
+      base: "liftoff",
+      schemaFields: sharedSchemaFields,
+    }),
+  ),
+  landing: defineCollection(
+    docsCollection({
+      base: "landing",
+      schemaFields: sharedSchemaFields,
+    }),
+  ),
+  apogee: defineCollection(
+    docsCollection({
+      base: "apogee",
+      schemaFields: sharedSchemaFields,
     }),
   ),
   partials: defineCollection(partialsCollection()),

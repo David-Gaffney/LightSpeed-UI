@@ -214,18 +214,21 @@ importers:
       '@iconify-json/ph':
         specifier: ^1.2.2
         version: 1.2.2
-      '@lsui/behaviors':
+      '@lsui/apogee':
         specifier: workspace:*
-        version: link:../../packages/behaviors
-      '@lsui/blocks':
-        specifier: workspace:*
-        version: link:../../packages/blocks
-      '@lsui/core':
-        specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../../packages/apogee
       '@lsui/icons':
         specifier: workspace:*
         version: link:../../packages/icons
+      '@lsui/landing':
+        specifier: workspace:*
+        version: link:../../packages/landing
+      '@lsui/liftoff':
+        specifier: workspace:*
+        version: link:../../packages/liftoff
+      '@lsui/origin':
+        specifier: workspace:*
+        version: link:../../packages/origin
       '@lsui/themes':
         specifier: workspace:*
         version: link:../../packages/themes
@@ -263,24 +266,33 @@ importers:
 
   apps/playground:
     dependencies:
-      '@lsui/behaviors':
+      '@lsui/apogee':
         specifier: workspace:*
-        version: link:../../packages/behaviors
-      '@lsui/blocks':
-        specifier: workspace:*
-        version: link:../../packages/blocks
-      '@lsui/core':
-        specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../../packages/apogee
       '@lsui/icons':
         specifier: workspace:*
         version: link:../../packages/icons
+      '@lsui/landing':
+        specifier: workspace:*
+        version: link:../../packages/landing
+      '@lsui/liftoff':
+        specifier: workspace:*
+        version: link:../../packages/liftoff
+      '@lsui/origin':
+        specifier: workspace:*
+        version: link:../../packages/origin
       '@lsui/themes':
         specifier: workspace:*
         version: link:../../packages/themes
       astro:
         specifier: ^7.4.13
         version: 7.4.13(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1)
+
+  packages/apogee:
+    dependencies:
+      '@lsui/origin':
+        specifier: workspace:*
+        version: link:../origin
 
   packages/ast:
     dependencies:
@@ -293,21 +305,6 @@ importers:
       ts-morph:
         specifier: ^28.0.0
         version: 28.0.0
-
-  packages/behaviors:
-    dependencies:
-      '@oddbird/popover-polyfill':
-        specifier: ^0.7.3
-        version: 0.7.3
-      invokers-polyfill:
-        specifier: ^1.0.4
-        version: 1.0.4
-
-  packages/blocks:
-    dependencies:
-      '@lsui/core':
-        specifier: workspace:*
-        version: link:../core
 
   packages/cli:
     dependencies:
@@ -324,19 +321,6 @@ importers:
         specifier: workspace:*
         version: link:../ast
 
-  packages/core:
-    dependencies:
-      '@lsui/behaviors':
-        specifier: workspace:*
-        version: link:../behaviors
-      '@lsui/themes':
-        specifier: workspace:*
-        version: link:../themes
-    devDependencies:
-      astro:
-        specifier: ^7.4.13
-        version: 7.4.13(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1)
-
   packages/figma-sync:
     dependencies:
       '@lsui/ast':
@@ -345,11 +329,43 @@ importers:
 
   packages/icons: {}
 
+  packages/landing:
+    dependencies:
+      '@lsui/liftoff':
+        specifier: workspace:*
+        version: link:../liftoff
+
+  packages/liftoff:
+    dependencies:
+      '@lsui/origin':
+        specifier: workspace:*
+        version: link:../origin
+      '@lsui/themes':
+        specifier: workspace:*
+        version: link:../themes
+    devDependencies:
+      astro:
+        specifier: ^7.4.13
+        version: 7.4.13(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1)
+
   packages/mcp:
     dependencies:
       '@lsui/ast':
         specifier: workspace:*
         version: link:../ast
+
+  packages/origin:
+    dependencies:
+      '@oddbird/popover-polyfill':
+        specifier: ^0.7.3
+        version: 0.7.3
+      invokers-polyfill:
+        specifier: ^1.0.4
+        version: 1.0.4
+    devDependencies:
+      astro:
+        specifier: ^7.4.13
+        version: 7.4.13(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1)
 
   packages/skill: {}
 
