@@ -9,12 +9,23 @@
 3. **Level 3 — `Landing` (`@lsui/landing`)**: Astro + EmDash CMS page blocks, composed sections, and full-page templates layered strictly atop `Liftoff` (`Origin <- Liftoff <- Landing`).
 4. **Level 4 — `Apogee` (`@lsui/apogee`)**: Independent higher-order interactive experiences and site enhancements (Guided Website Tours, Kanban / Transfer Boards, Spotlight Centers).
 
-## Mandatory Engineering Rules
+## Mandatory Engineering & Workflow Rules
 
-- **Pre-Implementation Design Gate**: Before implementing any new primitive, component, block, template, or Apogee feature, present its concrete plan first and wait for direction/approval.
-- **Pure Astro & Semantic CSS Tokens Only**: Never introduce Tailwind utilities, CSS Modules, or hardcoded hex colors in `@lsui/*`.
-- **Action vs. Navigation Split**: Use `Button` / `OriginButton` strictly for in-page actions and `LinkButton` / `OriginLink` strictly for URL navigation (never `role="button"` on `<a>`).
-- **Baseline 2026 Governance**: Consult `modern-web-guidance` first and record any *Baseline Newly Available* feature, CSS fallback, or conditional polyfill in `BASELINE.md` (`pnpm check:baseline`).
+1. **Propose Plan Before Any Component / Block / Feature (NEVER SKIP)**: Before writing code for any new primitive (`Origin`), component (`Liftoff`), block/template (`Landing`), or experience (`Apogee`), present its concrete design plan first (HTML semantics, props, slots, keyboard/screen-reader behavior, `modern-web-guidance` checks, tokens/variants, and Baseline/polyfill impact) and **wait for user direction and approval**.
+2. **Stop After Every Numbered Part**: Always stop at the end of each numbered Part in [`PLAN.md`](./PLAN.md), mark its checkbox `[x]`, show verification results, and wait for user review before continuing.
+3. **Continuous `FINDINGS.md` & `BASELINE.md` Logging**:
+   - Log every architectural decision, ecosystem bug, tool quirk, and fix in [`FINDINGS.md`](./FINDINGS.md).
+   - Invoke the `modern-web-guidance` skill **first** for all HTML/CSS/JS tasks (and include the `### Modern Web Guidance` disclosure section when it shapes changes).
+   - Record every *Baseline Newly Available* feature, CSS fallback, and conditional polyfill in [`BASELINE.md`](./BASELINE.md) (sorted oldest -> newest, verified via `pnpm check:baseline`).
+4. **Pure Astro & Semantic CSS Tokens Only**: Never introduce Tailwind utilities, CSS Modules, or hardcoded hex colors in `@lsui/*`. Keep `--color-*` custom properties unregistered (for live `light-dark()` subtree inheritance), never set `font-size` on `:root`/`html` (for OS `<meta name="text-scale" content="scale">`), and always use `color-mix(in oklab, ...)` (never `in oklch`).
+5. **Action vs. Navigation Split**: Use `Button` / `OriginButton` strictly for in-page actions and `LinkButton` / `OriginLink` strictly for URL navigation (never `role="button"` on `<a>`).
+
+## Technical Stack & Verification Gotchas
+
+- **TypeScript 7.1 + `.astro` Type-Checking**: Uses `typescript@7.1.0-beta` + `@astrojs/ts-content-mapper` (with `patches/@astrojs__ts-content-mapper@0.2.0.patch` skipping third-party `node_modules` `.astro` diagnostics). Run `pnpm typecheck` and `pnpm typecheck:apps`—never add `@astrojs/check` or TypeScript 5/6.
+- **Artifact Sync & Nimbus Docs Lint Order**: After editing `.astro` or `.css` files, run `pnpm sync:artifacts`, then `pnpm --filter @lsui/docs run build` *before* `pnpm --filter @lsui/docs run lint:docs` (Nimbus resolves internal links against the built route manifest).
+- **Astro 7 Agent Backgrounding**: Always keep `--ignore-lock` on `astro preview` in `playwright.config.ts` so Astro 7 does not auto-daemonize preview servers under agent env vars.
+- **Read First**: See [`PLAN.md`](./PLAN.md) for the Current Agent Handoff Snapshot, [`ARCHITECTURE.md`](./ARCHITECTURE.md) for system design, and [`FINDINGS.md`](./FINDINGS.md) (`F-001`..`F-034`+) for solved edge cases.
 
 ## Installed Themes
 - **`editorial`** (`@lsui/themes/editorial.css`): Fonts `"Iowan Old Style", "Charter", "Bitstream Charter", "Sitka Text", Georgia, serif`, medium radius `0.1875rem`.

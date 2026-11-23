@@ -44,7 +44,7 @@ npx lsui add button
 | `disabled` | `boolean` | — | No | Disables the button and removes it from tab order. Use `aria-disabled="true"` when focus must remain reachable. |
 | `render` | `boolean` | — | No | Conditionally renders the component when `true` (omits markup when `false`). |
 | `commandfor` | `string` | — | No | Target element ID for the HTML Invoker Commands API (`https://webstatus.dev/features/invoker-commands`). |
-| `command` | `any` | — | No | Built-in or `--custom` command dispatched to `commandfor`. |
+| `command` | `InvokerCommand` | — | No | Built-in or `--custom` command dispatched to `commandfor`. |
 | `popovertarget` | `string` | — | No | Target element ID for the HTML Popover API (`https://webstatus.dev/features/popover`). |
 | `popovertargetaction` | `"toggle" \| "show" \| "hide"` | — | No | Popover action performed when clicked. |
 | `iconOnly` | `boolean` | `false` | Required when iconOnly is true |  |

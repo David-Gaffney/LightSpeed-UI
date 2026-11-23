@@ -12,6 +12,21 @@ A phased engineering plan to build **LightSpeedUI** as a **four-level Astro UI P
 
 ---
 
+## Current Agent Handoff Snapshot
+
+- **Repository Root**: `./lsui` (`https://github.com/David-Gaffney/LightSpeed-UI`)
+- **Completed So Far**:
+  - **Phase 0 (Parts 1–3)**: Monorepo, Node 26 LTS + ESM, `typescript@7.1.0-beta` + `@astrojs/ts-content-mapper` (with `patches/` fix for third-party `node_modules` `.astro` files), fixed Changesets, `apps/playground`, Nimbus `apps/docs` with CSS-isolated `<ComponentPreview>` + 5 Top Header Section Tabs (`Overview`, `Origin`, `Liftoff`, `Landing`, `Apogee`), Vitest (`21/21`), Playwright + `axe-core` WCAG 2.2 AA (`4/4`), and 3-section `BASELINE.md` (`pnpm check:baseline`).
+  - **Phase 1 (Parts 1–3)**: `@lsui/themes` (`Nordic` & `Editorial`, `light-dark()` colors & `<image>`s, 6 ambient `data-*` contexts), 4-level package split (`@lsui/origin`, `@lsui/liftoff`, `@lsui/landing`, `@lsui/apogee`), `Origin` `announce()` (`Element.ariaNotify()` / `Document.ariaNotify()` + `aria-live` fallback), `OriginButton` & `OriginLink`, layered `Liftoff` `Button` & `LinkButton`, and `@lsui/ast` (`pnpm sync:artifacts` generating 19 synced docs/registry/AI/Figma artifacts, including `packages/figma-sync/generated/figma-spec.json`).
+- **Next Milestone Up**: **`Phase 1, Part 4` — Live 1-Component Figma MCP Proof-of-Concept (`@lsui/figma-sync`)**
+  - Connect to Figma's **Remote MCP server (`https://mcp.figma.com/mcp`)** using `use_figma` (note `F-034`: Figma's Desktop MCP `127.0.0.1:3845` is read-only; if Remote MCP OAuth restricts the client, fall back to a small local Figma Desktop Development Plugin bridge) to push `Nordic`/`Editorial` variables and `Liftoff` `Button` from `packages/figma-sync/generated/figma-spec.json` into a test Figma Design file.
+- **Full Verification Command**:
+  ```sh
+  pnpm sync:artifacts && pnpm check:artifacts && pnpm build && pnpm typecheck && pnpm typecheck:apps && pnpm --filter @lsui/docs run build && pnpm --filter @lsui/docs run lint:docs && pnpm check:baseline && pnpm test && pnpm test:e2e
+  ```
+
+---
+
 ## Locked Platform Levels & Architectural Decisions
 
 1. **Level 1 — `Origin` (`@lsui/origin`)**: Unstyled accessible `.astro` primitives (`OriginButton`, `OriginLink`, etc.) + headless TypeScript behaviors (`mount()`, `announce()` using Baseline 2026 `Element.ariaNotify()` / `Document.ariaNotify()` with lazy `aria-live` fallback, keyboard handlers, `aria-disabled` focus guards, conditional polyfills, and `buttonAttrs()` / `linkAttrs()` rendering-flexibility helpers). Zero visual CSS.
