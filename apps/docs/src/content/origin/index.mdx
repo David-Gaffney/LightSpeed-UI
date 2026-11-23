@@ -8,12 +8,9 @@ sidebar:
 
 **Origin (`@lsui/origin`)** is Level 1—the Astro-native behavioral and semantic foundation of LightSpeedUI (comparable in role to **UI SDK** and **Base UI**).
 
-## Core Goals of Origin
+It provides unstyled accessible `.astro` primitives, headless interaction controllers, and Baseline 2026 `ariaNotify()` screen-reader announcements with **zero visual CSS**, serving both standalone bespoke CSS architectures and [Liftoff](/liftoff/) above it.
 
-- **Unstyled Accessible Primitives**: Semantic `.astro` components (`OriginButton`, `OriginLink`, and upcoming overlays/disclosures) with **zero visual CSS** so teams can bring any styling system or build `Liftoff` themes on top.
-- **Screen Reader Announcements via `ariaNotify()`**: `announce(message, { target, priority })` uses **Baseline 2026 `Element.ariaNotify()` / `Document.ariaNotify()`** first—inheriting element `lang` and working inside modal `<dialog>` top layers without `inert` background live-region bugs—with an automatic lazy `aria-live` fallback for older browsers.
-- **Keyboard, Focus & Disabled Ergonomics**: View-Transition-safe `mount(selector, setup)`, focusable `aria-disabled="true"` guards, and conditional Baseline polyfill loaders (`Popover`, `Invoker commands`).
-- **Rendering Flexibility**: Pure attribute builders (`buttonAttrs()`, `linkAttrs()`) plus safe `as` tag overrides that forbid invalid semantics like `<a role="button">`.
+Read **[Core Goals of Origin](/origin/core-goals/)** for the architectural breakdown of how Origin handles semantics, `ariaNotify()`, focusable `aria-disabled`, and rendering flexibility.
 
 ## Catalog
 

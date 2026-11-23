@@ -1,0 +1,31 @@
+---
+title: Core Goals of Origin
+description: Why Origin separates unstyled Astro semantics, headless behaviors, and ariaNotify() announcements from visual styling.
+sidebar:
+  order: 1
+  label: Core Goals of Origin
+---
+
+**Origin (`@lsui/origin`)** establishes the non-visual behavioral and accessibility baseline for the entire LightSpeedUI platform.
+
+## Unstyled Accessible Primitives
+
+Semantic `.astro` primitives (`OriginButton`, `OriginLink`, and upcoming overlays/disclosures) ship with **zero visual CSS** (`@lsui/ast` fails the build if an `Origin` primitive imports or embeds a `<style>` block). Teams with an existing CSS design system can adopt `Origin` directly without overriding framework styles.
+
+## Screen Reader Announcements via `ariaNotify()`
+
+`announce(message, { target, priority })` uses **Baseline 2026 `Element.ariaNotify()` / `Document.ariaNotify()`** ([webstatus.dev/features/arianotify](https://webstatus.dev/features/arianotify)) as its primary mechanism:
+
+- Emits imperative assistive-technology notifications with **zero hidden live-region DOM nodes** and **zero pre-mount timing races**.
+- Works reliably inside top-layer modal `<dialog>` and `[popover]` elements where background `document.body` `aria-live` regions become `inert` and silenced.
+- Calling `target.ariaNotify()` on the active element automatically inherits the nearest ancestor `lang` attribute for accurate screen-reader voice selection, falling back lazily to a shared `aria-live` region in older browsers.
+
+## Keyboard, Focus & `aria-disabled` Ergonomics
+
+- **View-Transition-Safe `mount(selector, setup)`**: Attaches headless behaviors to plain semantic HTML elements without Custom Element wrapper nodes and cleans up cleanly across Astro `<ClientRouter />` swaps.
+- **Focusable `aria-disabled` Guards**: Preserves keyboard tab reachability on `aria-disabled="true"` controls (such as toolbar actions) while blocking pointer and `Enter`/`Space` activation.
+- **Conditional Baseline Polyfills**: Dynamically loads `@oddbird/popover-polyfill` or `invokers-polyfill` only when declarative trigger attributes are used in browsers lacking native support.
+
+## Rendering Flexibility
+
+Pure attribute builders (`buttonAttrs()`, `linkAttrs()`) and safe `as` tag overrides (`"button" | "span" | "div"` with `Enter`/`Space` delegation) support custom markup constraints while forbidding invalid combinations like `<a role="button">`.

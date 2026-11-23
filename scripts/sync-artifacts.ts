@@ -1,4 +1,11 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -67,6 +74,24 @@ for (const [relPath, expectedContent] of outputs.entries()) {
     } else {
       mkdirSync(path.dirname(absPath), { recursive: true });
       writeFileSync(absPath, expectedContent, "utf-8");
+    }
+  }
+}
+
+// Prune (or flag in --check mode) stale generated MDX files in the 4 level collections
+for (const level of ["origin", "liftoff", "landing", "apogee"] as const) {
+  const relDir = `apps/docs/src/content/${level}`;
+  const absDir = path.join(rootDir, relDir);
+  if (!existsSync(absDir)) continue;
+  for (const entry of readdirSync(absDir)) {
+    if (!entry.endsWith(".mdx")) continue;
+    const relPath = `${relDir}/${entry}`;
+    if (!outputs.has(relPath)) {
+      if (checkOnly) {
+        drifted.push(`${relPath} (stale)`);
+      } else {
+        unlinkSync(path.join(rootDir, relPath));
+      }
     }
   }
 }

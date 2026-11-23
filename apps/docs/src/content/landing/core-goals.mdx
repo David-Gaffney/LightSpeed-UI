@@ -1,0 +1,21 @@
+---
+title: Core Goals of Landing
+description: How Landing composes Liftoff components into standalone Astro and EmDash CMS sections, blocks, and page templates.
+sidebar:
+  order: 1
+  label: Core Goals of Landing
+---
+
+**Landing (`@lsui/landing`)** assembles [Liftoff](/liftoff/) components into production-ready sections, CMS blocks, and full-page templates.
+
+## Strict One-Way Layering (`Origin <- Liftoff <- Landing`)
+
+`Landing` imports exclusively from `@lsui/liftoff` (and foundational tokens/icons), never reversing the dependency arrow and never bypassing `Origin`/`Liftoff` accessibility contracts.
+
+## Standalone Astro + EmDash CMS Ready
+
+Adopts EmDash CMS block and publishing conventions (`Hero`, `Features`, `Pricing`, `CTA`, `FAQ`, `Split`, `Logos`, `Contact`, `ArticleGrid`) while accepting plain `astro:content` collections and typed Astro props seamlessly.
+
+## Section-Level Surface & Density Composition
+
+Blocks declare section-level `data-theme`, `data-surface="hero" | "muted" | "inverse"`, and `data-density` attributes so every nested `Liftoff` button, card, and typographic element adapts automatically.

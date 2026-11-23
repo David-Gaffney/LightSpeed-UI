@@ -1,0 +1,25 @@
+---
+title: Core Goals of Apogee
+description: How Apogee delivers standalone higher-order interactive experiences like Guided Website Tours, Kanban boards, and Spotlight centers.
+sidebar:
+  order: 1
+  label: Core Goals of Apogee
+---
+
+**Apogee (`@lsui/apogee`)** packages complex, opt-in interactive experiences that sit alongside—rather than inside—standard UI component and block catalogs.
+
+## Independent & Opt-In Architecture
+
+Unlike the strict `Origin <- Liftoff <- Landing` chain, `Apogee` remains decoupled from `Landing` so any Astro application or content site can drop in a standalone interactive experience powered by `@lsui/origin` primitives (`mount()`, `announce()`, focus management).
+
+## Guided Website Tours (`<Tour />`)
+
+Multi-step interactive product and documentation walkthroughs built on CSS Anchor Positioning, top-layer Popover spotlighting, full keyboard step navigation, and `ariaNotify()` step announcements.
+
+## Sortable & Multi-Column Kanban Boards
+
+Accessible pointer + keyboard drag-and-transfer boards composing roving focus, spatial keyboard movement, and `ariaNotify()` pickup/move/drop screen-reader announcements.
+
+## Command & Spotlight Centers
+
+Site-wide keyboard command palettes and interactive reading companions designed for Astro View Transitions.

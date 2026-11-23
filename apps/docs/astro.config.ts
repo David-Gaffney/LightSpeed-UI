@@ -14,7 +14,28 @@ const nimbusConfig = defineNimbusConfig({
   editPattern: "https://github.com/David-Gaffney/LightSpeed-UI/edit/main/apps/docs/{path}",
   socialImageAlt: "LightSpeedUI documentation preview",
   sidebar: {
-    items: ["index", "levels"],
+    items: [
+      {
+        label: "Overview",
+        items: ["index", "levels"],
+      },
+      {
+        label: "Origin (Level 1)",
+        autogenerate: { collection: "origin" },
+      },
+      {
+        label: "Liftoff (Level 2)",
+        autogenerate: { collection: "liftoff" },
+      },
+      {
+        label: "Landing (Level 3)",
+        autogenerate: { collection: "landing" },
+      },
+      {
+        label: "Apogee (Level 4)",
+        autogenerate: { collection: "apogee" },
+      },
+    ],
   },
 });
 

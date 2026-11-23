@@ -1,0 +1,25 @@
+---
+title: Core Goals of Liftoff
+description: How Liftoff layers semantic CSS token theming, ambient DOM contexts, and open-code ownership onto Origin primitives.
+sidebar:
+  order: 1
+  label: Core Goals of Liftoff
+---
+
+**Liftoff (`@lsui/liftoff` + `@lsui/themes`)** turns [Origin](/origin/)'s unstyled accessible primitives into ready-to-own, token-themed Astro components.
+
+## Strict Layering on Origin (`Origin <- Liftoff`)
+
+Every `Liftoff` component delegates HTML semantics, ARIA states, keyboard handling, and conditional polyfills to `@lsui/origin`, adding only visual `variant` / `size` props, WCAG 2.5.8 / 2.5.5 minimum target sizing, and `@layer lsui.components` token styles.
+
+## Token-Driven Design Systems (`@lsui/themes`)
+
+Ships complete visual systems (**Nordic** and **Editorial**, each accompanied by `DESIGN.md` and `TOKENS.md`) built on live CSS `light-dark()` color and `<image>` tokens—with **zero Tailwind** and **zero CSS Modules**.
+
+## Ambient DOM Context (`data-*` Attributes)
+
+Parent containers set `data-theme` (including combined `data-theme="editorial dark"`), `data-surface`, `data-density`, `data-contrast`, `data-motion`, and `data-layout` so nested components adapt automatically through CSS inheritance without prop-drilling.
+
+## Astro + EmDash Coverage
+
+Spans Core UI controls, Content/Publishing primitives (`Prose`, `PortableText`, `Byline`, `PostCard`, `Pagination`), and Documentation UI (`Callout`, `CodeGroup`, `DocsSidebar`, `PrevNext`).

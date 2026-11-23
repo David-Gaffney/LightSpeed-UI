@@ -212,3 +212,13 @@ A running engineering log of architectural decisions, ecosystem tradeoffs, tool 
 
 ### F-034 (Phase 1, Part 4 Prep): Figma Desktop MCP (Read-Only) vs. Remote Figma MCP (`use_figma` Write-to-Canvas)
 - **Discovery**: Checking Figma's official MCP server documentation revealed that Figma's local Desktop MCP server (`http://127.0.0.1:3845/mcp`) is **read-only** (design-to-code & Code Connect only; no `use_figma`). Creating/editing variables, components, variants, and slots via `use_figma` requires Figma's **Remote MCP server (`https://mcp.figma.com/mcp`)** and edit access on the target Figma Design file (with a local Figma Desktop Development Plugin bridge available as an offline fallback if needed).
+
+### F-035 (Nimbus Multi-Collection Sidebars): Why `getSidebar(slug, { collection })` Alone Showed `Overview` on Secondary Collections & How `SidebarTransform` Solves It
+- **Bug**: Clicking `Origin`, `Liftoff`, `Landing`, or `Apogee` in the top navigation bar still rendered the `Overview` sidebar (`Introduction`, `Platform Levels`).
+- **Root Cause (in `@cloudflare/nimbus-docs` `runtime.js` + `sidebar.ts`)**:
+  1. `buildStructuralTree(pageCollection)` only swaps `effectivePrimary` for `docs-<v>` version collections (`versions.others`)—for non-version secondary collections (`origin`, `liftoff`, `landing`, `apogee`), `getSidebar()` always builds from `nimbusConfig.sidebar.items`. Because `astro.config.ts` only listed `items: ["index", "levels"]`, every collection received the `Overview` sidebar.
+  2. Furthermore, Nimbus's built-in `scope: "section"` (`scopeToCurrentSection`) unwraps the outer group header (`scopeToGroup`) and falls back to the entire multi-collection tree on `"/"` (`currentSegment === undefined`).
+- **Solution**:
+  1. Registered all 5 top-level sections (`Overview`, `Origin (Level 1)`, `Liftoff (Level 2)`, `Landing (Level 3)`, `Apogee (Level 4)`) via `autogenerate: { collection: "<level>" }` in `apps/docs/astro.config.ts` so Nimbus's `getBreadcrumbs()`, `llms-full.txt`, and `nimbus-docs check` index the full multi-level tree.
+  2. Updated `@lsui/ast`'s `buildDocsMdxByLevel()` to generate `index.mdx` (`Overview`), `core-goals.mdx` (`Core Goals of <Level>`), and `Catalog` items (plus `catalog.mdx` when a level's catalog is still upcoming), and added stale-MDX pruning in `scripts/sync-artifacts.ts`.
+  3. Added `getLevelSidebar(currentSlug, collection)` in `apps/docs/src/lib/sidebar.ts` using Nimbus's `getSidebar(..., { transform })` hook to scope each tab's rail to its expanded `<Level> (Level N)` group → `Overview`, `Core Goals of <Level>`, and an expanded `Catalog` group containing that level's components.

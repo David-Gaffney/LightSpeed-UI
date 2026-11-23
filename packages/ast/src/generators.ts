@@ -445,57 +445,151 @@ function buildComponentDemoBlock(comp: ComponentIR): string {
 
 const LEVEL_OVERVIEWS: Record<
   PlatformLevel,
-  { title: string; description: string; body: string }
+  {
+    shortName: string;
+    title: string;
+    description: string;
+    overviewBody: string;
+    coreGoalsTitle: string;
+    coreGoalsDescription: string;
+    coreGoalsBody: string;
+    upcomingCatalogBody: string;
+  }
 > = {
   origin: {
+    shortName: "Origin",
     title: "Origin (Level 1)",
     description:
       "Unstyled accessible .astro primitives, headless behaviors, keyboard interaction, and ariaNotify() screen reader announcements.",
-    body: `**Origin (\`@lsui/origin\`)** is Level 1—the Astro-native behavioral and semantic foundation of LightSpeedUI (comparable in role to **UI SDK** and **Base UI**).
+    overviewBody: `**Origin (\`@lsui/origin\`)** is Level 1—the Astro-native behavioral and semantic foundation of LightSpeedUI (comparable in role to **UI SDK** and **Base UI**).
 
-## Core Goals of Origin
+It provides unstyled accessible \`.astro\` primitives, headless interaction controllers, and Baseline 2026 \`ariaNotify()\` screen-reader announcements with **zero visual CSS**, serving both standalone bespoke CSS architectures and [Liftoff](/liftoff/) above it.
 
-- **Unstyled Accessible Primitives**: Semantic \`.astro\` components (\`OriginButton\`, \`OriginLink\`, and upcoming overlays/disclosures) with **zero visual CSS** so teams can bring any styling system or build \`Liftoff\` themes on top.
-- **Screen Reader Announcements via \`ariaNotify()\`**: \`announce(message, { target, priority })\` uses **Baseline 2026 \`Element.ariaNotify()\` / \`Document.ariaNotify()\`** first—inheriting element \`lang\` and working inside modal \`<dialog>\` top layers without \`inert\` background live-region bugs—with an automatic lazy \`aria-live\` fallback for older browsers.
-- **Keyboard, Focus & Disabled Ergonomics**: View-Transition-safe \`mount(selector, setup)\`, focusable \`aria-disabled="true"\` guards, and conditional Baseline polyfill loaders (\`Popover\`, \`Invoker commands\`).
-- **Rendering Flexibility**: Pure attribute builders (\`buttonAttrs()\`, \`linkAttrs()\`) plus safe \`as\` tag overrides that forbid invalid semantics like \`<a role="button">\`.`,
+Read **[Core Goals of Origin](/origin/core-goals/)** for the architectural breakdown of how Origin handles semantics, \`ariaNotify()\`, focusable \`aria-disabled\`, and rendering flexibility.`,
+    coreGoalsTitle: "Core Goals of Origin",
+    coreGoalsDescription:
+      "Why Origin separates unstyled Astro semantics, headless behaviors, and ariaNotify() announcements from visual styling.",
+    coreGoalsBody: `**Origin (\`@lsui/origin\`)** establishes the non-visual behavioral and accessibility baseline for the entire LightSpeedUI platform.
+
+## Unstyled Accessible Primitives
+
+Semantic \`.astro\` primitives (\`OriginButton\`, \`OriginLink\`, and upcoming overlays/disclosures) ship with **zero visual CSS** (\`@lsui/ast\` fails the build if an \`Origin\` primitive imports or embeds a \`<style>\` block). Teams with an existing CSS design system can adopt \`Origin\` directly without overriding framework styles.
+
+## Screen Reader Announcements via \`ariaNotify()\`
+
+\`announce(message, { target, priority })\` uses **Baseline 2026 \`Element.ariaNotify()\` / \`Document.ariaNotify()\`** ([webstatus.dev/features/arianotify](https://webstatus.dev/features/arianotify)) as its primary mechanism:
+
+- Emits imperative assistive-technology notifications with **zero hidden live-region DOM nodes** and **zero pre-mount timing races**.
+- Works reliably inside top-layer modal \`<dialog>\` and \`[popover]\` elements where background \`document.body\` \`aria-live\` regions become \`inert\` and silenced.
+- Calling \`target.ariaNotify()\` on the active element automatically inherits the nearest ancestor \`lang\` attribute for accurate screen-reader voice selection, falling back lazily to a shared \`aria-live\` region in older browsers.
+
+## Keyboard, Focus & \`aria-disabled\` Ergonomics
+
+- **View-Transition-Safe \`mount(selector, setup)\`**: Attaches headless behaviors to plain semantic HTML elements without Custom Element wrapper nodes and cleans up cleanly across Astro \`<ClientRouter />\` swaps.
+- **Focusable \`aria-disabled\` Guards**: Preserves keyboard tab reachability on \`aria-disabled="true"\` controls (such as toolbar actions) while blocking pointer and \`Enter\`/\`Space\` activation.
+- **Conditional Baseline Polyfills**: Dynamically loads \`@oddbird/popover-polyfill\` or \`invokers-polyfill\` only when declarative trigger attributes are used in browsers lacking native support.
+
+## Rendering Flexibility
+
+Pure attribute builders (\`buttonAttrs()\`, \`linkAttrs()\`) and safe \`as\` tag overrides (\`"button" | "span" | "div"\` with \`Enter\`/\`Space\` delegation) support custom markup constraints while forbidding invalid combinations like \`<a role="button">\`.`,
+    upcomingCatalogBody: `Primitives in **Origin (Level 1)** follow a mandatory design-plan review gate before implementation. See \`PLAN.md\` Phase 2 for upcoming controllers and overlay/disclosure primitives.`,
   },
   liftoff: {
+    shortName: "Liftoff",
     title: "Liftoff (Level 2)",
     description:
       "Copy-paste themed .astro components built strictly atop Origin primitives and semantic CSS tokens.",
-    body: `**Liftoff (\`@lsui/liftoff\` + \`@lsui/themes\`)** is Level 2—where theming, semantic design tokens, and copy-paste styled \`.astro\` components are introduced on top of [Origin](/origin/) (comparable in role to **shadcn/ui**, tailored natively for Astro).
+    overviewBody: `**Liftoff (\`@lsui/liftoff\` + \`@lsui/themes\`)** is Level 2—where theming, semantic design tokens, and copy-paste styled \`.astro\` components are layered strictly on top of [Origin](/origin/) (comparable in role to **shadcn/ui**, built natively for Astro).
 
-## Core Goals of Liftoff
+Read **[Core Goals of Liftoff](/liftoff/core-goals/)** for how Liftoff pairs open-code \`.astro\` ownership with \`@layer lsui\` semantic tokens and ambient \`data-*\` DOM contexts.`,
+    coreGoalsTitle: "Core Goals of Liftoff",
+    coreGoalsDescription:
+      "How Liftoff layers semantic CSS token theming, ambient DOM contexts, and open-code ownership onto Origin primitives.",
+    coreGoalsBody: `**Liftoff (\`@lsui/liftoff\` + \`@lsui/themes\`)** turns [Origin](/origin/)'s unstyled accessible primitives into ready-to-own, token-themed Astro components.
 
-- **Strict Layering on Origin (\`Origin <- Liftoff\`)**: Every \`Liftoff\` component delegates HTML semantics, ARIA states, keyboard handling, and polyfills to \`@lsui/origin\`, adding only \`variant\`/\`size\` props and \`@layer lsui\` token styles.
-- **Token-Driven Design Systems (\`@lsui/themes\`)**: Ships complete visual systems (**Nordic** and **Editorial**, with \`DESIGN.md\` and \`TOKENS.md\`) built on live \`light-dark()\` color & image tokens—zero Tailwind, zero CSS Modules.
-- **Ambient DOM Context**: Containers set \`data-theme\`, \`data-surface\`, \`data-density\`, \`data-contrast\`, \`data-motion\`, and \`data-layout\` so nested components adapt automatically via CSS without prop-drilling.`,
+## Strict Layering on Origin (\`Origin <- Liftoff\`)
+
+Every \`Liftoff\` component delegates HTML semantics, ARIA states, keyboard handling, and conditional polyfills to \`@lsui/origin\`, adding only visual \`variant\` / \`size\` props, WCAG 2.5.8 / 2.5.5 minimum target sizing, and \`@layer lsui.components\` token styles.
+
+## Token-Driven Design Systems (\`@lsui/themes\`)
+
+Ships complete visual systems (**Nordic** and **Editorial**, each accompanied by \`DESIGN.md\` and \`TOKENS.md\`) built on live CSS \`light-dark()\` color and \`<image>\` tokens—with **zero Tailwind** and **zero CSS Modules**.
+
+## Ambient DOM Context (\`data-*\` Attributes)
+
+Parent containers set \`data-theme\` (including combined \`data-theme="editorial dark"\`), \`data-surface\`, \`data-density\`, \`data-contrast\`, \`data-motion\`, and \`data-layout\` so nested components adapt automatically through CSS inheritance without prop-drilling.
+
+## Astro + EmDash Coverage
+
+Spans Core UI controls, Content/Publishing primitives (\`Prose\`, \`PortableText\`, \`Byline\`, \`PostCard\`, \`Pagination\`), and Documentation UI (\`Callout\`, \`CodeGroup\`, \`DocsSidebar\`, \`PrevNext\`).`,
+    upcomingCatalogBody: `Components in **Liftoff (Level 2)** follow a mandatory design-plan review gate before implementation. See \`PLAN.md\` Phase 3 for the Core UI, Publishing, and Documentation component batches.`,
   },
   landing: {
+    shortName: "Landing",
     title: "Landing (Level 3)",
     description:
       "Composed Astro + EmDash CMS page blocks, marketing/publishing/docs sections, and full-page templates built atop Liftoff.",
-    body: `**Landing (\`@lsui/landing\`)** is Level 3—composed real-world page sections, CMS blocks, and full-page templates built strictly on top of [Liftoff](/liftoff/) (comparable in role to **shadcnblocks**, built natively for standalone Astro and **EmDash CMS**).
+    overviewBody: `**Landing (\`@lsui/landing\`)** is Level 3—composed real-world page sections, CMS blocks, and full-page templates built strictly on top of [Liftoff](/liftoff/) (comparable in role to **shadcnblocks**, built natively for standalone Astro and **EmDash CMS**).
 
-## Core Goals of Landing
+Read **[Core Goals of Landing](/landing/core-goals/)** for how Landing composes Liftoff components across marketing, editorial, and documentation layouts.`,
+    coreGoalsTitle: "Core Goals of Landing",
+    coreGoalsDescription:
+      "How Landing composes Liftoff components into standalone Astro and EmDash CMS sections, blocks, and page templates.",
+    coreGoalsBody: `**Landing (\`@lsui/landing\`)** assembles [Liftoff](/liftoff/) components into production-ready sections, CMS blocks, and full-page templates.
 
-- **Strict One-Way Layering (\`Origin <- Liftoff <- Landing\`)**: Page blocks compose \`Liftoff\` components and respond automatically to section-level \`data-theme\`, \`data-surface="hero" | "muted" | "inverse"\`, and \`data-density\` attributes.
-- **Astro + EmDash CMS Ready**: Uses EmDash publishing & marketing conventions (\`Hero\`, \`Features\`, \`Pricing\`, \`CTA\`, \`FAQ\`, \`Split\`, \`PostCard\` grids, \`DocsLayout\`) while accepting plain \`astro:content\` data or props.`,
+## Strict One-Way Layering (\`Origin <- Liftoff <- Landing\`)
+
+\`Landing\` imports exclusively from \`@lsui/liftoff\` (and foundational tokens/icons), never reversing the dependency arrow and never bypassing \`Origin\`/\`Liftoff\` accessibility contracts.
+
+## Standalone Astro + EmDash CMS Ready
+
+Adopts EmDash CMS block and publishing conventions (\`Hero\`, \`Features\`, \`Pricing\`, \`CTA\`, \`FAQ\`, \`Split\`, \`Logos\`, \`Contact\`, \`ArticleGrid\`) while accepting plain \`astro:content\` collections and typed Astro props seamlessly.
+
+## Section-Level Surface & Density Composition
+
+Blocks declare section-level \`data-theme\`, \`data-surface="hero" | "muted" | "inverse"\`, and \`data-density\` attributes so every nested \`Liftoff\` button, card, and typographic element adapts automatically.`,
+    upcomingCatalogBody: `Blocks and page templates in **Landing (Level 3)** follow a mandatory design-plan review gate before implementation.
+
+## Planned Phase 4 Catalog
+
+- **Marketing & Editorial Blocks**: \`Hero\`, \`Features\`, \`Pricing\`, \`CTA\`, \`FAQ\`, \`Split\`, and \`ArticleGrid\` (compatible with both \`astro:content\` and EmDash CMS \`Blocks\` schemas).
+- **Starter Page Templates**: Full-page marketing and publishing layouts built atop \`@lsui/liftoff\`.`,
   },
   apogee: {
+    shortName: "Apogee",
     title: "Apogee (Level 4)",
     description:
       "Independent higher-order interactive experiences and site enhancements beyond standard component and block libraries.",
-    body: `**Apogee (\`@lsui/apogee\`)** is Level 4—an independent tier for richer, self-contained interactive capabilities and site enhancements that go beyond standard UI primitives, styled components, or static page blocks.
+    overviewBody: `**Apogee (\`@lsui/apogee\`)** is Level 4—an independent tier for richer, self-contained interactive capabilities and site enhancements that go beyond standard UI primitives, styled components, or static page blocks.
 
-## Core Goals of Apogee
+Read **[Core Goals of Apogee](/apogee/core-goals/)** for how Apogee stays modular and opt-in across any Astro site.`,
+    coreGoalsTitle: "Core Goals of Apogee",
+    coreGoalsDescription:
+      "How Apogee delivers standalone higher-order interactive experiences like Guided Website Tours, Kanban boards, and Spotlight centers.",
+    coreGoalsBody: `**Apogee (\`@lsui/apogee\`)** packages complex, opt-in interactive experiences that sit alongside—rather than inside—standard UI component and block catalogs.
 
-- **Independent & Opt-In**: Unlike the strict \`Origin <- Liftoff <- Landing\` chain, \`Apogee\` packages standalone higher-order features that any Astro site can drop in on demand (powered by \`@lsui/origin\` behaviors like \`mount()\` and \`announce()\`).
-- **Planned Flagship Capabilities**:
-  - **Guided Website Tours (\`<Tour />\`)**: Multi-step anchored walkthroughs using CSS Anchor Positioning, Popover top-layer spotlighting, keyboard step navigation, and \`ariaNotify()\` step announcements.
-  - **Sortable & Multi-Column Kanban Boards**: Pointer + keyboard drag-and-transfer boards with \`ariaNotify()\` pickup/move/drop announcements.
-  - **Command & Spotlight Centers**: Site-wide keyboard palettes and reading companions.`,
+## Independent & Opt-In Architecture
+
+Unlike the strict \`Origin <- Liftoff <- Landing\` chain, \`Apogee\` remains decoupled from \`Landing\` so any Astro application or content site can drop in a standalone interactive experience powered by \`@lsui/origin\` primitives (\`mount()\`, \`announce()\`, focus management).
+
+## Guided Website Tours (\`<Tour />\`)
+
+Multi-step interactive product and documentation walkthroughs built on CSS Anchor Positioning, top-layer Popover spotlighting, full keyboard step navigation, and \`ariaNotify()\` step announcements.
+
+## Sortable & Multi-Column Kanban Boards
+
+Accessible pointer + keyboard drag-and-transfer boards composing roving focus, spatial keyboard movement, and \`ariaNotify()\` pickup/move/drop screen-reader announcements.
+
+## Command & Spotlight Centers
+
+Site-wide keyboard command palettes and interactive reading companions designed for Astro View Transitions.`,
+    upcomingCatalogBody: `Interactive experiences in **Apogee (Level 4)** follow a mandatory design-plan review gate before implementation.
+
+## Planned Phase 4 Flagships
+
+- **\`<Tour />\` (Guided Website Tours)**: CSS-anchored multi-step walkthroughs with top-layer spotlighting and \`ariaNotify()\` step announcements.
+- **Kanban & Transfer Board**: Accessible pointer and keyboard multi-column card transfer board powered by \`@lsui/origin\` \`announce()\`.
+- **Spotlight / Command Center**: Keyboard-driven site search and action launcher.`,
   },
 };
 
@@ -523,7 +617,7 @@ ${levelComps
   .join("\n")}`
         : `## Upcoming Catalog
 
-Components and experiences in **${meta.title}** follow a design-first review gate before implementation. See \`PLAN.md\` for the roadmap.`;
+Components and experiences in **${meta.title}** follow a design-first review gate before implementation. See [Upcoming Catalog](/${level}/catalog/) for planned items.`;
 
     files[`apps/docs/src/content/${level}/index.mdx`] = `---
 title: ${meta.title}
@@ -533,10 +627,34 @@ sidebar:
   label: Overview
 ---
 
-${meta.body}
+${meta.overviewBody}
 
 ${catalogSection}
 `;
+
+    files[`apps/docs/src/content/${level}/core-goals.mdx`] = `---
+title: ${meta.coreGoalsTitle}
+description: ${meta.coreGoalsDescription}
+sidebar:
+  order: 1
+  label: ${meta.coreGoalsTitle}
+---
+
+${meta.coreGoalsBody}
+`;
+
+    if (levelComps.length === 0) {
+      files[`apps/docs/src/content/${level}/catalog.mdx`] = `---
+title: Upcoming Catalog
+description: Planned ${meta.shortName} catalog items and design-first implementation roadmap.
+sidebar:
+  order: 2
+  label: Upcoming Catalog
+---
+
+${meta.upcomingCatalogBody}
+`;
+    }
 
     for (const [idx, comp] of levelComps.entries()) {
       const propRows = comp.props
@@ -563,7 +681,7 @@ ${catalogSection}
 title: ${comp.name}
 description: ${comp.description}
 sidebar:
-  order: ${idx + 1}
+  order: ${idx + 2}
 ---
 
 ${buildComponentDemoBlock(comp)}

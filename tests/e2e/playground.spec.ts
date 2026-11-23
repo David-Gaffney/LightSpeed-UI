@@ -234,18 +234,98 @@ test.describe("Nimbus Docs 4-Level Separation & <ComponentPreview> CSS Isolation
     expect(styles.borderTopWidth).toBeGreaterThan(0);
     expect(styles.paddingLeft).toBeGreaterThan(0);
 
-    // Verify Level 1 (Origin) & Level 2 (Liftoff) dedicated section pages
-    await page.goto("http://localhost:4321/origin/origin-button/");
+    // Overview sidebar should show Overview -> Introduction & Platform Levels
+    const desktopSidebar = page.locator("#desktop-sidebar");
+    await expect(desktopSidebar.locator("summary", { hasText: "Overview" })).toBeVisible();
+    await expect(desktopSidebar.getByRole("link", { name: "Introduction" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    await expect(desktopSidebar.getByRole("link", { name: "Platform Levels" })).toBeVisible();
+
+    // Click "Origin" in top header nav -> sidebar switches to Origin (Level 1) > Core Goals of Origin + Catalog > OriginButton & OriginLink
+    await headerTabs.getByRole("link", { name: "Origin" }).click();
+    await expect(page).toHaveURL(/\/origin\/$/);
+    await expect(
+      desktopSidebar.getByRole("link", { name: "Introduction" }),
+    ).toHaveCount(0);
+    await expect(
+      desktopSidebar.locator("summary", { hasText: "Origin (Level 1)" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.getByRole("link", { name: "Overview" }),
+    ).toHaveAttribute("aria-current", "page");
+    await expect(
+      desktopSidebar.getByRole("link", { name: "Core Goals of Origin" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.locator("summary", { hasText: "Catalog" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.getByRole("link", { name: "OriginButton" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.getByRole("link", { name: "OriginLink" }),
+    ).toBeVisible();
+
+    // Navigate via sidebar Core Goals & OriginButton links
+    await desktopSidebar.getByRole("link", { name: "Core Goals of Origin" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Core Goals of Origin", level: 1 }),
+    ).toBeVisible();
+    await desktopSidebar.getByRole("link", { name: "OriginButton" }).click();
     await expect(
       page.getByRole("heading", { name: "OriginButton", level: 1 }),
     ).toBeVisible();
 
-    await page.goto("http://localhost:4321/liftoff/button/");
+    // Click "Liftoff" in top header nav -> sidebar switches to Liftoff (Level 2) > Core Goals of Liftoff + Catalog > Button & LinkButton
+    await headerTabs.getByRole("link", { name: "Liftoff" }).click();
+    await expect(page).toHaveURL(/\/liftoff\/$/);
+    await expect(
+      desktopSidebar.locator("summary", { hasText: "Liftoff (Level 2)" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.getByRole("link", { name: "Core Goals of Liftoff" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.locator("summary", { hasText: "Catalog" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.getByRole("link", { name: "Button", exact: true }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.getByRole("link", { name: "LinkButton", exact: true }),
+    ).toBeVisible();
+
+    await desktopSidebar.getByRole("link", { name: "Button", exact: true }).click();
     await expect(
       page.getByRole("heading", { name: "Button", level: 1 }),
     ).toBeVisible();
     await expect(
       page.locator('[data-lsui-preview][data-theme="nordic light"] button[data-variant="primary"]'),
+    ).toBeVisible();
+
+    // Verify Landing & Apogee sidebars also scope cleanly to their own level + Core Goals + Catalog
+    await headerTabs.getByRole("link", { name: "Landing" }).click();
+    await expect(
+      desktopSidebar.locator("summary", { hasText: "Landing (Level 3)" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.getByRole("link", { name: "Core Goals of Landing" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.locator("summary", { hasText: "Catalog" }),
+    ).toBeVisible();
+
+    await headerTabs.getByRole("link", { name: "Apogee" }).click();
+    await expect(
+      desktopSidebar.locator("summary", { hasText: "Apogee (Level 4)" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.getByRole("link", { name: "Core Goals of Apogee" }),
+    ).toBeVisible();
+    await expect(
+      desktopSidebar.locator("summary", { hasText: "Catalog" }),
     ).toBeVisible();
 
     // Verify level-namespaced static registry JSON endpoints
