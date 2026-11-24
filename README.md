@@ -7,6 +7,20 @@ A **four-level Astro-native UI Platform** built on **Web Platform Baseline 2026*
 3. **Level 3 — `Landing` (`@lsui/landing`)**: Astro + EmDash CMS page blocks, composed sections, and full-page templates layered strictly atop `Liftoff` (`Origin ← Liftoff ← Landing`).
 4. **Level 4 — `Apogee` (`@lsui/apogee`)**: Independent higher-order interactive experiences beyond standard UI kits (Guided Website Tours, Kanban boards, Spotlight centers).
 
+## Quick Start — Run the Nimbus Docs Locally
+
+Requires **Node.js `>= 26.0.0`** and **`pnpm`**:
+
+```sh
+pnpm install
+pnpm build
+pnpm dev          # Starts the Nimbus docs site at http://localhost:4321/
+```
+
+Then open **<http://localhost:4321/>** in your browser to browse `Overview`, `Origin`, `Liftoff`, `Landing`, and `Apogee` along with live `<ComponentPreview>` demos.
+
+*(To run the standalone Astro consumer sandbox instead, run `pnpm dev:playground` and open <http://localhost:4322/>.)*
+
 ## Project Documentation
 
 - **[`GUIDE.md`](./GUIDE.md)** — Beginner-friendly, step-by-step tutorial on how to rebuild the entire LightSpeedUI project from scratch (broken into 13 Phases & 48 bite-sized Parts).
@@ -18,7 +32,8 @@ A **four-level Astro-native UI Platform** built on **Web Platform Baseline 2026*
 ## Workspace Commands
 
 ```sh
-pnpm install                    # Install workspace dependencies
+pnpm dev                        # Start Nimbus docs locally at http://localhost:4321
+pnpm dev:playground             # Start Astro playground app at http://localhost:4322
 pnpm sync:artifacts             # Generate docs, registry JSON, AGENTS.md & Figma spec from AST
 pnpm check:artifacts            # Verify all AST-generated artifacts are in sync
 pnpm build                      # Build all @lsui/* packages
