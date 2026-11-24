@@ -212,6 +212,11 @@ test.describe("Nimbus Docs 4-Level Separation & <ComponentPreview> CSS Isolation
   }) => {
     await page.goto("http://localhost:4321/");
 
+    // Verify brand logo (`TheFrontmatter.svg`) renders in top navbar
+    const brandLogoSvg = page.locator("header a svg").first();
+    await expect(brandLogoSvg).toHaveAttribute("viewBox", "0 0 251 251");
+    await expect(brandLogoSvg.locator("path").first()).toHaveAttribute("fill", "#EE46DD");
+
     // Verify all 5 platform section tabs render in the desktop header nav
     const headerTabs = page.locator('header nav[aria-label="Sections"]').first();
     await expect(headerTabs.getByRole("link", { name: "Overview" })).toBeVisible();
