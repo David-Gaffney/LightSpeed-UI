@@ -1,0 +1,92 @@
+name: Accessibility issue
+description: Report an accessibility barrier in LightSpeedUI components, themes, or documentation.
+title: "[a11y]: "
+labels: ["accessibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an accessibility barrier in **LightSpeedUI**. We treat accessibility reports as valuable expertise that helps every downstream Astro and EmDash site built with `lsui`.
+
+        Share as much or as little context as you'd like—partial reports are welcome, screenshots/recordings are completely optional, and you never need to disclose personal or medical information.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Briefly describe the accessibility barrier you encountered and what task you were trying to complete.
+      placeholder: "Example: Tabbing to an aria-disabled Button inside a toolbar does not show a visible focus ring in Editorial Dark mode."
+    validations:
+      required: true
+
+  - type: input
+    id: surface
+    attributes:
+      label: Component, package, or page URL (optional)
+      description: Which `@lsui/*` component/primitive or documentation URL was affected?
+      placeholder: "@lsui/liftoff Button, or https://lightspeedui.dev/liftoff/button/"
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen instead?
+      placeholder: "Expected a clear 3:1+ focus indicator and screen-reader announcement of the button's label and disabled state."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened?
+      placeholder: "Focus moved to the control, but no outline was visible against the dark background."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce (optional)
+      description: Any steps, keyboard keys pressed, or minimal Astro markup that helps reproduce the issue.
+      placeholder: |
+        1. Open /liftoff/button/
+        2. Press Tab until focus reaches...
+    validations:
+      required: false
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity (optional — maintainers will confirm during triage)
+      description: |
+        - **Critical:** Blocks completing a core task with no workaround (e.g., keyboard trap, missing accessible name).
+        - **Serious:** Major difficulty, though a workaround exists.
+        - **Moderate:** Friction or inconsistent experience, but tasks remain completable.
+        - **Minor:** Small usability or polish improvement.
+      options:
+        - Critical
+        - Serious
+        - Moderate
+        - Minor
+    validations:
+      required: false
+
+  - type: input
+    id: environment
+    attributes:
+      label: Operating system, browser & assistive technology (optional)
+      description: Helpful if relevant (e.g., macOS + Safari + VoiceOver, Windows 11 + Firefox + NVDA, iOS + TalkBack/VoiceOver).
+      placeholder: "macOS 15, Safari 27, VoiceOver"
+    validations:
+      required: false
+
+  - type: textarea
+    id: demo
+    attributes:
+      label: Optional code snippet, screenshot, or recording
+      description: Completely optional—attach or paste only if convenient.
+    validations:
+      required: false

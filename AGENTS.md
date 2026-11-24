@@ -26,7 +26,7 @@
 - **TypeScript 7.1 + `.astro` Type-Checking**: Uses `typescript@7.1.0-beta` + `@astrojs/ts-content-mapper` (with `patches/@astrojs__ts-content-mapper@0.2.0.patch` skipping third-party `node_modules` `.astro` diagnostics). Run `pnpm typecheck` and `pnpm typecheck:apps`—never add `@astrojs/check` or TypeScript 5/6.
 - **Artifact Sync & Nimbus Docs Lint Order**: After editing `.astro` or `.css` files, run `pnpm sync:artifacts`, then `pnpm --filter @lsui/docs run build` *before* `pnpm --filter @lsui/docs run lint:docs` (Nimbus resolves internal links against the built route manifest).
 - **Astro 7 Agent Backgrounding**: Always keep `--ignore-lock` on `astro preview` in `playwright.config.ts` so Astro 7 does not auto-daemonize preview servers under agent env vars.
-- **Read First**: See [`PLAN.md`](./PLAN.md) for the Current Agent Handoff Snapshot, [`ARCHITECTURE.md`](./ARCHITECTURE.md) for system design, [`FIGMA.md`](./FIGMA.md) for Figma Remote MCP sync rules, and [`FINDINGS.md`](./FINDINGS.md) (`F-001`..`F-038`+) for solved edge cases.
+- **Read First**: See [`PLAN.md`](./PLAN.md) for the Current Agent Handoff Snapshot, [`ARCHITECTURE.md`](./ARCHITECTURE.md) for system design, [`ACCESSIBILITY.md`](./ACCESSIBILITY.md) for accessibility commitments & guardrails, [`FIGMA.md`](./FIGMA.md) for Figma Remote MCP sync rules, and [`FINDINGS.md`](./FINDINGS.md) (`F-001`..`F-039`+) for solved edge cases.
 
 ## Installed Themes
 - **`editorial`** (`@lsui/themes/editorial.css`): Fonts `"Iowan Old Style", "Charter", "Bitstream Charter", "Sitka Text", Georgia, serif`, medium radius `0.1875rem`.
