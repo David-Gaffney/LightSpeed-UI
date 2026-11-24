@@ -13,8 +13,9 @@
 
 1. **Propose Plan Before Any Component / Block / Feature (NEVER SKIP)**: Before writing code for any new primitive (`Origin`), component (`Liftoff`), block/template (`Landing`), or experience (`Apogee`), present its concrete design plan first (HTML semantics, props, slots, keyboard/screen-reader behavior, `modern-web-guidance` checks, tokens/variants, and Baseline/polyfill impact) and **wait for user direction and approval**.
 2. **Stop After Every Numbered Part**: Always stop at the end of each numbered Part in [`PLAN.md`](./PLAN.md), mark its checkbox `[x]`, show verification results, and wait for user review before continuing.
-3. **Continuous `FINDINGS.md` & `BASELINE.md` Logging**:
+3. **Continuous `FINDINGS.md`, `BASELINE.md` & `GUIDE.md` Logging**:
    - Log every architectural decision, ecosystem bug, tool quirk, and fix in [`FINDINGS.md`](./FINDINGS.md).
+   - Keep [`GUIDE.md`](./GUIDE.md) updated with verified, beginner-friendly step-by-step instructions whenever a new Part in [`PLAN.md`](./PLAN.md) is completed.
    - Invoke the `modern-web-guidance` skill **first** for all HTML/CSS/JS tasks (and include the `### Modern Web Guidance` disclosure section when it shapes changes).
    - Record every *Baseline Newly Available* feature, CSS fallback, and conditional polyfill in [`BASELINE.md`](./BASELINE.md) (sorted oldest -> newest, verified via `pnpm check:baseline`).
 4. **Pure Astro & Semantic CSS Tokens Only**: Never introduce Tailwind utilities, CSS Modules, or hardcoded hex colors in `@lsui/*`. Keep `--color-*` custom properties unregistered (for live `light-dark()` subtree inheritance), never set `font-size` on `:root`/`html` (for OS `<meta name="text-scale" content="scale">`), and always use `color-mix(in oklab, ...)` (never `in oklch`).

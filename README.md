@@ -9,6 +9,7 @@ A **four-level Astro-native UI Platform** built on **Web Platform Baseline 2026*
 
 ## Project Documentation
 
+- **[`GUIDE.md`](./GUIDE.md)** — Beginner-friendly, step-by-step tutorial on how to rebuild the entire LightSpeedUI project from scratch (broken into 13 Phases & 48 bite-sized Parts).
 - **[`ARCHITECTURE.md`](./ARCHITECTURE.md)** — Four-level platform model, design inspirations, styling/context rules, Figma sync, and CLI architecture.
 - **[`PLAN.md`](./PLAN.md)** — Phased implementation roadmap, review gates, and milestone checklist.
 - **[`FINDINGS.md`](./FINDINGS.md)** — Engineering decisions, ecosystem edge cases (including `ariaNotify()` vs. `aria-live`), and solutions discovered during development.

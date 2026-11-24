@@ -8,7 +8,7 @@ A phased engineering plan to build **LightSpeedUI** as a **four-level Astro UI P
 
 1. **Design Plan Before Any Component / Block / Feature**: **Before beginning implementation on any new primitive (`Origin`), component (`Liftoff`), block/template (`Landing`), or experience (`Apogee`), always present its concrete design plan first** (semantics, props, slots, keyboard/screen-reader behavior, `modern-web-guidance` guidance, tokens/variants, and Baseline/polyfill impact) and **wait for user direction and approval**.
 2. **Stop After Every Part**: Execution **must stop at the end of every numbered Part** (`Phase X, Part Y`) to show what was built, present verification output, and wait for review before proceeding.
-3. **Continuous `FINDINGS.md` Log**: Log every architectural decision, tool quirk, browser/AST edge case, and solution in `FINDINGS.md` as we go.
+3. **Continuous `FINDINGS.md` & `GUIDE.md` Updates**: Log every architectural decision, tool quirk, browser/AST edge case, and solution in `FINDINGS.md` as we go, and expand [`GUIDE.md`](./GUIDE.md) with verified step-by-step build instructions after completing each numbered Part.
 
 ---
 
