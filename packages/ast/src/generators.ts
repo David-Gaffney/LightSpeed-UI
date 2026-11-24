@@ -5,10 +5,37 @@ import type {
   ComponentIR,
   FigmaComponentSpec,
   FigmaSpec,
+  FigmaVariableScope,
   PlatformLevel,
   RegistryItem,
   ThemeIR,
 } from "./types.ts";
+
+function inferColorScopes(cssToken: string): FigmaVariableScope[] {
+  if (cssToken.startsWith("--color-text") || cssToken.startsWith("--color-on-")) {
+    return ["TEXT_FILL", "SHAPE_FILL"];
+  }
+  if (cssToken.startsWith("--color-border") || cssToken === "--color-ring") {
+    return ["STROKE_COLOR", "FRAME_FILL"];
+  }
+  if (
+    cssToken === "--color-info" ||
+    cssToken === "--color-success" ||
+    cssToken === "--color-warning" ||
+    cssToken === "--color-danger"
+  ) {
+    return ["FRAME_FILL", "SHAPE_FILL", "TEXT_FILL", "STROKE_COLOR"];
+  }
+  return ["FRAME_FILL", "SHAPE_FILL"];
+}
+
+function inferDimensionScopes(cssToken: string): FigmaVariableScope[] {
+  if (cssToken.startsWith("--radius-")) return ["CORNER_RADIUS"];
+  if (cssToken.startsWith("--control-height-") || cssToken === "--target-min-size") {
+    return ["WIDTH_HEIGHT"];
+  }
+  return ["GAP"];
+}
 
 function escapeMdCell(text: string): string {
   return text.replace(/\|/g, "\\|").replace(/\r?\n/g, " ").trim();
@@ -51,6 +78,8 @@ export function buildFigmaSpec(options: {
     return {
       name: colorItem.token.replace(/^--color-/, "color/").replace(/-/g, "/"),
       cssToken: colorItem.token,
+      codeSyntax: `var(${colorItem.token})`,
+      scopes: inferColorScopes(colorItem.token),
       valuesByMode,
     };
   });
@@ -68,6 +97,8 @@ export function buildFigmaSpec(options: {
     dimensionVariables.push({
       name: dim.token.replace(/^--/, "").replace(/-/g, "/"),
       cssToken: dim.token,
+      codeSyntax: `var(${dim.token})`,
+      scopes: inferDimensionScopes(dim.token),
       valuesByMode,
     });
   }
@@ -84,6 +115,8 @@ export function buildFigmaSpec(options: {
     dimensionVariables.push({
       name: radius.token.replace(/^--/, "").replace(/-/g, "/"),
       cssToken: radius.token,
+      codeSyntax: `var(${radius.token})`,
+      scopes: inferDimensionScopes(radius.token),
       valuesByMode,
     });
   }

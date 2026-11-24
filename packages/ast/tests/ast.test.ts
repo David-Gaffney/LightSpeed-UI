@@ -53,6 +53,20 @@ describe("@lsui/ast multi-level extraction & one-way boundary validation", () =>
       "liftoff/button",
       "liftoff/link-button",
     ]);
+
+    const primaryVar = figmaSpec.variableCollections.colors.variables.find(
+      (v) => v.cssToken === "--color-primary",
+    )!;
+    expect(primaryVar.codeSyntax).toBe("var(--color-primary)");
+    expect(primaryVar.scopes).toEqual(["FRAME_FILL", "SHAPE_FILL"]);
+
+    const buttonSpec = figmaSpec.components.find((c) => c.slug === "button")!;
+    expect(
+      buttonSpec.slots.find((s) => s.name === "default")?.figmaType,
+    ).toBe("TEXT_SLOT");
+    expect(
+      buttonSpec.slots.find((s) => s.name === "icon-start")?.figmaType,
+    ).toBe("INSTANCE_SWAP");
   });
 
   it("converts OKLCH tokens accurately to sRGB RGBA floats and hex", () => {

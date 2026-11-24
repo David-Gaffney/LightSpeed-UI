@@ -22,10 +22,21 @@ export interface PropIR {
   figmaReason?: string | undefined;
 }
 
+export type FigmaSlotKind = "SLOT" | "TEXT_SLOT" | "INSTANCE_SWAP";
+
+export type FigmaVariableScope =
+  | "CORNER_RADIUS"
+  | "WIDTH_HEIGHT"
+  | "GAP"
+  | "FRAME_FILL"
+  | "SHAPE_FILL"
+  | "TEXT_FILL"
+  | "STROKE_COLOR";
+
 export interface SlotIR {
   name: string;
   description: string;
-  figmaKind: "SLOT" | "INSTANCE_SWAP";
+  figmaKind: FigmaSlotKind;
 }
 
 export interface SourceFileRef {
@@ -112,7 +123,7 @@ export interface FigmaComponentSpec {
   }>;
   slots: Array<{
     name: string;
-    figmaType: "SLOT" | "INSTANCE_SWAP";
+    figmaType: FigmaSlotKind;
     description: string;
   }>;
   skippedProps: Array<{
@@ -130,6 +141,8 @@ export interface FigmaSpec {
       variables: Array<{
         name: string;
         cssToken: string;
+        codeSyntax: string;
+        scopes: FigmaVariableScope[];
         valuesByMode: Record<string, RgbaColor>;
       }>;
     };
@@ -139,6 +152,8 @@ export interface FigmaSpec {
       variables: Array<{
         name: string;
         cssToken: string;
+        codeSyntax: string;
+        scopes: FigmaVariableScope[];
         valuesByMode: Record<string, number>;
       }>;
     };

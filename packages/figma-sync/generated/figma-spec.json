@@ -13,6 +13,11 @@
         {
           "name": "color/bg",
           "cssToken": "--color-bg",
+          "codeSyntax": "var(--color-bg)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.9914,
@@ -47,6 +52,11 @@
         {
           "name": "color/text",
           "cssToken": "--color-text",
+          "codeSyntax": "var(--color-text)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.1035,
@@ -81,6 +91,11 @@
         {
           "name": "color/text/muted",
           "cssToken": "--color-text-muted",
+          "codeSyntax": "var(--color-text-muted)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.3455,
@@ -115,6 +130,11 @@
         {
           "name": "color/surface",
           "cssToken": "--color-surface",
+          "codeSyntax": "var(--color-surface)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 1,
@@ -149,6 +169,11 @@
         {
           "name": "color/surface/muted",
           "cssToken": "--color-surface-muted",
+          "codeSyntax": "var(--color-surface-muted)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.9498,
@@ -183,6 +208,11 @@
         {
           "name": "color/surface/inverse",
           "cssToken": "--color-surface-inverse",
+          "codeSyntax": "var(--color-surface-inverse)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.1035,
@@ -217,6 +247,11 @@
         {
           "name": "color/text/inverse",
           "cssToken": "--color-text-inverse",
+          "codeSyntax": "var(--color-text-inverse)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.9863,
@@ -251,6 +286,11 @@
         {
           "name": "color/primary",
           "cssToken": "--color-primary",
+          "codeSyntax": "var(--color-primary)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.6111,
@@ -285,6 +325,11 @@
         {
           "name": "color/primary/hover",
           "cssToken": "--color-primary-hover",
+          "codeSyntax": "var(--color-primary-hover)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.5316,
@@ -319,6 +364,11 @@
         {
           "name": "color/on/primary",
           "cssToken": "--color-on-primary",
+          "codeSyntax": "var(--color-on-primary)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.9931,
@@ -353,6 +403,11 @@
         {
           "name": "color/secondary",
           "cssToken": "--color-secondary",
+          "codeSyntax": "var(--color-secondary)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.9344,
@@ -387,6 +442,11 @@
         {
           "name": "color/secondary/hover",
           "cssToken": "--color-secondary-hover",
+          "codeSyntax": "var(--color-secondary-hover)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.8818,
@@ -421,6 +481,11 @@
         {
           "name": "color/on/secondary",
           "cssToken": "--color-on-secondary",
+          "codeSyntax": "var(--color-on-secondary)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.1152,
@@ -455,6 +520,11 @@
         {
           "name": "color/accent",
           "cssToken": "--color-accent",
+          "codeSyntax": "var(--color-accent)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.9791,
@@ -489,6 +559,11 @@
         {
           "name": "color/on/accent",
           "cssToken": "--color-on-accent",
+          "codeSyntax": "var(--color-on-accent)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.1619,
@@ -523,6 +598,11 @@
         {
           "name": "color/border",
           "cssToken": "--color-border",
+          "codeSyntax": "var(--color-border)",
+          "scopes": [
+            "STROKE_COLOR",
+            "FRAME_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.8518,
@@ -557,6 +637,11 @@
         {
           "name": "color/border/strong",
           "cssToken": "--color-border-strong",
+          "codeSyntax": "var(--color-border-strong)",
+          "scopes": [
+            "STROKE_COLOR",
+            "FRAME_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.4745,
@@ -591,6 +676,11 @@
         {
           "name": "color/ring",
           "cssToken": "--color-ring",
+          "codeSyntax": "var(--color-ring)",
+          "scopes": [
+            "STROKE_COLOR",
+            "FRAME_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.6111,
@@ -625,6 +715,13 @@
         {
           "name": "color/info",
           "cssToken": "--color-info",
+          "codeSyntax": "var(--color-info)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL",
+            "TEXT_FILL",
+            "STROKE_COLOR"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0,
@@ -659,6 +756,11 @@
         {
           "name": "color/info/surface",
           "cssToken": "--color-info-surface",
+          "codeSyntax": "var(--color-info-surface)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.8762,
@@ -693,6 +795,11 @@
         {
           "name": "color/on/info/surface",
           "cssToken": "--color-on-info-surface",
+          "codeSyntax": "var(--color-on-info-surface)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0,
@@ -727,6 +834,13 @@
         {
           "name": "color/success",
           "cssToken": "--color-success",
+          "codeSyntax": "var(--color-success)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL",
+            "TEXT_FILL",
+            "STROKE_COLOR"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.071,
@@ -761,6 +875,11 @@
         {
           "name": "color/success/surface",
           "cssToken": "--color-success-surface",
+          "codeSyntax": "var(--color-success-surface)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.887,
@@ -795,6 +914,11 @@
         {
           "name": "color/on/success/surface",
           "cssToken": "--color-on-success-surface",
+          "codeSyntax": "var(--color-on-success-surface)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.0264,
@@ -829,6 +953,13 @@
         {
           "name": "color/warning",
           "cssToken": "--color-warning",
+          "codeSyntax": "var(--color-warning)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL",
+            "TEXT_FILL",
+            "STROKE_COLOR"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.5799,
@@ -863,6 +994,11 @@
         {
           "name": "color/warning/surface",
           "cssToken": "--color-warning-surface",
+          "codeSyntax": "var(--color-warning-surface)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.989,
@@ -897,6 +1033,11 @@
         {
           "name": "color/on/warning/surface",
           "cssToken": "--color-on-warning-surface",
+          "codeSyntax": "var(--color-on-warning-surface)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.2279,
@@ -931,6 +1072,13 @@
         {
           "name": "color/danger",
           "cssToken": "--color-danger",
+          "codeSyntax": "var(--color-danger)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL",
+            "TEXT_FILL",
+            "STROKE_COLOR"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.6548,
@@ -965,6 +1113,11 @@
         {
           "name": "color/danger/hover",
           "cssToken": "--color-danger-hover",
+          "codeSyntax": "var(--color-danger-hover)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.5667,
@@ -999,6 +1152,11 @@
         {
           "name": "color/on/danger",
           "cssToken": "--color-on-danger",
+          "codeSyntax": "var(--color-on-danger)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.9931,
@@ -1033,6 +1191,11 @@
         {
           "name": "color/danger/surface",
           "cssToken": "--color-danger-surface",
+          "codeSyntax": "var(--color-danger-surface)",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 1,
@@ -1067,6 +1230,11 @@
         {
           "name": "color/on/danger/surface",
           "cssToken": "--color-on-danger-surface",
+          "codeSyntax": "var(--color-on-danger-surface)",
+          "scopes": [
+            "TEXT_FILL",
+            "SHAPE_FILL"
+          ],
           "valuesByMode": {
             "Editorial Light": {
               "r": 0.2862,
@@ -1110,6 +1278,10 @@
         {
           "name": "space/0",
           "cssToken": "--space-0",
+          "codeSyntax": "var(--space-0)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 0,
             "Nordic": 0
@@ -1118,6 +1290,10 @@
         {
           "name": "space/1",
           "cssToken": "--space-1",
+          "codeSyntax": "var(--space-1)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 4,
             "Nordic": 4
@@ -1126,6 +1302,10 @@
         {
           "name": "space/2",
           "cssToken": "--space-2",
+          "codeSyntax": "var(--space-2)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 8,
             "Nordic": 8
@@ -1134,6 +1314,10 @@
         {
           "name": "space/3",
           "cssToken": "--space-3",
+          "codeSyntax": "var(--space-3)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 12,
             "Nordic": 12
@@ -1142,6 +1326,10 @@
         {
           "name": "space/4",
           "cssToken": "--space-4",
+          "codeSyntax": "var(--space-4)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 16,
             "Nordic": 16
@@ -1150,6 +1338,10 @@
         {
           "name": "space/5",
           "cssToken": "--space-5",
+          "codeSyntax": "var(--space-5)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 20,
             "Nordic": 20
@@ -1158,6 +1350,10 @@
         {
           "name": "space/6",
           "cssToken": "--space-6",
+          "codeSyntax": "var(--space-6)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 24,
             "Nordic": 24
@@ -1166,6 +1362,10 @@
         {
           "name": "space/8",
           "cssToken": "--space-8",
+          "codeSyntax": "var(--space-8)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 32,
             "Nordic": 32
@@ -1174,6 +1374,10 @@
         {
           "name": "space/10",
           "cssToken": "--space-10",
+          "codeSyntax": "var(--space-10)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 40,
             "Nordic": 40
@@ -1182,6 +1386,10 @@
         {
           "name": "space/12",
           "cssToken": "--space-12",
+          "codeSyntax": "var(--space-12)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 48,
             "Nordic": 48
@@ -1190,6 +1398,10 @@
         {
           "name": "space/16",
           "cssToken": "--space-16",
+          "codeSyntax": "var(--space-16)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 64,
             "Nordic": 64
@@ -1198,6 +1410,10 @@
         {
           "name": "control/height/sm",
           "cssToken": "--control-height-sm",
+          "codeSyntax": "var(--control-height-sm)",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
           "valuesByMode": {
             "Editorial": 32,
             "Nordic": 32
@@ -1206,6 +1422,10 @@
         {
           "name": "control/height/md",
           "cssToken": "--control-height-md",
+          "codeSyntax": "var(--control-height-md)",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
           "valuesByMode": {
             "Editorial": 40,
             "Nordic": 40
@@ -1214,6 +1434,10 @@
         {
           "name": "control/height/lg",
           "cssToken": "--control-height-lg",
+          "codeSyntax": "var(--control-height-lg)",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
           "valuesByMode": {
             "Editorial": 48,
             "Nordic": 48
@@ -1222,6 +1446,10 @@
         {
           "name": "control/pad/inline/sm",
           "cssToken": "--control-pad-inline-sm",
+          "codeSyntax": "var(--control-pad-inline-sm)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 12,
             "Nordic": 12
@@ -1230,6 +1458,10 @@
         {
           "name": "control/pad/inline/md",
           "cssToken": "--control-pad-inline-md",
+          "codeSyntax": "var(--control-pad-inline-md)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 16,
             "Nordic": 16
@@ -1238,6 +1470,10 @@
         {
           "name": "control/pad/inline/lg",
           "cssToken": "--control-pad-inline-lg",
+          "codeSyntax": "var(--control-pad-inline-lg)",
+          "scopes": [
+            "GAP"
+          ],
           "valuesByMode": {
             "Editorial": 22,
             "Nordic": 22
@@ -1246,6 +1482,10 @@
         {
           "name": "target/min/size",
           "cssToken": "--target-min-size",
+          "codeSyntax": "var(--target-min-size)",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
           "valuesByMode": {
             "Editorial": 24,
             "Nordic": 24
@@ -1254,6 +1494,10 @@
         {
           "name": "radius/xs",
           "cssToken": "--radius-xs",
+          "codeSyntax": "var(--radius-xs)",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
           "valuesByMode": {
             "Editorial": 1,
             "Nordic": 3
@@ -1262,6 +1506,10 @@
         {
           "name": "radius/sm",
           "cssToken": "--radius-sm",
+          "codeSyntax": "var(--radius-sm)",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
           "valuesByMode": {
             "Editorial": 2,
             "Nordic": 6
@@ -1270,6 +1518,10 @@
         {
           "name": "radius/md",
           "cssToken": "--radius-md",
+          "codeSyntax": "var(--radius-md)",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
           "valuesByMode": {
             "Editorial": 3,
             "Nordic": 8
@@ -1278,6 +1530,10 @@
         {
           "name": "radius/lg",
           "cssToken": "--radius-lg",
+          "codeSyntax": "var(--radius-lg)",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
           "valuesByMode": {
             "Editorial": 4,
             "Nordic": 12
@@ -1286,6 +1542,10 @@
         {
           "name": "radius/xl",
           "cssToken": "--radius-xl",
+          "codeSyntax": "var(--radius-xl)",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
           "valuesByMode": {
             "Editorial": 6,
             "Nordic": 16
@@ -1294,6 +1554,10 @@
         {
           "name": "radius/full",
           "cssToken": "--radius-full",
+          "codeSyntax": "var(--radius-full)",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
           "valuesByMode": {
             "Editorial": 9999,
             "Nordic": 9999
@@ -1350,7 +1614,7 @@
         },
         {
           "name": "default",
-          "figmaType": "SLOT",
+          "figmaType": "TEXT_SLOT",
           "description": "Visible button label text."
         },
         {
@@ -1445,7 +1709,7 @@
         },
         {
           "name": "default",
-          "figmaType": "SLOT",
+          "figmaType": "TEXT_SLOT",
           "description": "Visible link label text."
         },
         {

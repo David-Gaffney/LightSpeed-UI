@@ -31,7 +31,7 @@ Unstyled accessible action primitive providing safe `<button>` defaults (`type="
 | Slot | Figma Mapping | Description |
 | :--- | :--- | :--- |
 | `icon-start` | `INSTANCE_SWAP` | Optional leading icon content. |
-| `default` | `SLOT` | Button label content. |
+| `default` | `TEXT_SLOT` | Button label content. |
 | `icon-end` | `INSTANCE_SWAP` | Optional trailing icon content. |
 
 ---
@@ -60,7 +60,7 @@ Unstyled accessible navigation primitive rendering a genuine `<a>` element witho
 | Slot | Figma Mapping | Description |
 | :--- | :--- | :--- |
 | `icon-start` | `INSTANCE_SWAP` | Optional leading icon content. |
-| `default` | `SLOT` | Link label content. |
+| `default` | `TEXT_SLOT` | Link label content. |
 | `icon-end` | `INSTANCE_SWAP` | Optional trailing icon content. |
 
 ---
@@ -96,7 +96,7 @@ Themed, copy-paste action button built atop OriginButton. Adds semantic token va
 | Slot | Figma Mapping | Description |
 | :--- | :--- | :--- |
 | `icon-start` | `INSTANCE_SWAP` | Optional leading decorative icon (`aria-hidden="true"` on SVGs). |
-| `default` | `SLOT` | Visible button label text. |
+| `default` | `TEXT_SLOT` | Visible button label text. |
 | `icon-end` | `INSTANCE_SWAP` | Optional trailing decorative icon (`aria-hidden="true"` on SVGs). |
 
 ---
@@ -127,5 +127,5 @@ Themed navigation link built atop OriginLink. Applies Button visual variants and
 | Slot | Figma Mapping | Description |
 | :--- | :--- | :--- |
 | `icon-start` | `INSTANCE_SWAP` | Optional leading decorative icon (`aria-hidden="true"` on SVGs). |
-| `default` | `SLOT` | Visible link label text. |
+| `default` | `TEXT_SLOT` | Visible link label text. |
 | `icon-end` | `INSTANCE_SWAP` | Optional trailing decorative icon (`aria-hidden="true"` on SVGs). |

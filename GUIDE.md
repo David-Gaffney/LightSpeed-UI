@@ -4,7 +4,7 @@ A crystal-clear, step-by-step tutorial for recreating **LightSpeedUI (`lsui`)**�
 
 If you know the basics of **HTML, CSS, JavaScript, TypeScript, Astro, and Node.js**, you can follow this guide from an empty folder and understand *every single piece* of how a modern open-code UI platform, token system, AST compiler pipeline, documentation site, and accessibility test suite fit together.
 
-> **Living Guide Note:** Phases **1 through 7** (27 bite-sized Parts) contain complete, battle-tested instructions for everything built and verified so far. Phases **8 through 13** outline the upcoming milestones and are expanded with verified commands and code as each milestone is completed.
+> **Living Guide Note:** Phases **1 through 8** (30 bite-sized Parts) contain complete, battle-tested instructions for everything built and verified so far. Phases **9 through 13** outline the upcoming milestones and are expanded with verified commands and code as each milestone is completed.
 
 ---
 
@@ -46,7 +46,11 @@ If you know the basics of **HTML, CSS, JavaScript, TypeScript, Astro, and Node.j
   - [Part 7.3: Generate Registry JSON, `AGENTS.md`/`COMPONENTS.md`/`TOKENS.md` & `figma-spec.json`](#part-73-generate-registry-json-agentsmdcomponentsmdtokensmd--figma-specjson)
   - [Part 7.4: Configure 5 Top-Navbar Section Tabs, Brand Logo & Per-Level Sidebars in Nimbus Docs](#part-74-configure-5-top-navbar-section-tabs-brand-logo--per-level-sidebars-in-nimbus-docs)
   - [Part 7.5: Run `pnpm sync:artifacts` & Full End-to-End Verification](#part-75-run-pnpm-syncartifacts--full-end-to-end-verification)
-- [**Upcoming Phases (8–13): Living Roadmap**](#upcoming-phases-813-living-roadmap)
+- [**Phase 8: Live 1-Component Code-to-Figma Sync PoC (`@lsui/figma-sync`)**](#phase-8-live-1-component-code-to-figma-sync-poc-lsuifigma-sync)
+  - [Part 8.1: Connect Figma Remote MCP (`https://mcp.figma.com/mcp`) & Install `skills/`](#part-81-connect-figma-remote-mcp-httpsmcpfigmacommcp--install-skills)
+  - [Part 8.2: Sync `Primitives`, 4-Mode `Theme Colors` & 2-Mode `Geometry & Spacing` Variables](#part-82-sync-primitives-4-mode-theme-colors--2-mode-geometry--spacing-variables)
+  - [Part 8.3: Build the 30-Variant `Liftoff` `Button` Component Set & 4-Mode Theme Showcase](#part-83-build-the-30-variant-liftoff-button-component-set--4-mode-theme-showcase)
+- [**Upcoming Phases (9–13): Living Roadmap**](#upcoming-phases-913-living-roadmap)
 
 ---
 
@@ -697,14 +701,57 @@ pnpm test:e2e
 
 ---
 
-## Upcoming Phases (8–13): Living Roadmap
+## Phase 8: Live 1-Component Code-to-Figma Sync PoC (`@lsui/figma-sync`)
+
+In Phase 8, you will push your `@lsui/themes` CSS tokens and `Liftoff` `<Button>` directly from `packages/figma-sync/generated/figma-spec.json` into a live Figma Design file using Figma's Remote MCP server—proving your AST contract works end-to-end before scaling to 20+ components!
+
+### Part 8.1: Connect Figma Remote MCP (`https://mcp.figma.com/mcp`) & Install `skills/`
+
+1. **Why Remote MCP instead of Desktop MCP?** Figma's local Desktop MCP (`127.0.0.1:3845/mcp`) is read-only. Writing Variables and Components via `use_figma` requires Figma's Remote MCP (`https://mcp.figma.com/mcp`).
+2. Add the server and official `skills/` (for OpenCode; **do not** install `skills-figquery/`, which is Cursor-only and uses a custom `$fig` global instead of the standard Figma Plugin API):
+   ```bash
+   opencode mcp add figma --global --url https://mcp.figma.com/mcp
+
+   mkdir -p ~/.config/opencode/skills && \
+   git clone --depth 1 https://github.com/figma/mcp-server-guide.git /tmp/figma-mcp-guide && \
+   cp -R /tmp/figma-mcp-guide/skills/* ~/.config/opencode/skills/ && \
+   rm -rf /tmp/figma-mcp-guide
+   ```
+3. Run `/mcps` in your client, select **`figma`**, and click **Allow access** in your browser (uses Figma OAuth—no Personal Access Token needed). Create a blank Figma Design file (`https://www.figma.com/design/:fileKey/...`) in your project folder.
+
+**Verify Before Moving On:** Confirm `figma` shows as connected in `/mcps` and run a read-only `create_session` + `use_figma` check listing `figma.root.children`.
+
+---
+
+### Part 8.2: Sync `Primitives`, 4-Mode `Theme Colors` & 2-Mode `Geometry & Spacing` Variables
+
+1. Ensure `buildFigmaSpec()` (`packages/ast/src/generators.ts`) emits explicit **variable `scopes`** (`["FRAME_FILL", "SHAPE_FILL"]`, `["TEXT_FILL", "SHAPE_FILL"]`, `["STROKE_COLOR", "FRAME_FILL"]`, `["GAP"]`, `["WIDTH_HEIGHT"]`, `["CORNER_RADIUS"]`) and **`codeSyntax`** (`"var(--color-primary)"`) on every token—never leave Figma's default `ALL_SCOPES`!
+2. Create `buildTokensSyncScript(spec)` in **`packages/figma-sync/src/scripts.ts`** to idempotently create or update:
+   - **`Primitives`** (`Value` mode, `v.scopes = []` hidden from pickers) holding raw `{ r, g, b, a }` values in `0..1` float range.
+   - **`Theme Colors`** (`Nordic Light`, `Nordic Dark`, `Editorial Light`, `Editorial Dark`) aliasing each mode to `Primitives` via `{ type: "VARIABLE_ALIAS", id: primVar.id }` and setting `v.setVariableCodeSyntax("WEB", token.codeSyntax)`.
+   - **`Geometry & Spacing`** (`Nordic`, `Editorial` modes) so switching theme mode flips both colors *and* corner radii (`8px` Nordic vs. `3px` Editorial)!
+   - Shared Text Styles (`Button / sm`, `Button / md`, `Button / lg`) after awaiting `figma.loadFontAsync({ family: "Inter", style: "Medium" })`.
+
+**Verify Before Moving On:** Execute `buildTokensSyncScript(spec)` via `use_figma` and confirm `32` semantic colors, `24` dimensions, `128` hidden primitives, and `3` text styles return with `planModeLimitReached: false`.
+
+---
+
+### Part 8.3: Build the 30-Variant `Liftoff` `Button` Component Set & 4-Mode Theme Showcase
+
+1. **Crucial AST Mapping Rule (`TEXT_SLOT` vs. `SLOT`)**: Inline interactive controls (`<button>`, `<a>`) use `<slot />` for their visible text label. In `@lsui/ast`, classify inline `default` slots as `"TEXT_SLOT"` so Figma receives a variable-bound `TextNode` wired to a `Label` (`TEXT`) property (`labelNode.componentPropertyReferences = { characters: labelKey }`), reserving `createSlot()` (`"SLOT"`) for container components like `Card` or `Dialog`.
+2. Create `buildButtonComponentSyncScript(spec, ledger)` in **`packages/figma-sync/src/scripts.ts`**:
+   - Create `16x16` vector `Icon / Plus` and `Icon / ArrowRight` dependency components first (`Tier 0` atoms).
+   - Create all **30 variants** (`variant=primary|secondary|outline|ghost|danger` × `size=sm|md|lg` × `disabled=false|true`), binding every fill, stroke, corner radius, `minHeight`, padding, and gap to Figma Variables (`disabled=false|true` automatically renders a native Boolean toggle switch in Figma's Inspector!).
+   - Call `addComponentProperty(...)` (`Label`, `Show Icon Start`, `Icon Start`, `Show Icon End`, `Icon End`) on each `ComponentNode` **before** `figma.combineAsVariants(createdVariants, page)`, then position the 30 variants in a `5 × 6` grid and call `buttonSet.resizeWithoutConstraints(...)`.
+   - Build a **`Button — Multi-Theme Showcase`** frame next to the Component Set with 4 cards calling `card.setExplicitVariableModeForCollection(...)` for **Nordic Light**, **Nordic Dark**, **Editorial Light**, and **Editorial Dark** (measure widest child and set `showcase.counterAxisSizingMode = "FIXED"` *before* setting `card.layoutSizingHorizontal = "FILL"` to prevent clipping!).
+
+**Verify Before Moving On:** Run `pnpm test` (`packages/figma-sync/tests/figma-sync.test.ts`), execute `buildButtonComponentSyncScript` via `use_figma`, and inspect the returned `1x` showcase screenshot to confirm crisp colors, icons, and corner-radius shifts across all 4 theme modes!
+
+---
+
+## Upcoming Phases (9–13): Living Roadmap
 
 *Each phase below will be expanded into full hands-on step-by-step Parts with verified commands and code as it is implemented and tested.*
-
-### Phase 8: Live 1-Component Code-to-Figma Sync PoC (`@lsui/figma-sync`) *(Next Milestone)*
-- **Part 8.1**: Connect Figma's Remote MCP server (`https://mcp.figma.com/mcp` `use_figma` write tool—or local Figma Desktop Development Plugin fallback) to an editable test Figma Design file.
-- **Part 8.2**: Push `Nordic` & `Editorial` Light/Dark color & dimension tokens from `packages/figma-sync/generated/figma-spec.json` into Figma Variable Collections.
-- **Part 8.3**: Generate the `Liftoff` `Button` Component Set (variants, sizes, boolean/text properties, and icon/label slots) on the Figma canvas and refine `@lsui/ast` for any live edge cases discovered.
 
 ### Phase 9: Expanding Level 1 `Origin` — Focus Controllers & Unstyled Primitives (`@lsui/origin`)
 - **Part 9.1**: Build `createRovingFocus()` & `createTypeahead()` headless keyboard controllers.

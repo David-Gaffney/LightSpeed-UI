@@ -677,10 +677,15 @@ export function parsePlatformComponents(options: {
         });
       }
 
+      const inlineLabelTags = new Set(["button", "a", "span", "label"]);
       const slots: SlotIR[] = template.slotNames.map((name) => ({
         name,
         description: doc.slots.get(name) ?? "",
-        figmaKind: name.startsWith("icon") ? "INSTANCE_SWAP" : "SLOT",
+        figmaKind: name.startsWith("icon")
+          ? "INSTANCE_SWAP"
+          : name === "default" && inlineLabelTags.has(template.rootTag)
+            ? "TEXT_SLOT"
+            : "SLOT",
       }));
 
       const baseFileName = path.basename(astroPath); // e.g. Button.astro
