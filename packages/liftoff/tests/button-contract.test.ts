@@ -27,6 +27,17 @@ describe("@lsui/liftoff — Level 2 Button & LinkButton layering contract", () =
     expect(codeWithoutComments).not.toContain('role="button"');
   });
 
+
+  it("uses explicit disabled token pairs and a non-color state cue instead of opacity dimming", () => {
+    const css = buttonCss.replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(css).not.toMatch(/opacity\s*:\s*0?\.\d+/);
+    expect(css).toContain("border-style: dashed");
+    expect(css).toContain(
+      "background-color: color-mix(in oklab, var(--color-surface) 88%, var(--color-text))",
+    );
+    expect(css).toContain("color: var(--color-text)");
+  });
+
   it("uses only semantic tokens inside @layer lsui.components with no hardcoded hex colors", () => {
     const cssWithoutComments = buttonCss.replace(/\/\*[\s\S]*?\*\//g, "");
     expect(cssWithoutComments).toContain("@layer lsui");

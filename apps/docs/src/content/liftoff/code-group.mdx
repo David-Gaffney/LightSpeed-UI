@@ -1,0 +1,39 @@
+---
+title: CodeGroup
+description: Themed tabbed code group built atop OriginTabs.
+sidebar:
+  order: 19
+---
+
+import CodeGroup from "@lsui/liftoff/CodeGroup.astro";
+
+<ComponentPreview title="CodeGroup Preview" theme="nordic light" hydration="optional">
+  <CodeGroup>CodeGroup</CodeGroup>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/CodeGroup.astro` or read its registry manifest at `/r/liftoff/code-group.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `tabs` | `role="tab"` buttons. |
+| `panels` | `role="tabpanel"` code regions. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Delegates tablist/tabpanel semantics and keyboard behavior to `OriginTabs`.
+
+### Keyboard Interactions
+
+- Arrow keys move between code tabs; Enter/Space selects.

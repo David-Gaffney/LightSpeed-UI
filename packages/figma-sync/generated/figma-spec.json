@@ -1732,6 +1732,461 @@
           "reason": "Screen-reader accessible name"
         }
       ]
+    },
+    {
+      "name": "Blocks",
+      "slug": "blocks",
+      "level": "liftoff",
+      "description": "Themed section wrapper for CMS block sequences.",
+      "rootTag": "section",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [
+        {
+          "name": "label",
+          "defaultValue": "Blocks"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Rendered blocks."
+        }
+      ],
+      "skippedProps": [
+        {
+          "name": "class",
+          "reason": "Consumer CSS class escape hatch"
+        },
+        {
+          "name": "id",
+          "reason": "DOM element identifier"
+        }
+      ]
+    },
+    {
+      "name": "Byline",
+      "slug": "byline",
+      "level": "liftoff",
+      "description": "Themed author/date metadata row.",
+      "rootTag": "p",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [
+        {
+          "name": "author",
+          "defaultValue": "Byline"
+        },
+        {
+          "name": "date",
+          "defaultValue": "Byline"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Optional extra metadata."
+        }
+      ],
+      "skippedProps": []
+    },
+    {
+      "name": "Pagination",
+      "slug": "pagination",
+      "level": "liftoff",
+      "description": "Themed previous/next navigation with real links.",
+      "rootTag": "nav",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [
+        {
+          "name": "previousHref",
+          "defaultValue": "Pagination"
+        },
+        {
+          "name": "previousLabel",
+          "defaultValue": "Pagination"
+        },
+        {
+          "name": "nextHref",
+          "defaultValue": "Pagination"
+        },
+        {
+          "name": "nextLabel",
+          "defaultValue": "Pagination"
+        }
+      ],
+      "slots": [],
+      "skippedProps": []
+    },
+    {
+      "name": "PortableText",
+      "slug": "portable-text",
+      "level": "liftoff",
+      "description": "Themed container for normalized portable-text blocks supplied through the default slot.",
+      "rootTag": "div",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [
+        {
+          "name": "label",
+          "defaultValue": "PortableText"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Rendered portable-text blocks."
+        }
+      ],
+      "skippedProps": [
+        {
+          "name": "class",
+          "reason": "Consumer CSS class escape hatch"
+        },
+        {
+          "name": "id",
+          "reason": "DOM element identifier"
+        }
+      ]
+    },
+    {
+      "name": "PostCard",
+      "slug": "post-card",
+      "level": "liftoff",
+      "description": "Themed article teaser card with a real navigation link.",
+      "rootTag": "article",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [
+        {
+          "name": "title",
+          "defaultValue": "PostCard"
+        },
+        {
+          "name": "date",
+          "defaultValue": "PostCard"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Optional summary content."
+        }
+      ],
+      "skippedProps": [
+        {
+          "name": "href",
+          "reason": "Navigation destination attribute (no visual Figma axis)"
+        }
+      ]
+    },
+    {
+      "name": "Prose",
+      "slug": "prose",
+      "level": "liftoff",
+      "description": "Themed long-form article container with semantic heading rhythm.",
+      "rootTag": "article",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [
+        {
+          "name": "label",
+          "defaultValue": "Prose"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Rendered prose content."
+        }
+      ],
+      "skippedProps": [
+        {
+          "name": "class",
+          "reason": "Consumer CSS class escape hatch"
+        },
+        {
+          "name": "id",
+          "reason": "DOM element identifier"
+        }
+      ]
+    },
+    {
+      "name": "TableOfContents",
+      "slug": "table-of-contents",
+      "level": "liftoff",
+      "description": "Themed table-of-contents navigation built from consumer-supplied anchor links.",
+      "rootTag": "nav",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [
+        {
+          "name": "label",
+          "defaultValue": "TableOfContents"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Nested `<ul>` / `<li>` / `<a>` outline."
+        }
+      ],
+      "skippedProps": [
+        {
+          "name": "class",
+          "reason": "Consumer CSS class escape hatch"
+        },
+        {
+          "name": "id",
+          "reason": "DOM element identifier"
+        }
+      ]
+    },
+    {
+      "name": "Badge",
+      "slug": "badge",
+      "level": "liftoff",
+      "description": "Themed inline status badge styled entirely with semantic tokens.",
+      "rootTag": "span",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "TEXT_SLOT",
+          "description": "Badge label."
+        }
+      ],
+      "skippedProps": []
+    },
+    {
+      "name": "Card",
+      "slug": "card",
+      "level": "liftoff",
+      "description": "Themed surface container styled entirely with semantic tokens.",
+      "rootTag": "section",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Card content."
+        }
+      ],
+      "skippedProps": []
+    },
+    {
+      "name": "Dialog",
+      "slug": "dialog",
+      "level": "liftoff",
+      "description": "Themed native modal dialog built atop OriginDialog.",
+      "rootTag": "div",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Dialog body."
+        },
+        {
+          "name": "actions",
+          "figmaType": "SLOT",
+          "description": "Footer controls."
+        }
+      ],
+      "skippedProps": []
+    },
+    {
+      "name": "Input",
+      "slug": "input",
+      "level": "liftoff",
+      "description": "Themed text input built atop OriginInput with semantic token styling.",
+      "rootTag": "div",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [],
+      "slots": [],
+      "skippedProps": []
+    },
+    {
+      "name": "Popover",
+      "slug": "popover",
+      "level": "liftoff",
+      "description": "Themed native popover built atop OriginPopover.",
+      "rootTag": "div",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Popover content."
+        }
+      ],
+      "skippedProps": []
+    },
+    {
+      "name": "Select",
+      "slug": "select",
+      "level": "liftoff",
+      "description": "Themed native select built atop OriginSelect with semantic token styling.",
+      "rootTag": "div",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Native `<option>` elements."
+        }
+      ],
+      "skippedProps": []
+    },
+    {
+      "name": "Tabs",
+      "slug": "tabs",
+      "level": "liftoff",
+      "description": "Themed headless tabs built atop OriginTabs using native focusgroup where supported.",
+      "rootTag": "div",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [],
+      "slots": [
+        {
+          "name": "tabs",
+          "figmaType": "SLOT",
+          "description": "`role=\"tab\"` buttons."
+        },
+        {
+          "name": "panels",
+          "figmaType": "SLOT",
+          "description": "`role=\"tabpanel\"` regions."
+        }
+      ],
+      "skippedProps": []
+    },
+    {
+      "name": "Callout",
+      "slug": "callout",
+      "level": "liftoff",
+      "description": "Themed documentation callout with a semantic label and non-color type marker.",
+      "rootTag": "aside",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [
+        {
+          "name": "title",
+          "defaultValue": "Callout"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Callout body."
+        }
+      ],
+      "skippedProps": [
+        {
+          "name": "type",
+          "reason": "Form submission behavior ('button' | 'submit' | 'reset')"
+        }
+      ]
+    },
+    {
+      "name": "CodeGroup",
+      "slug": "code-group",
+      "level": "liftoff",
+      "description": "Themed tabbed code group built atop OriginTabs.",
+      "rootTag": "div",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [],
+      "slots": [
+        {
+          "name": "tabs",
+          "figmaType": "SLOT",
+          "description": "`role=\"tab\"` buttons."
+        },
+        {
+          "name": "panels",
+          "figmaType": "SLOT",
+          "description": "`role=\"tabpanel\"` code regions."
+        }
+      ],
+      "skippedProps": []
+    },
+    {
+      "name": "DocsSidebar",
+      "slug": "docs-sidebar",
+      "level": "liftoff",
+      "description": "Themed nested documentation navigation landmark.",
+      "rootTag": "nav",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [
+        {
+          "name": "label",
+          "defaultValue": "DocsSidebar"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Nested list of links."
+        }
+      ],
+      "skippedProps": []
+    },
+    {
+      "name": "PrevNext",
+      "slug": "prev-next",
+      "level": "liftoff",
+      "description": "Themed previous/next documentation links.",
+      "rootTag": "nav",
+      "variantAxes": [],
+      "booleanProperties": [],
+      "textProperties": [
+        {
+          "name": "previousHref",
+          "defaultValue": "PrevNext"
+        },
+        {
+          "name": "previousLabel",
+          "defaultValue": "PrevNext"
+        },
+        {
+          "name": "nextHref",
+          "defaultValue": "PrevNext"
+        },
+        {
+          "name": "nextLabel",
+          "defaultValue": "PrevNext"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default",
+          "figmaType": "SLOT",
+          "description": "Optional custom navigation content (e.g. a richer pager bar)"
+        }
+      ],
+      "skippedProps": []
     }
   ]
 }

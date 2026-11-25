@@ -1,0 +1,30 @@
+---
+/**
+ * @title Byline
+ * @level liftoff
+ * @description Themed author/date metadata row.
+ * @category Content
+ * @hydration none
+ * @accessibility
+ * - Uses a definition-list-free inline layout; date is rendered in a `<time>` element when supplied.
+ * @keyboard
+ * - No custom keyboard behavior.
+ * @slots
+ * - `default`: Optional extra metadata.
+ */
+
+import "./content.css";
+
+type Props = {
+  author: string;
+  date?: string;
+};
+const { author, date } = Astro.props as Props;
+
+---
+
+<p data-lsui-byline>
+  <span>{author}</span>
+  {date && <time datetime={date}>{date}</time>}
+  <slot />
+</p>

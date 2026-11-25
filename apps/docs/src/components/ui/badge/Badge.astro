@@ -13,24 +13,24 @@ const { text, variant, size, class: className, ...attrs } = Astro.props;
 
 // note→info, tip→success, caution→warning: variant aliases
 const badge = variants({
-  base: "inline-flex items-center rounded-full font-medium whitespace-nowrap",
+  base: "nd-badge",
   variants: {
     variant: {
-      default: "bg-accent text-muted-foreground",
-      info:    "bg-info-muted text-info-foreground",
-      note:    "bg-info-muted text-info-foreground",
-      success: "bg-success-muted text-success-foreground",
-      tip:     "bg-success-muted text-success-foreground",
-      warning: "bg-warning-muted text-warning-foreground",
-      caution: "bg-warning-muted text-warning-foreground",
-      danger:  "bg-danger-muted text-danger-foreground",
-      outline: "bg-card text-foreground ring ring-border ring-inset",
+      default: "nd-badge-default",
+      info:    "nd-badge-info",
+      note:    "nd-badge-note",
+      success: "nd-badge-success",
+      tip:     "nd-badge-tip",
+      warning: "nd-badge-warning",
+      caution: "nd-badge-caution",
+      danger:  "nd-badge-danger",
+      outline: "nd-badge-outline",
     },
     size: {
       // Whole-pixel heights: 20, 24 and 28.
-      small:  "px-2 py-0.5 text-xs leading-4",
-      medium: "px-2.5 py-0.5 text-[0.8125rem] leading-5",
-      large:  "px-3 py-1 text-sm leading-5",
+      small:  "nd-badge-sm",
+      medium: "nd-badge-md",
+      large:  "nd-badge-lg",
     },
   },
   defaults: { variant: "default", size: "small" },

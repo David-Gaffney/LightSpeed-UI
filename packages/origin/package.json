@@ -1,7 +1,7 @@
 {
   "name": "@lsui/origin",
   "version": "0.0.1",
-  "description": "Level 1 (Origin) — Unstyled accessible .astro primitives, headless behaviors, keyboard interaction, and ariaNotify() screen reader announcements",
+  "description": "Level 1 (Origin) \u2014 Unstyled accessible .astro primitives, headless behaviors, keyboard interaction, and ariaNotify() screen reader announcements",
   "type": "module",
   "sideEffects": false,
   "dependencies": {
@@ -38,9 +38,46 @@
     },
     "./Button.astro": "./src/primitives/button/Button.astro",
     "./LinkButton.astro": "./src/primitives/button/LinkButton.astro",
-    "./primitives/button/*": "./src/primitives/button/*"
+    "./primitives/button/*": "./src/primitives/button/*",
+    "./controllers/roving-focus": {
+      "types": "./dist/controllers/roving-focus.d.ts",
+      "default": "./dist/controllers/roving-focus.js"
+    },
+    "./controllers/typeahead": {
+      "types": "./dist/controllers/typeahead.d.ts",
+      "default": "./dist/controllers/typeahead.js"
+    },
+    "./controllers/focus-trap": {
+      "types": "./dist/controllers/focus-trap.d.ts",
+      "default": "./dist/controllers/focus-trap.js"
+    },
+    "./controllers/dismissable-layer": {
+      "types": "./dist/controllers/dismissable-layer.d.ts",
+      "default": "./dist/controllers/dismissable-layer.js"
+    },
+    "./controllers/selection": {
+      "types": "./dist/controllers/selection.d.ts",
+      "default": "./dist/controllers/selection.js"
+    },
+    "./controllers/reduced-motion": {
+      "types": "./dist/controllers/reduced-motion.d.ts",
+      "default": "./dist/controllers/reduced-motion.js"
+    },
+    "./Dialog.astro": "./src/primitives/dialog/Dialog.astro",
+    "./Popover.astro": "./src/primitives/popover/Popover.astro",
+    "./primitives/dialog/*": "./src/primitives/dialog/*",
+    "./primitives/popover/*": "./src/primitives/popover/*",
+    "./Tabs.astro": "./src/primitives/tabs/Tabs.astro",
+    "./Select.astro": "./src/primitives/select/Select.astro",
+    "./Input.astro": "./src/primitives/input/Input.astro",
+    "./primitives/tabs/*": "./src/primitives/tabs/*",
+    "./primitives/select/*": "./src/primitives/select/*",
+    "./primitives/input/*": "./src/primitives/input/*"
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "astro sync && tsc -p tsconfig.check.json --noEmit --runExternalCode"

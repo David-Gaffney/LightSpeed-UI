@@ -27,6 +27,11 @@ export function buttonAttrs(
 
   if (isNativeButton) {
     attrs.type = options.type ?? "button";
+    // Explicitly clear anything that could override native <button> semantics.
+    // undefined values remove the attribute when spread onto the element.
+    attrs.role = undefined;
+    attrs.tabindex = undefined;
+    attrs["data-lsui-simulated-button"] = undefined;
     if (options.disabled) attrs.disabled = true;
     if (isAriaDisabled) attrs["aria-disabled"] = "true";
   } else {
@@ -77,10 +82,14 @@ export function linkAttrs(
       href: undefined,
       role: "link",
       "aria-disabled": "true",
+      tabindex: undefined,
     };
   }
 
   return {
     href: options.href !== undefined ? String(options.href) : undefined,
+    role: undefined,
+    "aria-disabled": undefined,
+    tabindex: undefined,
   };
 }

@@ -5,6 +5,8 @@
  */
 
 import { Aside } from "./components/ui/aside";
+import Callout from "@lsui/liftoff/Callout.astro";
+import CodeGroup from "@lsui/liftoff/CodeGroup.astro";
 import ComponentPreview from "./components/ComponentPreview.astro";
 import Render from "./components/Render.astro";
 import { Card } from "./components/ui/card";
@@ -15,8 +17,10 @@ import { Tabs, TabItem } from "./components/ui/tabs";
 
 export const components = {
   Aside,
+  Callout,
   Card,
   CardGrid,
+  CodeGroup,
   ComponentPreview,
   PackageManagers,
   Render,

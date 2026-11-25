@@ -17,17 +17,14 @@ const { class: className, ...attrs } = Astro.props;
   data-slot="theme-toggle"
   type="button"
   data-nb-theme-toggle
-  class={cn(
-    "group flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors",
-    className,
-  )}
+  class={cn("na-theme-toggle", className)}
   {...attrs}
   aria-label="Dark mode"
   aria-pressed="false"
 >
   {/* The icons follow `<html data-mode>`, which BaseLayout sets before first paint. */}
-  <Icon name="ph:sun" class="w-[1.125rem] h-[1.125rem] hidden dark:block" />
-  <Icon name="ph:moon" class="w-[1.125rem] h-[1.125rem] dark:hidden" />
+  <Icon name="ph:sun" class="na-theme-icon na-theme-icon-sun" />
+  <Icon name="ph:moon" class="na-theme-icon na-theme-icon-moon" />
 </button>
 
 <script>

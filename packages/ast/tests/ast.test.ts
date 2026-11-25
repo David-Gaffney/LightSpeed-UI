@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -19,8 +20,31 @@ describe("@lsui/ast multi-level extraction & one-way boundary validation", () =>
     expect(components.map((c) => `${c.level}/${c.slug}`)).toEqual([
       "origin/origin-button",
       "origin/origin-link",
+      "origin/origin-dialog",
+      "origin/origin-input",
+      "origin/origin-popover",
+      "origin/origin-select",
+      "origin/origin-tabs",
       "liftoff/button",
       "liftoff/link-button",
+      "liftoff/blocks",
+      "liftoff/byline",
+      "liftoff/pagination",
+      "liftoff/portable-text",
+      "liftoff/post-card",
+      "liftoff/prose",
+      "liftoff/table-of-contents",
+      "liftoff/badge",
+      "liftoff/card",
+      "liftoff/dialog",
+      "liftoff/input",
+      "liftoff/popover",
+      "liftoff/select",
+      "liftoff/tabs",
+      "liftoff/callout",
+      "liftoff/code-group",
+      "liftoff/docs-sidebar",
+      "liftoff/prev-next",
     ]);
 
     const originBtn = components.find((c) => c.slug === "origin-button")!;
@@ -52,6 +76,24 @@ describe("@lsui/ast multi-level extraction & one-way boundary validation", () =>
     expect(figmaSpec.components.map((c) => `${c.level}/${c.slug}`)).toEqual([
       "liftoff/button",
       "liftoff/link-button",
+      "liftoff/blocks",
+      "liftoff/byline",
+      "liftoff/pagination",
+      "liftoff/portable-text",
+      "liftoff/post-card",
+      "liftoff/prose",
+      "liftoff/table-of-contents",
+      "liftoff/badge",
+      "liftoff/card",
+      "liftoff/dialog",
+      "liftoff/input",
+      "liftoff/popover",
+      "liftoff/select",
+      "liftoff/tabs",
+      "liftoff/callout",
+      "liftoff/code-group",
+      "liftoff/docs-sidebar",
+      "liftoff/prev-next",
     ]);
 
     const primaryVar = figmaSpec.variableCollections.colors.variables.find(
@@ -69,10 +111,56 @@ describe("@lsui/ast multi-level extraction & one-way boundary validation", () =>
     ).toBe("INSTANCE_SWAP");
   });
 
+
+  it("generated component docs do not promise an unpublished CLI", () => {
+    const docs = [
+      "apps/docs/src/content/origin/origin-button.mdx",
+      "apps/docs/src/content/origin/origin-link.mdx",
+      "apps/docs/src/content/origin/origin-dialog.mdx",
+      "apps/docs/src/content/origin/origin-popover.mdx",
+      "apps/docs/src/content/origin/origin-tabs.mdx",
+      "apps/docs/src/content/origin/origin-select.mdx",
+      "apps/docs/src/content/origin/origin-input.mdx",
+      "apps/docs/src/content/liftoff/button.mdx",
+      "apps/docs/src/content/liftoff/link-button.mdx",
+    ];
+    for (const rel of docs) {
+      const mdx = readFileSync(path.join(monorepoRoot, rel), "utf-8");
+      expect(mdx, rel).not.toContain("npx lsui add");
+      expect(mdx, rel).toContain("**Planned:** `@lsui/cli` is not published yet");
+      expect(mdx, rel).toMatch(/\/r\/(origin|liftoff)\/[a-z-]+\.json/);
+    }
+  });
+
   it("converts OKLCH tokens accurately to sRGB RGBA floats and hex", () => {
     const white = parseCssColorToRgba("oklch(1 0 0)");
     expect(white.hex).toBe("#ffffff");
     expect(white.r).toBeCloseTo(1, 3);
+  });
+
+
+  it("matches browser-rendered sRGB for every real theme OKLCH token", () => {
+    const fixture = JSON.parse(
+      readFileSync(
+        path.join(pkgRoot, "tests/fixtures/oklch-parity.json"),
+        "utf-8",
+      ),
+    ) as { entries: Array<[string, string]>; tolerancePerChannel: number };
+
+    for (const [input, browserHex] of fixture.entries) {
+      const actual = parseCssColorToRgba(input).hex;
+      const maxChannelDelta = Math.max(
+        ...[1, 3, 5].map((offset) =>
+          Math.abs(
+            parseInt(actual.slice(offset, offset + 2), 16) -
+              parseInt(browserHex.slice(offset, offset + 2), 16),
+          ),
+        ),
+      );
+      expect(maxChannelDelta, `${input}: ${actual} vs ${browserHex}`).toBeLessThanOrEqual(
+        fixture.tolerancePerChannel,
+      );
+    }
   });
 
   it("rejects hardcoded hex colors, unlayered styles, and oklch color-mix in component CSS", () => {

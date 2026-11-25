@@ -1,0 +1,30 @@
+---
+/**
+ * @title Callout
+ * @level liftoff
+ * @description Themed documentation callout with a semantic label and non-color type marker.
+ * @category Documentation
+ * @hydration none
+ * @accessibility
+ * - Renders `<aside>` with an accessible label; type is conveyed in text, not color alone.
+ * @keyboard
+ * - No custom keyboard behavior.
+ * @slots
+ * - `default`: Callout body.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+import "./docs.css";
+
+type Props = Omit<HTMLAttributes<"aside">, "aria-label"> & {
+  type?: "note" | "warning" | "tip";
+  title?: string;
+};
+const { type = "note", title } = Astro.props as Props;
+
+---
+
+<aside data-lsui-callout data-type={type} aria-label={title ?? type} {...Astro.props}>
+  {title && <strong>{title}</strong>}
+  <slot />
+</aside>

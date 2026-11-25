@@ -1,0 +1,25 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry-item.json",
+  "name": "liftoff/post-card",
+  "title": "PostCard",
+  "level": "liftoff",
+  "type": "registry:ui",
+  "description": "Themed article teaser card with a real navigation link.",
+  "category": "Content",
+  "hydration": "none",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "packages/liftoff/src/components/content/PostCard.astro",
+      "target": "src/components/liftoff/post-card/PostCard.astro",
+      "sha256": "88e62111a312e11cfa4e3907bb7ae503b1c2df7f9041362ad3a989e2cc82ddd8",
+      "content": "---\n/**\n * @title PostCard\n * @level liftoff\n * @description Themed article teaser card with a real navigation link.\n * @category Content\n * @hydration none\n * @accessibility\n * - Uses `<article>` and a genuine `<a href>`; never role=\"button\".\n * @keyboard\n * - Native link keyboard behavior.\n * @slots\n * - `default`: Optional summary content.\n */\n\nimport \"./content.css\";\n\ntype Props = {\n  title: string;\n  href: string;\n  date?: string;\n};\nconst { title, href, date } = Astro.props as Props;\n\n---\n\n<article data-lsui-post-card>\n  <a href={href}>{title}</a>\n  {date && <p data-lsui-post-meta><time datetime={date}>{date}</time></p>}\n  <slot />\n</article>\n"
+    },
+    {
+      "path": "packages/liftoff/src/components/content/content.css",
+      "target": "src/components/liftoff/post-card/content.css",
+      "sha256": "f9b8105c69d3440620531c99205e7416db28bc7be4b9209efe530a49535cc2d3",
+      "content": "/* LightSpeedUI Level 2 — content and publishing styles; semantic tokens only. */\n@layer lsui {\n  @layer components {\n    [data-lsui-prose],\n    [data-lsui-portable-text],\n    [data-lsui-blocks] {\n      color: var(--color-text);\n      font-family: var(--font-body);\n      line-height: var(--leading-relaxed);\n    }\n\n    [data-lsui-prose] :is(h1, h2, h3, h4) {\n      line-height: var(--leading-tight);\n      margin-block-start: var(--space-lg);\n    }\n\n    [data-lsui-byline],\n    [data-lsui-post-meta] {\n      display: flex;\n      flex-wrap: wrap;\n      gap: var(--space-2);\n      color: var(--color-text-muted);\n      font-size: var(--text-sm);\n    }\n\n    [data-lsui-post-card] {\n      display: grid;\n      gap: var(--space-2);\n      padding: var(--space-md);\n      border: var(--border-width) solid var(--color-border);\n      border-radius: var(--radius-md);\n      background: var(--color-surface);\n      color: var(--color-text);\n    }\n\n    [data-lsui-post-card] a {\n      color: var(--color-text);\n      text-decoration-thickness: var(--border-width);\n      text-underline-offset: var(--space-1);\n    }\n\n    [data-lsui-toc] nav ul {\n      list-style: none;\n      padding-inline-start: 0;\n    }\n\n    [data-lsui-pagination] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: space-between;\n      gap: var(--space-md);\n      padding-block: var(--space-lg);\n    }\n\n    [data-lsui-pagination] a {\n      min-block-size: var(--target-min-size, 1.5rem);\n      color: var(--color-text);\n    }\n  }\n}\n"
+    }
+  ]
+}

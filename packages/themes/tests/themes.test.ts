@@ -30,6 +30,19 @@ describe("@lsui/themes token contract & modern-web-guidance invariants", () => {
     expect(baseCss).toContain("@layer reset, tokens, context, base, components;");
   });
 
+
+  it("inverse surfaces remap surface, ring and border tokens so non-text contrast survives inversion", () => {
+    const inverse = /\s*\[data-surface="inverse"\]\s*\{([^}]*)\}/.exec(baseCss)?.[1] ?? "";
+    expect(inverse).toContain("--color-surface: var(--color-surface-inverse)");
+    expect(inverse).toContain("--color-ring: var(--color-text-inverse)");
+    expect(inverse).toContain(
+      "--color-border: color-mix(in oklab, var(--color-text-inverse) 45%",
+    );
+    expect(inverse).toContain(
+      "--color-border-strong: color-mix(in oklab, var(--color-text-inverse) 62%",
+    );
+  });
+
   it("never sets root/html font-size, registers @property <color> tokens, or mixes in oklch", () => {
     const allCssFiles = [
       path.join(srcRoot, "base.css"),

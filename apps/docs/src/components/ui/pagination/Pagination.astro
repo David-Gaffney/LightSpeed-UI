@@ -3,6 +3,9 @@
  * Pagination — previous/next page links as one surface. A highlight slides to
  * whichever half you point at, and [ / ] move between pages from the keyboard.
  *
+ * The semantic `<nav>` comes from Liftoff `PrevNext` (dogfooded here from
+ * Part 10.4); the richer pager bar is supplied through its default slot.
+ *
  * Pass `prevNext` for the docs default, or compose your own links:
  *
  *   <Pagination>
@@ -14,6 +17,7 @@ import { cn } from "@/lib/cn";
 import type { HTMLAttributes } from "astro/types";
 import type { PrevNext } from "@cloudflare/nimbus-docs/types";
 import { withBase } from "@cloudflare/nimbus-docs/runtime";
+import PrevNextNav from "@lsui/liftoff/PrevNext.astro";
 import PaginationLink from "./PaginationLink.astro";
 
 interface Props extends HTMLAttributes<"nav"> {
@@ -44,19 +48,19 @@ const next = composed ? undefined : prevNext?.next;
 ---
 
 {(composed || prev || next) && (
-  <nav aria-label="Pagination" data-slot="pagination" class={cn("mt-12", className)} {...attrs}>
+  <PrevNextNav aria-label="Pagination" data-slot="pagination" class={cn("ne-pagination", className)} {...attrs}>
     <div
       data-nb-pagination
       data-slot="pagination-bar"
       data-keys={keys ? undefined : "false"}
       data-nb-page-nav={!composed && keys ? "" : undefined}
-      class="nb-pagination-bar group/pager relative flex min-h-14 items-stretch rounded-full border border-border bg-card p-1 shadow-sm"
+      class="nb-pagination-bar ne-pager"
     >
       <span
         data-slot="pagination-highlight"
         data-state="hidden"
         aria-hidden="true"
-        class="nb-pagination-highlight pointer-events-none absolute top-1 bottom-1 rounded-full bg-accent"
+        class="nb-pagination-highlight ne-pager-highlight"
       ></span>
       {composed ? (
         <slot />
@@ -75,7 +79,7 @@ const next = composed ? undefined : prevNext?.next;
         </>
       )}
     </div>
-  </nav>
+  </PrevNextNav>
 )}
 
 <style>

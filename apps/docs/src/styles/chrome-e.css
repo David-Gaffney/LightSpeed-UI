@@ -1,0 +1,476 @@
+/* Part 10.4 — semantic chrome for the docs layout, TOC and pager.
+   All colour/spacing comes from the existing --nb-* design tokens. */
+@layer components {
+  .ne-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* ---------- Layout shell ---------- */
+  .ne-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .ne-body {
+    flex: 1;
+    margin-inline: auto;
+    width: 100%;
+  }
+  .ne-columns {
+    display: flex;
+  }
+  .ne-main {
+    flex: 1;
+    min-width: 0;
+  }
+  .ne-main-inner {
+    margin-inline: auto;
+    max-width: var(--nb-content-max);
+    padding: 1.5rem 1rem 3rem;
+  }
+  @media (min-width: 48rem) {
+    .ne-main-inner { padding-inline: 1.5rem; }
+  }
+  .ne-page-header { margin-block-start: 1.5rem; }
+  .ne-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .ne-page-title {
+    margin: 0;
+    color: var(--nb-foreground);
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+  .ne-page-description {
+    margin-block: 0.5rem;
+    color: var(--nb-muted-foreground);
+    font-size: 1rem;
+    line-height: 1.75rem;
+    text-wrap: pretty;
+  }
+  @media (min-width: 40rem) {
+    .ne-page-description { font-size: 1.125rem; }
+  }
+  .ne-page-actions[data-compact] { margin-block-start: 0.75rem; }
+  .ne-mobile-toc-bar {
+    position: sticky;
+    z-index: 20;
+    inset-block-start: var(--nb-header-height);
+    margin: 0.75rem -1rem 1.5rem;
+    padding: 0.5rem 1rem;
+    border-block: 1px solid var(--nb-border);
+    background: color-mix(in oklab, var(--nb-background) 95%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  @supports (backdrop-filter: blur(8px)) {
+    .ne-mobile-toc-bar {
+      background: color-mix(in oklab, var(--nb-background) 80%, transparent);
+    }
+  }
+  @media (min-width: 48rem) {
+    .ne-mobile-toc-bar { margin-inline: -1.5rem; padding-inline: 1.5rem; }
+  }
+  @media (min-width: 80rem) {
+    .ne-mobile-toc-bar { display: none; }
+  }
+  .ne-audience-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block: 0.75rem 1.5rem;
+  }
+  .ne-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--nb-border);
+  }
+  .ne-human-badge {
+    border: 1px solid color-mix(in oklab, var(--nb-success) 15%, transparent);
+    font-family: var(--nb-font-mono);
+    text-transform: uppercase;
+  }
+  .ne-rule-wide {
+    width: 100%;
+    height: 1px;
+    margin-block: 0.75rem 1.5rem;
+    background: var(--nb-border);
+  }
+  .ne-rule-wide[data-toc-spacer] { display: none; }
+  @media (min-width: 80rem) {
+    .ne-rule-wide[data-toc-spacer] { display: block; }
+  }
+  .ne-spacer-sm { margin-block-end: 1rem; }
+  .ne-article { max-width: none; }
+  .ne-breadcrumbs { padding-block-end: 0.5rem; }
+  .ne-edit-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 0.25rem;
+    margin-block: 2rem 0.5rem;
+    color: var(--nb-muted-foreground);
+    font-size: 0.75rem;
+  }
+  .ne-edit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--nb-muted-foreground);
+    text-decoration: none;
+    transition: color 150ms;
+  }
+  .ne-edit-link:hover { color: var(--nb-foreground); }
+
+  /* ---------- Icons ---------- */
+  .ne-icon-xs { width: 0.875rem; height: 0.875rem; flex-shrink: 0; }
+  .ne-icon-md { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
+  .ne-icon-brand { width: 1.75rem; height: 1.75rem; flex-shrink: 0; }
+
+  /* ---------- Desktop sidebar rail ---------- */
+  .ne-sidebar {
+    position: sticky;
+    inset-block-start: 3.5rem;
+    display: none;
+    flex-direction: column;
+    order: -1;
+    width: 15rem;
+    height: calc(100vh - 3.5rem);
+    flex-shrink: 0;
+    border-inline-end: 1px solid var(--nb-border);
+    background: var(--nb-background);
+  }
+  @media (min-width: 48rem) {
+    .ne-sidebar { display: flex; }
+  }
+  @media (min-width: 64rem) {
+    .ne-sidebar { width: var(--nb-sidebar-width); }
+  }
+  .ne-sidebar-tree {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .ne-sidebar-nav { padding: 1.25rem 1rem 3rem; }
+  .ne-sidebar-fade {
+    position: sticky;
+    inset-block-end: 0;
+    height: 2rem;
+    pointer-events: none;
+    background: linear-gradient(to top, var(--nb-background), transparent);
+  }
+
+  /* ---------- TOC column ---------- */
+  .ne-toc-spacer {
+    order: -1;
+    width: var(--nb-toc-width);
+    flex-shrink: 0;
+  }
+  @media (min-width: 80rem) {
+    .ne-toc-spacer { display: block; }
+  }
+  .ne-toc-column {
+    position: sticky;
+    inset-block-start: 3.5rem;
+    width: var(--nb-toc-width);
+    height: calc(100vh - 3.5rem);
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  @media (min-width: 80rem) {
+    .ne-toc-column { display: block; }
+  }
+  .ne-toc-inner { padding: 1.5rem 1.5rem 2rem 2rem; }
+
+  /* ---------- On-this-page TOC (scrollspy) ---------- */
+  .ne-toc-title {
+    margin-block-end: 0.5rem;
+    color: var(--nb-foreground);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .ne-toc-nav {
+    position: relative;
+    /* scrollspy: native active-link tracking where supported. */
+    scroll-target-group: auto;
+  }
+  .ne-toc-rail {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .ne-toc-rail-active {
+    stroke: var(--nb-brand);
+    opacity: 0;
+    transition:
+      stroke-dasharray 300ms cubic-bezier(0.32, 0.72, 0, 1),
+      stroke-dashoffset 300ms cubic-bezier(0.32, 0.72, 0, 1),
+      opacity 300ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .ne-toc-rail-active[data-ready="true"] { opacity: 1; }
+  .ne-toc-rail-active[data-initial="true"] { transition: opacity 300ms; }
+  @media (prefers-reduced-motion: reduce) {
+    .ne-toc-rail-active { transition: opacity 300ms; }
+  }
+  .ne-toc-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ne-toc-curve {
+    display: block;
+    height: 0.5rem;
+    color: var(--nb-border);
+  }
+  .ne-toc-link {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    padding: 0.375rem 0 0.375rem 1.25rem;
+    border-inline-start: 2px solid var(--nb-border);
+    color: var(--nb-muted-foreground);
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    text-decoration: none;
+    transition: color 150ms, border-color 150ms;
+  }
+  .ne-toc-link:hover {
+    color: var(--nb-foreground);
+    border-inline-start-color: color-mix(in oklab, var(--nb-foreground) 20%, transparent);
+  }
+  /* :is() keeps the rule valid in browsers without :target-current; the
+     .target-current fallback class is set by toc.client.ts. */
+  .ne-toc-link:is(:target-current, .target-current),
+  .ne-toc-link[aria-current="true"] {
+    color: var(--nb-foreground);
+    border-inline-start-color: var(--nb-brand);
+    font-weight: 500;
+  }
+  .ne-toc-text,
+  .ne-toc-measure {
+    grid-column: 1;
+    grid-row: 1;
+    overflow-wrap: anywhere;
+  }
+  .ne-toc-measure {
+    visibility: hidden;
+    font-weight: 500;
+  }
+
+  /* ---------- Mobile "jump to section" ---------- */
+  .ne-mobile-toc { position: relative; }
+  .ne-mobile-toc-select {
+    width: 100%;
+    padding: 0.625rem 2.25rem 0.625rem 0.75rem;
+    border: 1px solid var(--nb-border);
+    border-radius: var(--nb-radius);
+    background: var(--nb-background);
+    color: var(--nb-foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+    appearance: none;
+    transition: border-color 150ms;
+  }
+  .ne-mobile-toc-select:hover {
+    border-color: color-mix(in oklab, var(--nb-foreground) 20%, transparent);
+  }
+  .ne-mobile-toc-select:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--nb-primary) 50%, transparent);
+  }
+  .ne-mobile-toc-icon {
+    position: absolute;
+    inset-inline-end: 0.75rem;
+    inset-block-start: 50%;
+    width: 1rem;
+    height: 1rem;
+    color: var(--nb-muted-foreground);
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  /* ---------- Pager (Liftoff PrevNext wrapper) ---------- */
+  .ne-pagination { margin-block-start: 3rem; }
+  .ne-pager {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    min-height: 3.5rem;
+    padding: 0.25rem;
+    border: 1px solid var(--nb-border);
+    border-radius: 9999px;
+    background: var(--nb-card);
+    box-shadow: var(--nb-shadow-sm, 0 1px 2px 0 color-mix(in oklab, var(--nb-foreground) 8%, transparent));
+  }
+  .ne-pager-highlight {
+    position: absolute;
+    inset-block: 0.25rem;
+    border-radius: 9999px;
+    background: var(--nb-accent);
+    pointer-events: none;
+  }
+  .ne-pager-link {
+    position: relative;
+    display: flex;
+    flex: 1 1 0%;
+    min-width: 0;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.25rem 1.25rem 0.25rem 0.625rem;
+    border-radius: 9999px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .ne-pager-link[data-direction="next"] {
+    justify-content: flex-end;
+    padding-inline: 1.25rem 0.625rem;
+    text-align: end;
+  }
+  .ne-pager-link:focus-visible {
+    outline: 2px solid var(--nb-ring);
+    outline-offset: -2px;
+  }
+  .ne-pager-text { min-width: 0; display: block; }
+  .ne-pager-label {
+    display: block;
+    color: var(--nb-muted-foreground);
+    font-size: 0.6875rem;
+    line-height: 1rem;
+  }
+  .ne-pager-title {
+    display: block;
+    color: var(--nb-foreground);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+  }
+  .ne-pager-key {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.3125rem;
+    border-radius: 0.3125rem;
+    background: var(--nb-card);
+    box-shadow: 0 0 0 1px var(--nb-border-strong), 0 1px 0 1px var(--nb-border-strong);
+    color: var(--nb-muted-foreground);
+    font: 500 0.75rem/1 var(--nb-font-mono);
+    transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+  }
+  .ne-pager-key[data-down] {
+    color: var(--nb-foreground);
+    transform: translateY(1px);
+    box-shadow: 0 0 0 1px var(--nb-border-strong);
+  }
+  @media (pointer: coarse) {
+    .ne-pager-key { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ne-pager-key { transition: none; }
+  }
+
+  /* ---------- Mobile sidebar drawer (native modal dialog) ---------- */
+  .ne-drawer {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    transition: background-color 250ms ease-out;
+  }
+  .ne-drawer[data-state="open"] {
+    background: color-mix(in oklab, black 40%, transparent);
+  }
+  .ne-drawer::backdrop { background: transparent; }
+  /* dialog guidance: contain scroll gestures instead of locking html/body. */
+  dialog:modal,
+  dialog:modal::backdrop {
+    overscroll-behavior: contain;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ne-drawer { transition: none; }
+  }
+  .ne-drawer-panel {
+    display: flex;
+    flex-direction: column;
+    width: var(--nb-sidebar-width);
+    max-width: 85vw;
+    height: 100%;
+    border-inline-end: 1px solid var(--nb-border);
+    background: var(--nb-card);
+    transform: translateX(-100%);
+    transition: transform 250ms ease-out;
+  }
+  .ne-drawer[data-state="open"] .ne-drawer-panel { transform: translateX(0); }
+  [dir="rtl"] .ne-drawer-panel { transform: translateX(100%); }
+  [dir="rtl"] .ne-drawer[data-state="open"] .ne-drawer-panel { transform: translateX(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .ne-drawer-panel { transition: none; }
+  }
+  .ne-drawer-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-block-end: 1px solid var(--nb-border);
+    background: var(--nb-card);
+  }
+  .ne-drawer-brand {
+    display: flex;
+    align-items: center;
+    color: var(--nb-foreground);
+    transition: opacity 150ms;
+  }
+  .ne-drawer-brand:hover { opacity: 0.7; }
+  .ne-drawer-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--nb-radius);
+    color: var(--nb-muted-foreground);
+    transition: background-color 150ms, color 150ms;
+  }
+  .ne-drawer-close:hover {
+    background: var(--nb-accent);
+    color: var(--nb-foreground);
+  }
+  .ne-drawer-slot {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+  }
+  .ne-drawer-slot > [data-nb-sidebar-tree] {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}

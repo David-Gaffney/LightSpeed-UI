@@ -1,0 +1,381 @@
+/* Semantic presentation classes for docs chrome components (Aside, Badge,
+ * Card, CardGrid, Code, LayerCard, PackageManagers, Steps, Tabs).
+ *
+ * Layer order (theme, base, lsui, components, utilities) is declared in
+ * globals.css; this file only contributes component-layer rules. All colours
+ * and shared tokens come from the existing --nb-* custom properties. Spacing
+ * is expressed as exact CSS lengths (the theme exposes no spacing tokens).
+ */
+
+@layer components {
+  /* ---- Shared icon sizing ------------------------------------------------ */
+  .nd-icon-xs { inline-size: 0.875rem; block-size: 0.875rem; }
+  .nd-icon-sm { inline-size: 1rem; block-size: 1rem; }
+  .nd-icon-lg { inline-size: 1.5rem; block-size: 1.5rem; }
+  .nd-icon-18 { inline-size: 18px; block-size: 18px; }
+
+  /* ---- Aside ------------------------------------------------------------ */
+  .nd-aside {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-block: 1.5rem;
+    padding-inline: 1rem;
+    padding-block: 0.75rem;
+    border-radius: var(--nb-radius);
+  }
+  .nd-aside-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    block-size: 1.5rem;
+  }
+  .nd-aside-main {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    min-inline-size: 0;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+  }
+  .nd-aside-title {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  /* ---- Badge ------------------------------------------------------------ */
+  .nd-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .nd-badge-default {
+    background-color: var(--nb-accent);
+    color: var(--nb-muted-foreground);
+  }
+  .nd-badge-info,
+  .nd-badge-note {
+    background-color: var(--nb-info-muted);
+    color: var(--nb-info-foreground);
+  }
+  .nd-badge-success,
+  .nd-badge-tip {
+    background-color: var(--nb-success-muted);
+    color: var(--nb-success-foreground);
+  }
+  .nd-badge-warning,
+  .nd-badge-caution {
+    background-color: var(--nb-warning-muted);
+    color: var(--nb-warning-foreground);
+  }
+  .nd-badge-danger {
+    background-color: var(--nb-danger-muted);
+    color: var(--nb-danger-foreground);
+  }
+  .nd-badge-outline {
+    background-color: var(--nb-card);
+    color: var(--nb-foreground);
+    box-shadow: inset 0 0 0 1px var(--nb-border);
+  }
+  /* Whole-pixel heights: 20, 24 and 28. */
+  .nd-badge-sm {
+    padding-inline: 0.5rem;
+    padding-block: 0.125rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  .nd-badge-md {
+    padding-inline: 0.625rem;
+    padding-block: 0.125rem;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+  }
+  .nd-badge-lg {
+    padding-inline: 0.75rem;
+    padding-block: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  /* ---- Card ------------------------------------------------------------- */
+  /* The ring is drawn as a non-layout-affecting box-shadow, matching the
+     starter's `ring` utility; the shadow and ring stack in one declaration. */
+  .nd-card {
+    display: block;
+    margin-block: 1rem;
+    padding: 1.25rem;
+    border-radius: var(--nb-radius);
+    background-color: var(--nb-card);
+    box-shadow: var(--nb-shadow-sm), 0 0 0 1px var(--nb-border);
+  }
+  .nd-card-link {
+    color: inherit;
+    text-decoration: none;
+    transition-property: box-shadow;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nd-card-link:hover {
+    box-shadow: var(--nb-shadow), 0 0 0 1px var(--nb-border-strong);
+  }
+  .nd-card-link:focus-visible {
+    outline: 2px solid var(--nb-ring);
+    outline-offset: 2px;
+  }
+  .nd-card-icon {
+    margin-block-end: 0.625rem;
+    color: var(--nb-brand);
+  }
+  .nd-card-title {
+    margin: 0;
+    color: var(--nb-foreground);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.375;
+  }
+  .nd-card-title-link {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nd-card-link:hover .nd-card-title-link {
+    color: var(--nb-primary);
+  }
+  .nd-card-content {
+    color: var(--nb-muted-foreground);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  .nd-card-content-titled {
+    margin-block-start: 0.375rem;
+  }
+
+  /* ---- CardGrid --------------------------------------------------------- */
+  .nd-card-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+    margin-block: 1rem;
+  }
+  .nd-card-grid > * {
+    margin-block: 0;
+  }
+  @media (min-width: 40rem) {
+    .nd-card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* ---- LayerCard -------------------------------------------------------- */
+  .nd-layer-card {
+    display: flex;
+    flex-direction: column;
+    inline-size: 100%;
+    overflow: hidden;
+    border-radius: var(--nb-radius);
+    background-color: var(--nb-muted);
+    font-size: 0.875rem;
+    box-shadow: 0 0 0 1px var(--nb-border);
+  }
+  .nd-layer-card-vertical {
+    flex-direction: column;
+  }
+  .nd-layer-card-horizontal {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .nd-layer-card-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow: hidden;
+    padding: 1rem;
+    padding-inline-end: 0.75rem;
+    border-radius: var(--nb-radius);
+    background-color: var(--nb-card);
+    color: var(--nb-foreground);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    box-shadow: 0 0 0 1px var(--nb-border);
+  }
+  /* Replaces the starter's group-data-[orientation=horizontal] variants. */
+  .nd-layer-card[data-orientation="horizontal"] .nd-layer-card-content {
+    flex: 1 1 0%;
+    min-inline-size: 0;
+  }
+  .nd-layer-card-header {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: 0.5rem;
+    padding-inline: 0.75rem;
+    padding-block: 0.5rem;
+    background-color: var(--nb-muted);
+    color: var(--nb-muted-foreground);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    overflow-wrap: anywhere;
+  }
+  .nd-layer-card[data-orientation="horizontal"] .nd-layer-card-header {
+    flex-shrink: 0;
+  }
+
+  /* ---- PackageManagers -------------------------------------------------- */
+  .nd-pm {
+    inline-size: 100%;
+  }
+  .nd-pm-tab {
+    margin: 0;
+    cursor: pointer;
+    padding-inline: 0.5rem;
+    padding-block: 0.125rem;
+    border: 0;
+    border-radius: 0.375rem;
+    background-color: transparent;
+    color: var(--nb-muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nd-pm-tab:hover {
+    background-color: var(--nb-accent);
+    color: var(--nb-foreground);
+  }
+  .nd-pm-tab[aria-selected="true"] {
+    background-color: var(--nb-selected);
+    color: var(--nb-foreground);
+  }
+  .nd-pm-panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--nb-radius);
+    background-color: var(--nb-card);
+    color: inherit;
+    box-shadow: 0 0 0 1px var(--nb-border);
+  }
+  .nd-pm-row {
+    display: flex;
+    align-items: stretch;
+  }
+  .nd-pm-pre {
+    flex-grow: 1;
+    min-inline-size: 0;
+    margin-block: 0;
+    overflow-x: auto;
+    padding-inline: 1rem;
+    padding-block: 0.75rem;
+    border: 0;
+    background-color: transparent;
+    color: var(--nb-foreground);
+    font-family: var(--nb-font-mono);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    white-space: pre;
+  }
+  .nd-pm-comment {
+    color: var(--nb-muted-foreground);
+  }
+  .nd-pm-copy {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding-inline: 0.75rem;
+    border: 0;
+    border-inline-start: 1px solid var(--nb-border);
+    background-color: transparent;
+    color: var(--nb-muted-foreground);
+    cursor: pointer;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nd-pm-copy:hover {
+    color: var(--nb-foreground);
+  }
+
+  /* ---- Steps ------------------------------------------------------------ */
+  .nd-steps-intro {
+    margin-block-end: 1rem;
+  }
+  .nd-step-title {
+    margin: 0;
+    color: var(--nb-foreground);
+    font-weight: 600;
+  }
+  .nd-step-content {
+    margin-block-start: 0.25rem;
+    color: var(--nb-foreground);
+  }
+  .nd-step-content p:first-child {
+    margin-block-start: 0;
+  }
+  .nd-step-content p:last-child {
+    margin-block-end: 0;
+  }
+
+  /* ---- Tabs ------------------------------------------------------------- */
+  .nd-tabs-panel-wrap,
+  .nd-tabs-panel {
+    margin-block-start: 0.75rem;
+  }
+  /* Scroll horizontally when triggers exceed the column; the scrollbar is
+     hidden so it never collides with the indicator, but wheel/touch scrolling
+     and keyboard navigation still work. */
+  .nd-tabs-list {
+    position: relative;
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    border-block-end: 1px solid var(--nb-border);
+    scrollbar-width: none;
+  }
+  .nd-tabs-list::-webkit-scrollbar {
+    display: none;
+  }
+  .nd-tabs-indicator {
+    position: absolute;
+    inset-block-end: 0;
+    block-size: 0.125rem;
+    border-top-left-radius: var(--nb-radius-sm);
+    border-top-right-radius: var(--nb-radius-sm);
+    background-color: var(--nb-brand);
+    pointer-events: none;
+    transition-property: left, width;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+  /* Shared by TabsTrigger.astro and the JS-synthesized triggers in
+     tabs.client.ts, so both sources of a trigger look identical. */
+  .nd-tabs-trigger {
+    flex-shrink: 0;
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+    color: var(--nb-muted-foreground);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5rem;
+    white-space: nowrap;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nd-tabs-trigger:hover,
+  .nd-tabs-trigger[aria-selected="true"] {
+    color: var(--nb-foreground);
+  }
+  .nd-tabs-trigger:focus-visible {
+    border-radius: var(--nb-radius-sm);
+    outline: 2px solid var(--nb-ring);
+    outline-offset: -2px;
+  }
+}

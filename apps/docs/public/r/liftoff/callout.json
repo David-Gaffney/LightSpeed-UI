@@ -1,0 +1,25 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry-item.json",
+  "name": "liftoff/callout",
+  "title": "Callout",
+  "level": "liftoff",
+  "type": "registry:ui",
+  "description": "Themed documentation callout with a semantic label and non-color type marker.",
+  "category": "Documentation",
+  "hydration": "none",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "packages/liftoff/src/components/docs/Callout.astro",
+      "target": "src/components/liftoff/callout/Callout.astro",
+      "sha256": "21baa2bfb54433851151de58ebb6e1f2f4f033ccea586678025d6875ce2d9084",
+      "content": "---\n/**\n * @title Callout\n * @level liftoff\n * @description Themed documentation callout with a semantic label and non-color type marker.\n * @category Documentation\n * @hydration none\n * @accessibility\n * - Renders `<aside>` with an accessible label; type is conveyed in text, not color alone.\n * @keyboard\n * - No custom keyboard behavior.\n * @slots\n * - `default`: Callout body.\n */\n\nimport type { HTMLAttributes } from \"astro/types\";\nimport \"./docs.css\";\n\ntype Props = Omit<HTMLAttributes<\"aside\">, \"aria-label\"> & {\n  type?: \"note\" | \"warning\" | \"tip\";\n  title?: string;\n};\nconst { type = \"note\", title } = Astro.props as Props;\n\n---\n\n<aside data-lsui-callout data-type={type} aria-label={title ?? type} {...Astro.props}>\n  {title && <strong>{title}</strong>}\n  <slot />\n</aside>\n"
+    },
+    {
+      "path": "packages/liftoff/src/components/docs/docs.css",
+      "target": "src/components/liftoff/callout/docs.css",
+      "sha256": "cc39ae30dc72b9f0440ed560b349529bf15a222070a8a4114b564973b640aac9",
+      "content": "/* LightSpeedUI Level 2 — documentation chrome; semantic tokens only. */\n@layer lsui {\n  @layer components {\n    [data-lsui-callout] {\n      box-sizing: border-box;\n      margin-block: var(--space-md);\n      padding: var(--space-md);\n      border: var(--border-width) solid var(--color-border-strong);\n      border-inline-start: var(--border-width-lg, 3px) solid var(--color-ring);\n      border-radius: var(--radius-md);\n      background: var(--color-surface);\n      color: var(--color-text);\n    }\n\n    [data-lsui-callout][data-type=\"warning\"] {\n      border-inline-start-color: var(--color-warning, var(--color-ring));\n    }\n\n    [data-lsui-callout] p:last-child {\n      margin-block-end: 0;\n    }\n\n    [data-lsui-docs-sidebar] {\n      font-family: var(--font-body);\n      font-size: var(--text-sm);\n    }\n\n    [data-lsui-docs-sidebar] ul {\n      list-style: none;\n      padding-inline-start: var(--space-3);\n    }\n\n    [data-lsui-docs-sidebar] a {\n      display: block;\n      min-block-size: var(--target-min-size, 1.5rem);\n      padding-block: var(--space-1);\n      color: var(--color-text-muted);\n    }\n\n    [data-lsui-docs-sidebar] a[aria-current=\"page\"] {\n      color: var(--color-text);\n      font-weight: var(--weight-medium);\n    }\n\n    [data-lsui-prev-next] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: space-between;\n      gap: var(--space-md);\n      padding-block: var(--space-lg);\n    }\n\n    [data-lsui-prev-next] a {\n      min-block-size: var(--target-min-size, 1.5rem);\n      color: var(--color-text);\n    }\n  }\n}\n"
+    }
+  ]
+}

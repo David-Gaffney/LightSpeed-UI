@@ -32,8 +32,6 @@
   },
   "devDependencies": {
     "@emnapi/runtime": "1.11.3",
-    "@tailwindcss/vite": "^4.3.3",
-    "pagefind": "^1.5.2",
-    "tailwindcss": "^4.3.3"
+    "pagefind": "^1.5.2"
   }
 }

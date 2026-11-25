@@ -1,0 +1,28 @@
+---
+/**
+ * @title Tabs
+ * @level liftoff
+ * @description Themed headless tabs built atop OriginTabs using native focusgroup where supported.
+ * @category Navigation
+ * @hydration optional
+ * @accessibility
+ * - Delegates tablist/tabpanel semantics and keyboard behavior to `OriginTabs`.
+ * @keyboard
+ * - Arrow keys move between tabs; Enter/Space selects.
+ * @slots
+ * - `tabs`: `role="tab"` buttons.
+ * - `panels`: `role="tabpanel"` regions.
+ */
+
+import OriginTabs from "@lsui/origin/Tabs.astro";
+import type { ComponentProps } from "astro/types";
+import "./core.css";
+
+type Props = ComponentProps<typeof OriginTabs>;
+
+---
+
+<OriginTabs {...Astro.props}>
+  <Fragment slot="tabs"><slot name="tabs" /></Fragment>
+  <Fragment slot="panels"><slot name="panels" /></Fragment>
+</OriginTabs>

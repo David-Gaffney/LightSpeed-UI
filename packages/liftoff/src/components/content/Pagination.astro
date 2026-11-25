@@ -1,0 +1,29 @@
+---
+/**
+ * @title Pagination
+ * @level liftoff
+ * @description Themed previous/next navigation with real links.
+ * @category Content
+ * @hydration none
+ * @accessibility
+ * - Renders a labelled `<nav>` with native anchors and no disabled tab stops.
+ * @keyboard
+ * - Native link keyboard behavior.
+ */
+
+import "./content.css";
+
+type Props = {
+  previousHref?: string;
+  previousLabel?: string;
+  nextHref?: string;
+  nextLabel?: string;
+};
+const { previousHref, previousLabel = "Previous", nextHref, nextLabel = "Next" } = Astro.props as Props;
+
+---
+
+<nav data-lsui-pagination aria-label="Pagination">
+  {previousHref && <a href={previousHref} rel="prev">{previousLabel}</a>}
+  {nextHref && <a href={nextHref} rel="next">{nextLabel}</a>}
+</nav>

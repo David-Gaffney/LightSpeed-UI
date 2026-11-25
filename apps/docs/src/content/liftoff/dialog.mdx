@@ -1,0 +1,39 @@
+---
+title: Dialog
+description: Themed native modal dialog built atop OriginDialog.
+sidebar:
+  order: 13
+---
+
+import Dialog from "@lsui/liftoff/Dialog.astro";
+
+<ComponentPreview title="Dialog Preview" theme="nordic light" hydration="optional">
+  <Dialog>Dialog</Dialog>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/Dialog.astro` or read its registry manifest at `/r/liftoff/dialog.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Dialog body. |
+| `actions` | Footer controls. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Delegates native modal semantics, focus containment and dismissal to `OriginDialog`.
+
+### Keyboard Interactions
+
+- Native `Escape` dismissal and focus return.

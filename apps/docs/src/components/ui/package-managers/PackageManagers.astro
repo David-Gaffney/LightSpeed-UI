@@ -70,7 +70,7 @@ const uid =
   }
 </script>
 
-<div data-nb-pm data-slot="package-managers" class="w-full">
+<div data-nb-pm data-slot="package-managers" class="nd-pm">
   <LayerCard>
     <LayerCardHeader role="tablist" aria-label="Package manager">
       {tabs.map((tab, i) => (
@@ -81,7 +81,7 @@ const uid =
           aria-controls={`pm-panel-${uid}-${tab.mgr}`}
           id={`pm-tab-${uid}-${tab.mgr}`}
           data-nb-pm-tab
-          class="m-0 cursor-pointer rounded-md border-0 bg-transparent px-2 py-0.5 text-xs leading-5 font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground aria-selected:bg-selected aria-selected:text-foreground"
+          class="nd-pm-tab"
         >
           {tab.mgr}
         </button>
@@ -102,18 +102,18 @@ const uid =
           aria-labelledby={`pm-tab-${uid}-${tab.mgr}`}
           hidden={i !== 0}
           data-nb-pm-panel
-          class="relative overflow-hidden rounded-lg bg-card text-inherit ring ring-border"
+          class="nd-pm-panel"
         >
-          <div class="flex items-stretch">
-            <pre tabindex="0" class="my-0 min-w-0 grow overflow-x-auto border-0 bg-transparent px-4 py-3 text-sm leading-6 whitespace-pre font-mono text-foreground"><code data-nb-pm-code>{commentPrefix && <span class="text-muted-foreground">{commentPrefix}</span>}<span class="nb-pm-cmd">{codeFirst}</span><span class="nb-pm-args">{codeRest}</span></code></pre>
+          <div class="nd-pm-row">
+            <pre tabindex="0" class="nd-pm-pre"><code data-nb-pm-code>{commentPrefix && <span class="nd-pm-comment">{commentPrefix}</span>}<span class="nb-pm-cmd">{codeFirst}</span><span class="nb-pm-args">{codeRest}</span></code></pre>
             <button
               type="button"
               data-nb-pm-copy
               data-nb-command={tab.cmd}
               aria-label="Copy to clipboard"
-              class="m-0 flex shrink-0 cursor-pointer items-center justify-center border-0 border-s border-solid border-border bg-transparent px-3 text-muted-foreground transition-colors hover:text-foreground"
+              class="nd-pm-copy"
             >
-              <Icon name="ph:copy" class="w-[18px] h-[18px]" />
+              <Icon name="ph:copy" class="nd-icon-18" />
             </button>
           </div>
         </div>
@@ -121,9 +121,9 @@ const uid =
     })}
     <nb-pm-restore style="display:contents"></nb-pm-restore>
   </LayerCard>
-  <template data-nb-pm-icon-copy><Icon name="ph:copy" class="w-[18px] h-[18px]" /></template>
-  <template data-nb-pm-icon-check><Icon name="ph:check" class="w-[18px] h-[18px]" /></template>
-  <template data-nb-pm-icon-fail><Icon name="ph:x" class="w-[18px] h-[18px]" /></template>
+  <template data-nb-pm-icon-copy><Icon name="ph:copy" class="nd-icon-18" /></template>
+  <template data-nb-pm-icon-check><Icon name="ph:check" class="nd-icon-18" /></template>
+  <template data-nb-pm-icon-fail><Icon name="ph:x" class="nd-icon-18" /></template>
 </div>
 
 <script>

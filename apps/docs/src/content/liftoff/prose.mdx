@@ -1,0 +1,40 @@
+---
+title: Prose
+description: Themed long-form article container with semantic heading rhythm.
+sidebar:
+  order: 9
+---
+
+import Prose from "@lsui/liftoff/Prose.astro";
+
+<ComponentPreview title="Prose Preview" theme="nordic light" hydration="none">
+  <Prose>Prose</Prose>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/Prose.astro` or read its registry manifest at `/r/liftoff/prose.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `class` | `string` | — | No | Consumer CSS class escape hatch |
+| `id` | `string` | — | No | DOM element identifier |
+| `label` | `string` | — | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Rendered prose content. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Renders `<article>` with a natural heading order supplied by the consumer.
+
+### Keyboard Interactions
+
+- No custom keyboard behavior.

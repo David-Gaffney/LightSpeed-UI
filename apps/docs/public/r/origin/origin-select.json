@@ -1,0 +1,19 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry-item.json",
+  "name": "origin/origin-select",
+  "title": "OriginSelect",
+  "level": "origin",
+  "type": "registry:ui",
+  "description": "Unstyled native select with a bound label and optional persistent hint; no custom listbox role invention.",
+  "category": "Primitives",
+  "hydration": "none",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "packages/origin/src/primitives/select/Select.astro",
+      "target": "src/components/origin/origin-select/Select.astro",
+      "sha256": "896c14210d9c60cf80277186b7c30cbfa29525b35d84bdcb30009d6672bfe2ed",
+      "content": "---\n/**\n * @title OriginSelect\n * @level origin\n * @description Unstyled native select with a bound label and optional persistent hint; no custom listbox role invention.\n * @category Primitives\n * @hydration none\n * @accessibility\n * - Renders a real `<label for>` before the `<select>`; the label is required at compile time.\n * - Hints are persistent text linked with `aria-describedby`, never placeholder-only instructions.\n * - The native select owns keyboard behavior, form submission and accessible roles.\n * @keyboard\n * - Native select keyboard interaction (Arrow keys, Home/End, typeahead, Enter/Space).\n * @slots\n * - `default`: Native `<option>` elements.\n */\n\nimport type { HTMLAttributes } from \"astro/types\";\n\ntype NativeSelectAttributes = Omit<HTMLAttributes<\"select\">, \"id\" | \"aria-label\" | \"aria-labelledby\">;\n\ntype Props = NativeSelectAttributes & {\n  id: string;\n  label: string;\n  name?: string;\n  /** Persistent helper text; rendered after the control and linked via aria-describedby. */\n  hint?: string;\n  describedBy?: string;\n};\n\nconst {\n  id,\n  label,\n  name,\n  hint,\n  describedBy,\n  ...rest\n} = Astro.props;\n\nconst describedByValue = [describedBy, hint ? `${id}-hint` : null]\n  .filter(Boolean)\n  .join(\" \") || undefined;\n---\n\n<div data-lsui-field>\n  <label for={id}>{label}</label>\n  <select id={id} name={name ?? id} aria-describedby={describedByValue} {...rest}>\n    <slot />\n  </select>\n  {hint && <p id={`${id}-hint`}>{hint}</p>}\n</div>\n"
+    }
+  ]
+}

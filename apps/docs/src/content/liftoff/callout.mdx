@@ -1,0 +1,39 @@
+---
+title: Callout
+description: Themed documentation callout with a semantic label and non-color type marker.
+sidebar:
+  order: 18
+---
+
+import Callout from "@lsui/liftoff/Callout.astro";
+
+<ComponentPreview title="Callout Preview" theme="nordic light" hydration="none">
+  <Callout>Callout</Callout>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/Callout.astro` or read its registry manifest at `/r/liftoff/callout.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `type` | `"note" \| "warning" \| "tip"` | — | No | Form submission behavior ('button' \| 'submit' \| 'reset') |
+| `title` | `string` | — | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Callout body. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Renders `<aside>` with an accessible label; type is conveyed in text, not color alone.
+
+### Keyboard Interactions
+
+- No custom keyboard behavior.

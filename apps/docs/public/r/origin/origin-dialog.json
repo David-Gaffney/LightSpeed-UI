@@ -1,0 +1,19 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry-item.json",
+  "name": "origin/origin-dialog",
+  "title": "OriginDialog",
+  "level": "origin",
+  "type": "registry:ui",
+  "description": "Unstyled native modal dialog primitive using Invoker Commands; the browser owns focus containment, inert page, Escape dismissal and focus restoration.",
+  "category": "Primitives",
+  "hydration": "optional",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "packages/origin/src/primitives/dialog/Dialog.astro",
+      "target": "src/components/origin/origin-dialog/Dialog.astro",
+      "sha256": "56c441099deb8086f60cced5584bdeb8599a3ec0a54fdb507d2bf99e4f8e95cf",
+      "content": "---\n/**\n * @title OriginDialog\n * @level origin\n * @description Unstyled native modal dialog primitive using Invoker Commands; the browser owns focus containment, inert page, Escape dismissal and focus restoration.\n * @category Primitives\n * @hydration optional\n * @accessibility\n * - Renders a native `<dialog>` opened only with `command=\"show-modal\"` / `showModal()`.\n * - No `role=\"dialog\"`, `aria-modal`, manual focus trap, `inert` toggling or Escape handler: the native modal already provides all of them.\n * - Consumers supply an accessible name via `labelledBy` (or `aria-labelledby`) and may add `describedBy`.\n * @keyboard\n * - `Escape` / back gesture: closes the native modal; focus returns to the invoker automatically.\n * - `command=\"show-modal\"` on the invoker opens it; `command=\"close\"` in the content closes it.\n * @slots\n * - `default`: Dialog body.\n * - `actions`: Footer controls; use `type=\"button\" command=\"close\"` so buttons stay safe inside a form.\n */\n\nimport type { HTMLAttributes } from \"astro/types\";\n\ntype NativeDialogAttributes = Omit<\n  HTMLAttributes<\"dialog\">,\n  \"open\" | \"role\" | \"aria-modal\" | \"aria-labelledby\" | \"aria-describedby\" | \"tabindex\" | \"closedby\"\n>;\n\ntype Props = NativeDialogAttributes & {\n  id: string;\n  labelledBy?: string;\n  describedBy?: string;\n  closedby?: \"any\" | \"closerequest\" | \"none\";\n};\n\nconst {\n  id,\n  labelledBy,\n  describedBy,\n  closedby = \"closerequest\",\n  ...restProps\n} = Astro.props;\n\n// Computed attributes are authoritative; strip overrides at runtime.\n// (The keys are omitted from Props, so they cannot be destructured typed.)\nconst rest = { ...restProps };\nfor (const key of [\n  \"role\",\n  \"aria-modal\",\n  \"open\",\n  \"tabindex\",\n  \"aria-labelledby\",\n  \"aria-describedby\",\n]) {\n  delete (rest as Record<string, unknown>)[key];\n}\n---\n\n<dialog id={id} closedby={closedby} aria-labelledby={labelledBy} aria-describedby={describedBy} {...rest}>\n  <slot />\n  <slot name=\"actions\" />\n</dialog>\n"
+    }
+  ]
+}

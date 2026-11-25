@@ -1,0 +1,19 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry-item.json",
+  "name": "origin/origin-input",
+  "title": "OriginInput",
+  "level": "origin",
+  "type": "registry:ui",
+  "description": "Unstyled native text input with a bound label, persistent hint and native constraint attributes.",
+  "category": "Primitives",
+  "hydration": "none",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "packages/origin/src/primitives/input/Input.astro",
+      "target": "src/components/origin/origin-input/Input.astro",
+      "sha256": "6093db05ec75fe575172793e1bca4660dbc841360b1d95c803b9610baa8fe58e",
+      "content": "---\n/**\n * @title OriginInput\n * @level origin\n * @description Unstyled native text input with a bound label, persistent hint and native constraint attributes.\n * @category Primitives\n * @hydration none\n * @accessibility\n * - Renders `<label for>` before the input; a visible label is mandatory.\n * - Helper text is persistent and linked via `aria-describedby`; `placeholder` is never used as the only instruction.\n * - Required fields are marked both visually (via the label text) and with the native `required` attribute.\n * @keyboard\n * - Native input keyboard behavior; `enterkeyhint` and `autocomplete` are passed through.\n */\n\nimport type { HTMLAttributes } from \"astro/types\";\n\ntype NativeInputAttributes = Omit<\n  HTMLAttributes<\"input\">,\n  \"id\" | \"aria-label\" | \"aria-labelledby\" | \"type\"\n>;\n\ntype Props = NativeInputAttributes & {\n  id: string;\n  label: string;\n  type?: HTMLAttributes<\"input\">[\"type\"];\n  name?: string;\n  hint?: string;\n  describedBy?: string;\n  required?: boolean;\n};\n\nconst {\n  id,\n  label,\n  type = \"text\",\n  name,\n  hint,\n  describedBy,\n  required = false,\n  ...rest\n} = Astro.props;\n\nconst describedByValue = [describedBy, hint ? `${id}-hint` : null]\n  .filter(Boolean)\n  .join(\" \") || undefined;\n---\n\n<div data-lsui-field>\n  <label for={id}>\n    {label}{required && <span aria-hidden=\"true\"> *</span>}\n  </label>\n  <input\n    id={id}\n    type={type}\n    name={name ?? id}\n    required={required}\n    aria-describedby={describedByValue}\n    {...rest}\n  />\n  {hint && <p id={`${id}-hint`}>{hint}</p>}\n</div>\n"
+    }
+  ]
+}

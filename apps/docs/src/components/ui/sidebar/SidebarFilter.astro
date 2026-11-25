@@ -14,12 +14,13 @@ const { class: className, placeholder = "Filter…", ...attrs } = Astro.props;
 const key = shortcuts.filterSidebar;
 ---
 
-<div data-slot="sidebar-filter" class={cn("relative mb-3", className)} {...attrs}>
+<div data-slot="sidebar-filter" class={cn("nc-sidebar-filter", className)} {...attrs}>
   <input
     data-nb-sidebar-filter-input
     type="search"
     placeholder={placeholder}
-    class:list={["peer w-full rounded-md border border-border bg-card py-1.5 ps-3 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus-visible:border-brand focus-visible:outline-2 focus-visible:outline-ring", key ? "pe-9 [&:not(:placeholder-shown)]:pe-2" : "pe-2"]}
+    class="nc-filter-input"
+    data-has-key={key ? "" : undefined}
     aria-label="Filter navigation"
     data-nb-shortcut-for={key || undefined}
     autocomplete="off"
@@ -28,7 +29,7 @@ const key = shortcuts.filterSidebar;
   {key && <kbd
     aria-hidden="true"
     data-nb-shortcut-hint={key}
-    class="pointer-events-none absolute end-2 top-1/2 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded border border-border bg-muted px-1 font-mono text-[0.6875rem] font-medium leading-none text-muted-foreground transition-opacity duration-150 peer-focus:opacity-0 peer-[:not(:placeholder-shown)]:opacity-0 motion-reduce:transition-none"
+    class="nc-filter-hint"
     >{shortcutLabel(key)}</kbd
   >}
 </div>

@@ -1,0 +1,28 @@
+---
+/**
+ * @title PortableText
+ * @level liftoff
+ * @description Themed container for normalized portable-text blocks supplied through the default slot.
+ * @category Content
+ * @hydration none
+ * @accessibility
+ * - Renders a plain `<div>`; block renderers own their semantics.
+ * @keyboard
+ * - No custom keyboard behavior.
+ * @slots
+ * - `default`: Rendered portable-text blocks.
+ */
+
+import "./content.css";
+
+type Props = {
+  class?: string;
+  id?: string;
+  label?: string;
+};
+
+---
+
+<div data-lsui-portable-text {...Astro.props}>
+  <slot />
+</div>

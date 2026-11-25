@@ -1,0 +1,38 @@
+---
+title: Select
+description: Themed native select built atop OriginSelect with semantic token styling.
+sidebar:
+  order: 16
+---
+
+import Select from "@lsui/liftoff/Select.astro";
+
+<ComponentPreview title="Select Preview" theme="nordic light" hydration="none">
+  <Select>Select</Select>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/Select.astro` or read its registry manifest at `/r/liftoff/select.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Native `<option>` elements. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Delegates label binding and persistent hints to `OriginSelect`.
+
+### Keyboard Interactions
+
+- Native select keyboard behavior.

@@ -1,0 +1,28 @@
+---
+/**
+ * @title Dialog
+ * @level liftoff
+ * @description Themed native modal dialog built atop OriginDialog.
+ * @category Overlays
+ * @hydration optional
+ * @accessibility
+ * - Delegates native modal semantics, focus containment and dismissal to `OriginDialog`.
+ * @keyboard
+ * - Native `Escape` dismissal and focus return.
+ * @slots
+ * - `default`: Dialog body.
+ * - `actions`: Footer controls.
+ */
+
+import OriginDialog from "@lsui/origin/Dialog.astro";
+import type { ComponentProps } from "astro/types";
+import "./core.css";
+
+type Props = ComponentProps<typeof OriginDialog>;
+
+---
+
+<OriginDialog data-lsui-dialog {...Astro.props}>
+  <slot />
+  <Fragment slot="actions"><slot name="actions" /></Fragment>
+</OriginDialog>

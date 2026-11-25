@@ -23,11 +23,11 @@ Then open **<http://localhost:4321/>** in your browser to browse `Overview`, `Or
 
 ## Project Documentation
 
-- **[`GUIDE.md`](./GUIDE.md)** — Beginner-friendly, step-by-step tutorial on how to rebuild the entire LightSpeedUI project from scratch (broken into 13 Phases & 48 bite-sized Parts).
+- **[`GUIDE.md`](./GUIDE.md)** — Authoritative step-by-step tutorial **and status source of truth** for rebuilding LightSpeedUI from scratch (13 Phases & 48 bite-sized Parts: 30 complete, 18 planned).
 - **[`FIGMA.md`](./FIGMA.md)** — Complete human + AI guide to setting up Figma Remote MCP & skills in OpenCode and syncing code tokens/components to Figma.
 - **[`ARCHITECTURE.md`](./ARCHITECTURE.md)** — Four-level platform model, design inspirations, styling/context rules, Figma sync, and CLI architecture.
 - **[`ACCESSIBILITY.md`](./ACCESSIBILITY.md)** — Project accessibility statement, WCAG 2.2 AA target, contributor/agent guardrails, supported environments, known limitations, and barrier reporting process.
-- **[`PLAN.md`](./PLAN.md)** — Phased implementation roadmap, review gates, and milestone checklist.
+- **[`PLAN.md`](./PLAN.md)** — High-level implementation roadmap and review gates; detailed part status and checkboxes live in [`GUIDE.md`](./GUIDE.md).
 - **[`FINDINGS.md`](./FINDINGS.md)** — Engineering decisions, ecosystem edge cases (including `ariaNotify()` vs. `aria-live`), and solutions discovered during development.
 - **[`BASELINE.md`](./BASELINE.md)** — Chronological ledger of *Baseline Newly Available* features, CSS-only fallbacks, and conditional polyfills.
 

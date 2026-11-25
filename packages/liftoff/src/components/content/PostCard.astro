@@ -1,0 +1,31 @@
+---
+/**
+ * @title PostCard
+ * @level liftoff
+ * @description Themed article teaser card with a real navigation link.
+ * @category Content
+ * @hydration none
+ * @accessibility
+ * - Uses `<article>` and a genuine `<a href>`; never role="button".
+ * @keyboard
+ * - Native link keyboard behavior.
+ * @slots
+ * - `default`: Optional summary content.
+ */
+
+import "./content.css";
+
+type Props = {
+  title: string;
+  href: string;
+  date?: string;
+};
+const { title, href, date } = Astro.props as Props;
+
+---
+
+<article data-lsui-post-card>
+  <a href={href}>{title}</a>
+  {date && <p data-lsui-post-meta><time datetime={date}>{date}</time></p>}
+  <slot />
+</article>

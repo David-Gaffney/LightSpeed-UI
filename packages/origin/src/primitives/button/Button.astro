@@ -70,10 +70,21 @@ const {
   command,
   popovertarget,
   popovertargetaction,
+  // These are derived by buttonAttrs(); never pass them through as raw props.
+  // Astro emits duplicate attributes instead of letting a later spread win,
+  // and the browser keeps the FIRST duplicate, so they must be removed here.
+  "aria-disabled": rawAriaDisabled,
+  role: _ignoredRole,
+  tabindex: _ignoredTabindex,
+  "data-lsui-simulated-button": _ignoredSimulated,
+  "data-icon-only": _ignoredIconOnly,
   ...rest
 } = Astro.props;
 
-const rawAriaDisabled = rest["aria-disabled"];
+void _ignoredRole;
+void _ignoredTabindex;
+void _ignoredSimulated;
+void _ignoredIconOnly;
 const ariaDisabledNormalized: boolean | "true" | "false" | undefined =
   rawAriaDisabled === true || rawAriaDisabled === "true"
     ? "true"
@@ -104,9 +115,9 @@ const computedAttrs = buttonAttrs({
   render && (
     <>
       <Tag
-        data-icon-only={iconOnly ? "" : undefined}
-        {...computedAttrs}
         {...rest}
+        {...computedAttrs}
+        data-icon-only={iconOnly ? "" : undefined}
       >
         <slot name="icon-start" />
         <slot />

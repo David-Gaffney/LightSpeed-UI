@@ -1,0 +1,28 @@
+---
+/**
+ * @title CodeGroup
+ * @level liftoff
+ * @description Themed tabbed code group built atop OriginTabs.
+ * @category Documentation
+ * @hydration optional
+ * @accessibility
+ * - Delegates tablist/tabpanel semantics and keyboard behavior to `OriginTabs`.
+ * @keyboard
+ * - Arrow keys move between code tabs; Enter/Space selects.
+ * @slots
+ * - `tabs`: `role="tab"` buttons.
+ * - `panels`: `role="tabpanel"` code regions.
+ */
+
+import type { ComponentProps } from "astro/types";
+import OriginTabs from "@lsui/origin/Tabs.astro";
+import "./docs.css";
+
+type Props = ComponentProps<typeof OriginTabs>;
+
+---
+
+<OriginTabs {...Astro.props}>
+  <Fragment slot="tabs"><slot name="tabs" /></Fragment>
+  <Fragment slot="panels"><slot name="panels" /></Fragment>
+</OriginTabs>

@@ -11,6 +11,14 @@ import type {
   ThemeIR,
 } from "./types.ts";
 
+/**
+ * Flip to `true` only when `@lsui/cli` is published (GUIDE.md Phase 13.1 /
+ * PLAN.md Phase 5, Part 1). Until then generated docs must not advertise
+ * `npx lsui add` commands that do not exist. This stays the single source of
+ * truth for install instructions in every generated component page.
+ */
+const CLI_INSTALL_AVAILABLE = false;
+
 function inferColorScopes(cssToken: string): FigmaVariableScope[] {
   if (cssToken.startsWith("--color-text") || cssToken.startsWith("--color-on-")) {
     return ["TEXT_FILL", "SHAPE_FILL"];
@@ -296,10 +304,10 @@ export function buildAiContextFiles(options: {
 ## Mandatory Engineering & Workflow Rules
 
 1. **Propose Plan Before Any Component / Block / Feature (NEVER SKIP)**: Before writing code for any new primitive (\`Origin\`), component (\`Liftoff\`), block/template (\`Landing\`), or experience (\`Apogee\`), present its concrete design plan first (HTML semantics, props, slots, keyboard/screen-reader behavior, \`modern-web-guidance\` checks, tokens/variants, and Baseline/polyfill impact) and **wait for user direction and approval**.
-2. **Stop After Every Numbered Part**: Always stop at the end of each numbered Part in [\`PLAN.md\`](./PLAN.md), mark its checkbox \`[x]\`, show verification results, and wait for user review before continuing.
+2. **Stop After Every Numbered Part**: Always stop at the end of each numbered Part in [\`GUIDE.md\`](./GUIDE.md) (authoritative 48-part checklist), mark its checkbox \`[x]\`, show verification results, and wait for user review before continuing. [\`PLAN.md\`](./PLAN.md) holds only high-level phase gates.
 3. **Continuous \`FINDINGS.md\`, \`BASELINE.md\` & \`GUIDE.md\` Logging**:
    - Log every architectural decision, ecosystem bug, tool quirk, and fix in [\`FINDINGS.md\`](./FINDINGS.md).
-   - Keep [\`GUIDE.md\`](./GUIDE.md) updated with verified, beginner-friendly step-by-step instructions whenever a new Part in [\`PLAN.md\`](./PLAN.md) is completed.
+   - Keep [\`GUIDE.md\`](./GUIDE.md) updated with verified, beginner-friendly step-by-step instructions and current checkbox status whenever a new Part is completed; [\`PLAN.md\`](./PLAN.md) tracks phase-level gates only.
    - Invoke the \`modern-web-guidance\` skill **first** for all HTML/CSS/JS tasks (and include the \`### Modern Web Guidance\` disclosure section when it shapes changes).
    - Record every *Baseline Newly Available* feature, CSS fallback, and conditional polyfill in [\`BASELINE.md\`](./BASELINE.md) (sorted oldest -> newest, verified via \`pnpm check:baseline\`).
 4. **Pure Astro & Semantic CSS Tokens Only**: Never introduce Tailwind utilities, CSS Modules, or hardcoded hex colors in \`@lsui/*\`. Keep \`--color-*\` custom properties unregistered (for live \`light-dark()\` subtree inheritance), never set \`font-size\` on \`:root\`/\`html\` (for OS \`<meta name="text-scale" content="scale">\`), and always use \`color-mix(in oklab, ...)\` (never \`in oklch\`).
@@ -310,7 +318,7 @@ export function buildAiContextFiles(options: {
 - **TypeScript 7.1 + \`.astro\` Type-Checking**: Uses \`typescript@7.1.0-beta\` + \`@astrojs/ts-content-mapper\` (with \`patches/@astrojs__ts-content-mapper@0.2.0.patch\` skipping third-party \`node_modules\` \`.astro\` diagnostics). Run \`pnpm typecheck\` and \`pnpm typecheck:apps\`—never add \`@astrojs/check\` or TypeScript 5/6.
 - **Artifact Sync & Nimbus Docs Lint Order**: After editing \`.astro\` or \`.css\` files, run \`pnpm sync:artifacts\`, then \`pnpm --filter @lsui/docs run build\` *before* \`pnpm --filter @lsui/docs run lint:docs\` (Nimbus resolves internal links against the built route manifest).
 - **Astro 7 Agent Backgrounding**: Always keep \`--ignore-lock\` on \`astro preview\` in \`playwright.config.ts\` so Astro 7 does not auto-daemonize preview servers under agent env vars.
-- **Read First**: See [\`PLAN.md\`](./PLAN.md) for the Current Agent Handoff Snapshot, [\`ARCHITECTURE.md\`](./ARCHITECTURE.md) for system design, [\`ACCESSIBILITY.md\`](./ACCESSIBILITY.md) for accessibility commitments & guardrails, [\`FIGMA.md\`](./FIGMA.md) for Figma Remote MCP sync rules, and [\`FINDINGS.md\`](./FINDINGS.md) (\`F-001\`..\`F-039\`+) for solved edge cases.
+- **Read First**: See [\`GUIDE.md\`](./GUIDE.md) for current status and the authoritative part-by-part checklist, [\`PLAN.md\`](./PLAN.md) for high-level gates, [\`ARCHITECTURE.md\`](./ARCHITECTURE.md) for system design, [\`ACCESSIBILITY.md\`](./ACCESSIBILITY.md) for accessibility commitments & guardrails, [\`FIGMA.md\`](./FIGMA.md) for Figma Remote MCP sync rules, and [\`FINDINGS.md\`](./FINDINGS.md) (\`F-001\`..\`F-039\`+) for solved edge cases.
 
 ## Installed Themes
 ${themeList}
@@ -526,7 +534,7 @@ Semantic \`.astro\` primitives (\`OriginButton\`, \`OriginLink\`, and upcoming o
 ## Rendering Flexibility
 
 Pure attribute builders (\`buttonAttrs()\`, \`linkAttrs()\`) and safe \`as\` tag overrides (\`"button" | "span" | "div"\` with \`Enter\`/\`Space\` delegation) support custom markup constraints while forbidding invalid combinations like \`<a role="button">\`.`,
-    upcomingCatalogBody: `Primitives in **Origin (Level 1)** follow a mandatory design-plan review gate before implementation. See \`PLAN.md\` Phase 2 for upcoming controllers and overlay/disclosure primitives.`,
+    upcomingCatalogBody: `Primitives in **Origin (Level 1)** follow a mandatory design-plan review gate before implementation. See \`GUIDE.md\` Phase 9 (Parts 9.1–9.4) for upcoming controllers and overlay/disclosure primitives.`,
   },
   liftoff: {
     shortName: "Liftoff",
@@ -556,7 +564,7 @@ Parent containers set \`data-theme\` (including combined \`data-theme="editorial
 ## Astro + EmDash Coverage
 
 Spans Core UI controls, Content/Publishing primitives (\`Prose\`, \`PortableText\`, \`Byline\`, \`PostCard\`, \`Pagination\`), and Documentation UI (\`Callout\`, \`CodeGroup\`, \`DocsSidebar\`, \`PrevNext\`).`,
-    upcomingCatalogBody: `Components in **Liftoff (Level 2)** follow a mandatory design-plan review gate before implementation. See \`PLAN.md\` Phase 3 for the Core UI, Publishing, and Documentation component batches.`,
+    upcomingCatalogBody: `Components in **Liftoff (Level 2)** follow a mandatory design-plan review gate before implementation. See \`GUIDE.md\` Phase 10 (Parts 10.1–10.4) for the Core UI, Publishing, and Documentation component batches.`,
   },
   landing: {
     shortName: "Landing",
@@ -710,6 +718,15 @@ ${meta.upcomingCatalogBody}
       const a11yBullets = comp.accessibility.map((a) => `- ${a}`).join("\n");
       const keyboardBullets = comp.keyboard.map((k) => `- ${k}`).join("\n");
       const cliSlug = level === "liftoff" ? comp.slug : `${level}/${comp.slug}`;
+      const installSection = CLI_INSTALL_AVAILABLE
+        ? `## Installation
+
+\`\`\`bash
+npx lsui add ${cliSlug}
+\`\`\``
+        : `## Installation
+
+> **Planned:** \`@lsui/cli\` is not published yet (see \`GUIDE.md\` Phase 13.1 / \`PLAN.md\` Phase 5, Part 1). Until then, copy the component source from \`${comp.importSpecifier}\` or read its registry manifest at \`/r/${level}/${comp.slug}.json\`.`;
 
       files[`apps/docs/src/content/${level}/${comp.slug}.mdx`] = `---
 title: ${comp.name}
@@ -720,11 +737,7 @@ sidebar:
 
 ${buildComponentDemoBlock(comp)}
 
-## Installation
-
-\`\`\`bash
-npx lsui add ${cliSlug}
-\`\`\`
+${installSection}
 
 ## Props
 

@@ -22,9 +22,9 @@ Every *Baseline Newly Available* web platform feature currently used in the repo
 
 | Baseline Newly Available | Feature | WebStatus Link | Compatibility Strategy | Used In |
 | :--- | :--- | :--- | :--- | :--- |
-| 2025-01-27 | Popover | https://webstatus.dev/features/popover | Active polyfill (`@oddbird/popover-polyfill`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro` |
+| 2025-01-27 | Popover | https://webstatus.dev/features/popover | Active polyfill (`@oddbird/popover-polyfill`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro`, `packages/origin/src/primitives/popover/Popover.astro` |
 | 2025-10-14 | View transitions | https://webstatus.dev/features/view-transitions | Progressive enhancement (snaps without animation) | `apps/docs/src/styles/globals.css` |
-| 2025-12-12 | Invoker commands | https://webstatus.dev/features/invoker-commands | Active polyfill (`invokers-polyfill`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro` |
+| 2025-12-12 | Invoker commands | https://webstatus.dev/features/invoker-commands | Active polyfill (`invokers-polyfill`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro`, `packages/origin/src/primitives/popover/Popover.astro` |
 | 2025-12-12 | `scrollbar-color` | https://webstatus.dev/features/scrollbar-color | CSS fallback (`::-webkit-scrollbar`) | `apps/docs/src/styles/globals.css` |
 
 ### Baseline 2026
@@ -55,5 +55,19 @@ Conditional JavaScript polyfills loaded only when native browser support is abse
 
 | Baseline Newly Available | Feature | WebStatus Link | Polyfill | Used In |
 | :--- | :--- | :--- | :--- | :--- |
-| 2025-01-27 | Popover | https://webstatus.dev/features/popover | `@oddbird/popover-polyfill` (conditional: `!Object.hasOwn(HTMLElement.prototype, "popover")`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro` |
-| 2025-12-12 | Invoker commands | https://webstatus.dev/features/invoker-commands | `invokers-polyfill` (conditional: `!("commandForElement" in HTMLButtonElement.prototype)`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro` |
+| 2025-01-27 | Popover | https://webstatus.dev/features/popover | `@oddbird/popover-polyfill` (conditional: `!Object.hasOwn(HTMLElement.prototype, "popover")`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro`, `packages/origin/src/primitives/popover/Popover.astro` |
+| 2025-12-12 | Invoker commands | https://webstatus.dev/features/invoker-commands | `invokers-polyfill` (conditional: `!("commandForElement" in HTMLButtonElement.prototype)`) | `packages/origin/src/polyfills.ts`, `packages/origin/src/primitives/button/Button.astro`, `packages/origin/src/primitives/popover/Popover.astro` |
+
+---
+
+## 4. Limited-Availability Features (Not Yet Baseline)
+
+Features used behind feature detection with an explicit fallback. These are **NOT** *Baseline Newly Available* and must not be treated as safe without the fallback. Promote a row to Section 1 when it becomes Newly Available; retire the fallback when it becomes Widely Available. This section is tracked for awareness and is intentionally ignored by `pnpm check:baseline`, which validates Sections 1–3 only.
+
+| First Supported | Feature | Reference | Compatibility Strategy | Used In |
+| :--- | :--- | :--- | :--- | :--- |
+| 2025-03 (Chrome 134) / 2025-07 (Firefox 141); unsupported in Safari | `closedby` | `modern-web-guidance` `light-dismiss-a-dialog` | Feature detect `'closedBy' in HTMLDialogElement.prototype`; native light dismiss when supported, press+release-outside geometry fallback otherwise | `packages/origin/src/controllers/dismissable-layer.ts` |
+| 2025-09 (Chrome 140 / Edge 140); unsupported in Firefox and Safari | CSS `scroll-target-group` / `:target-current` | `modern-web-guidance` `scrollspy` | Feature detect `CSS.supports('scroll-target-group: auto')`; native active-link styling when supported, `IntersectionObserver` fallback (`.target-current` class) otherwise; visual state mirrored to `aria-current` on `scrollend` | `apps/docs/src/components/ui/toc/TOC.astro`, `apps/docs/src/components/ui/toc/toc.client.ts` |
+| 2026-06 (Chrome 150) / 2026-07 (Edge 150); unsupported in Firefox and Safari | `focusgroup` | `modern-web-guidance` `toolbar` (WebStatus entry to verify during implementation) | Feature detect `'focusGroup' in HTMLElement.prototype`; native when supported, `createRovingFocus()` fallback otherwise | `packages/origin/src/controllers/roving-focus.ts` |
+| 2026-09 (Safari 27) / 2026-11 (Chrome 157, Edge 157); unsupported in Firefox | CSS Anchor Positioning | `modern-web-guidance` `viewport-aware-dropdowns` | `@supports (position-area: block-end)` progressive enhancement; unsupported browsers keep native centered popover placement. No polyfill package. | `packages/origin/src/primitives/popover/Popover.astro` (hook only); Liftoff (Part 10.1) owns the CSS rules |
+

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry-item.json",
+  "name": "liftoff/code-group",
+  "title": "CodeGroup",
+  "level": "liftoff",
+  "type": "registry:ui",
+  "description": "Themed tabbed code group built atop OriginTabs.",
+  "category": "Documentation",
+  "hydration": "optional",
+  "dependencies": [
+    "@lsui/origin"
+  ],
+  "files": [
+    {
+      "path": "packages/liftoff/src/components/docs/CodeGroup.astro",
+      "target": "src/components/liftoff/code-group/CodeGroup.astro",
+      "sha256": "239605e966ec2cb48a00cadfefc3f0fb995b5369f2166c342102b1d74173f61f",
+      "content": "---\n/**\n * @title CodeGroup\n * @level liftoff\n * @description Themed tabbed code group built atop OriginTabs.\n * @category Documentation\n * @hydration optional\n * @accessibility\n * - Delegates tablist/tabpanel semantics and keyboard behavior to `OriginTabs`.\n * @keyboard\n * - Arrow keys move between code tabs; Enter/Space selects.\n * @slots\n * - `tabs`: `role=\"tab\"` buttons.\n * - `panels`: `role=\"tabpanel\"` code regions.\n */\n\nimport type { ComponentProps } from \"astro/types\";\nimport OriginTabs from \"@lsui/origin/Tabs.astro\";\nimport \"./docs.css\";\n\ntype Props = ComponentProps<typeof OriginTabs>;\n\n---\n\n<OriginTabs {...Astro.props}>\n  <Fragment slot=\"tabs\"><slot name=\"tabs\" /></Fragment>\n  <Fragment slot=\"panels\"><slot name=\"panels\" /></Fragment>\n</OriginTabs>\n"
+    },
+    {
+      "path": "packages/liftoff/src/components/docs/docs.css",
+      "target": "src/components/liftoff/code-group/docs.css",
+      "sha256": "cc39ae30dc72b9f0440ed560b349529bf15a222070a8a4114b564973b640aac9",
+      "content": "/* LightSpeedUI Level 2 — documentation chrome; semantic tokens only. */\n@layer lsui {\n  @layer components {\n    [data-lsui-callout] {\n      box-sizing: border-box;\n      margin-block: var(--space-md);\n      padding: var(--space-md);\n      border: var(--border-width) solid var(--color-border-strong);\n      border-inline-start: var(--border-width-lg, 3px) solid var(--color-ring);\n      border-radius: var(--radius-md);\n      background: var(--color-surface);\n      color: var(--color-text);\n    }\n\n    [data-lsui-callout][data-type=\"warning\"] {\n      border-inline-start-color: var(--color-warning, var(--color-ring));\n    }\n\n    [data-lsui-callout] p:last-child {\n      margin-block-end: 0;\n    }\n\n    [data-lsui-docs-sidebar] {\n      font-family: var(--font-body);\n      font-size: var(--text-sm);\n    }\n\n    [data-lsui-docs-sidebar] ul {\n      list-style: none;\n      padding-inline-start: var(--space-3);\n    }\n\n    [data-lsui-docs-sidebar] a {\n      display: block;\n      min-block-size: var(--target-min-size, 1.5rem);\n      padding-block: var(--space-1);\n      color: var(--color-text-muted);\n    }\n\n    [data-lsui-docs-sidebar] a[aria-current=\"page\"] {\n      color: var(--color-text);\n      font-weight: var(--weight-medium);\n    }\n\n    [data-lsui-prev-next] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: space-between;\n      gap: var(--space-md);\n      padding-block: var(--space-lg);\n    }\n\n    [data-lsui-prev-next] a {\n      min-block-size: var(--target-min-size, 1.5rem);\n      color: var(--color-text);\n    }\n  }\n}\n"
+    }
+  ]
+}

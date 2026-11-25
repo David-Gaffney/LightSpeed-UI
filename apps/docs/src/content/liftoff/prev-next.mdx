@@ -1,0 +1,41 @@
+---
+title: PrevNext
+description: Themed previous/next documentation links.
+sidebar:
+  order: 21
+---
+
+import PrevNext from "@lsui/liftoff/PrevNext.astro";
+
+<ComponentPreview title="PrevNext Preview" theme="nordic light" hydration="none">
+  <PrevNext>PrevNext</PrevNext>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/PrevNext.astro` or read its registry manifest at `/r/liftoff/prev-next.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `previousHref` | `string` | — | No |  |
+| `previousLabel` | `string` | — | No |  |
+| `nextHref` | `string` | — | No |  |
+| `nextLabel` | `string` | — | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Optional custom navigation content (e.g. a richer pager bar) |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Renders a labelled `<nav>` with genuine anchors and `rel` hints.
+
+### Keyboard Interactions
+
+- Native link keyboard behavior.

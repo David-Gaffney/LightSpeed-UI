@@ -1,0 +1,44 @@
+---
+/**
+ * @title PrevNext
+ * @level liftoff
+ * @description Themed previous/next documentation links.
+ * @category Documentation
+ * @hydration none
+ * @accessibility
+ * - Renders a labelled `<nav>` with genuine anchors and `rel` hints.
+ * @keyboard
+ * - Native link keyboard behavior.
+ * @slots
+ * - `default`: Optional custom navigation content (e.g. a richer pager bar)
+ *   rendered after any supplied links.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+import "./docs.css";
+
+type Props = HTMLAttributes<"nav"> & {
+  previousHref?: string;
+  previousLabel?: string;
+  nextHref?: string;
+  nextLabel?: string;
+};
+const {
+  previousHref,
+  previousLabel = "Previous",
+  nextHref,
+  nextLabel = "Next",
+  // Astro keeps the FIRST duplicate attribute when a static attribute and a
+  // spread both provide it, so resolve aria-label before the spread instead
+  // of relying on spread order.
+  "aria-label": ariaLabel = "Previous and next pages",
+  ...attrs
+} = Astro.props as Props;
+
+---
+
+<nav data-lsui-prev-next aria-label={ariaLabel} {...attrs}>
+  {previousHref && <a href={previousHref} rel="prev">{previousLabel}</a>}
+  {nextHref && <a href={nextHref} rel="next">{nextLabel}</a>}
+  <slot />
+</nav>

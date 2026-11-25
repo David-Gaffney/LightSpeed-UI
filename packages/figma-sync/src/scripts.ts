@@ -201,6 +201,51 @@ return {
 `.trim();
 }
 
+
+export interface ButtonVariantVisual {
+  key: string;
+  bgToken?: string;
+  fgToken?: string;
+  borderToken?: string;
+}
+
+/**
+ * Token *names* only — never colors. Each value is resolved through the ledger's
+ * Figma variable ID at generation time, so a CSS token change cannot drift from
+ * the canvas. Unknown variant names fall back to the semantic text token.
+ */
+const VARIANT_TOKEN_MAP: Record<
+  string,
+  { bg?: string; fg?: string; border?: string }
+> = {
+  primary: { bg: "--color-primary", fg: "--color-on-primary" },
+  secondary: {
+    bg: "--color-secondary",
+    fg: "--color-on-secondary",
+    border: "--color-border",
+  },
+  outline: { fg: "--color-text", border: "--color-border-strong" },
+  ghost: { fg: "--color-text" },
+  danger: { bg: "--color-danger", fg: "--color-on-danger" },
+};
+
+function visualForVariant(key: string): ButtonVariantVisual {
+  const mapped = VARIANT_TOKEN_MAP[key] ?? { fg: "--color-text" };
+  return { key, ...mapped };
+}
+
+function visualForSize(key: string) {
+  const suffix = ["sm", "md", "lg"].includes(key) ? key : "md";
+  return {
+    key,
+    heightToken: `--control-height-${suffix}`,
+    padToken: `--control-pad-inline-${suffix}`,
+    gapToken: suffix === "sm" ? "--space-1" : suffix === "md" ? "--space-2" : "--space-3",
+    radiusToken: suffix === "sm" ? "--radius-sm" : "--radius-md",
+    fontSize: suffix === "sm" ? 12 : suffix === "md" ? 14 : 16,
+  };
+}
+
 /**
  * Generates an idempotent Figma Plugin API script (`use_figma`) that builds:
  * 1. Reusable `Icon / Plus` & `Icon / ArrowRight` dependency components (`16x16` vectors)
@@ -220,9 +265,55 @@ export function buildButtonComponentSyncScript(
     throw new Error('FigmaSpec is missing Liftoff "button" component definition.');
   }
 
+  const variantAxis = buttonSpec.variantAxes.find((a) => a.name === "variant");
+  const sizeAxis = buttonSpec.variantAxes.find((a) => a.name === "size");
+  const disabledProp = buttonSpec.booleanProperties.find(
+    (p) => p.name === "disabled",
+  );
+  if (!variantAxis || !sizeAxis || !disabledProp) {
+    throw new Error(
+      'FigmaSpec "button" must declare variant, size, and disabled axes.',
+    );
+  }
+
+  const variantConfigs = variantAxis.values.map(visualForVariant);
+  const sizeConfigs = sizeAxis.values.map(visualForSize);
+  const disabledStates = [false, true].map(String);
+  const totalVariants =
+    variantConfigs.length * sizeConfigs.length * disabledStates.length;
+  const maxVariantsPerSet = 30;
+  // Multi-page strategy: when the IR outgrows Figma's 30-variant cap, split by
+  // the first variant axis into one component set/page per value. The guard in
+  // the generated script fails loudly if a single group is still too large.
+  const splitGroups =
+    totalVariants <= maxVariantsPerSet
+      ? [{ name: buttonSpec.name, count: totalVariants }]
+      : variantConfigs.map((v) => ({
+          name: `${buttonSpec.name} / ${v.key}`,
+          count: sizeConfigs.length * disabledStates.length,
+        }));
+  const themeCards = spec.variableCollections.colors.modes.map((mode) => ({
+    label: mode,
+    colorMode: mode,
+    dimMode: mode.split(" ")[0] ?? mode,
+  })).filter((card) =>
+    spec.variableCollections.dimensions.modes.includes(card.dimMode),
+  );
+
   return `
 const LEDGER = ${JSON.stringify(ledger, null, 2)};
 const BUTTON_DESCRIPTION = ${JSON.stringify(buttonSpec.description)};
+const VARIANT_PLAN = ${JSON.stringify({ totalVariants, maxVariantsPerSet, groups: splitGroups })};
+const VARIANT_CONFIGS = ${JSON.stringify(variantConfigs)};
+const SIZE_CONFIGS = ${JSON.stringify(sizeConfigs)};
+const THEME_CARDS = ${JSON.stringify(themeCards)};
+
+if (VARIANT_PLAN.totalVariants > VARIANT_PLAN.maxVariantsPerSet) {
+  throw new Error(
+    "Button has " + VARIANT_PLAN.totalVariants + " variants; split into component sets/pages: " +
+      VARIANT_PLAN.groups.map((g) => g.name + " (" + g.count + ")").join(", "),
+  );
+}
 
 let page = figma.root.children.find((p) => p.name === "Button") || figma.root.children[0];
 if (page.name === "Page 1" && page.children.length === 0) {
@@ -257,6 +348,7 @@ async function reqVar(cssToken) {
 
 const vColorBg = await reqVar("--color-bg");
 const vColorSurface = await reqVar("--color-surface");
+const vColorSurfaceMuted = await reqVar("--color-surface-muted");
 const vColorText = await reqVar("--color-text");
 const vColorTextMuted = await reqVar("--color-text-muted");
 const vColorBorder = await reqVar("--color-border");
@@ -321,36 +413,49 @@ function buildVectorIconComponent(name, svgMarkup) {
     iconComp.appendChild(child);
   }
   parsed.remove();
+  // Icon strokes follow the semantic text token, never a literal color.
+  for (const vec of iconComp.findAll((n) => "fills" in n)) {
+    vec.strokes = [boundSolidPaint(vColorText)];
+    vec.strokeWeight = 1.5;
+  }
   iconsContainer.appendChild(iconComp);
   return iconComp;
 }
 
 const iconPlus = buildVectorIconComponent(
   "Icon / Plus",
-  '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3V13M3 8H13" stroke="#11181F" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3V13M3 8H13" stroke-width="1.5" stroke-linecap="round"/></svg>',
 );
 
 const iconArrow = buildVectorIconComponent(
   "Icon / ArrowRight",
-  '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8H12.5M8.5 4L12.5 8L8.5 12" stroke="#11181F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8H12.5M8.5 4L12.5 8L8.5 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 );
 
-// 2. Create all 30 Liftoff Button Variants (5 variants x 3 sizes x 2 disabled states)
-const variantConfigs = [
-  { key: "primary", bg: vColorPrimary, fg: vColorOnPrimary, border: null },
-  { key: "secondary", bg: vColorSecondary, fg: vColorOnSecondary, border: vColorBorder },
-  { key: "outline", bg: null, fg: vColorText, border: vColorBorderStrong },
-  { key: "ghost", bg: null, fg: vColorText, border: null },
-  { key: "danger", bg: vColorDanger, fg: vColorOnDanger, border: null },
-];
+// 2. Build axis configurations from the AST IR; resolve every color token by ID.
+const variantConfigs = [];
+for (const raw of VARIANT_CONFIGS) {
+  variantConfigs.push({
+    key: raw.key,
+    bg: raw.bgToken ? await reqVar(raw.bgToken) : null,
+    fg: raw.fgToken ? await reqVar(raw.fgToken) : null,
+    border: raw.borderToken ? await reqVar(raw.borderToken) : null,
+  });
+}
+const sizeConfigs = [];
+for (const raw of SIZE_CONFIGS) {
+  sizeConfigs.push({
+    key: raw.key,
+    heightVar: await reqVar(raw.heightToken),
+    padInlineVar: await reqVar(raw.padToken),
+    gapVar: await reqVar(raw.gapToken),
+    radiusVar: await reqVar(raw.radiusToken),
+    textStyleId: LEDGER.textStyleIds[raw.key] || LEDGER.textStyleIds.md,
+    fontSize: raw.fontSize,
+  });
+}
 
-const sizeConfigs = [
-  { key: "sm", heightVar: vHeightSm, padInlineVar: vPadSm, gapVar: vSpace1, radiusVar: vRadiusSm, textStyleId: LEDGER.textStyleIds.sm, fontSize: 12 },
-  { key: "md", heightVar: vHeightMd, padInlineVar: vPadMd, gapVar: vSpace2, radiusVar: vRadiusMd, textStyleId: LEDGER.textStyleIds.md, fontSize: 14 },
-  { key: "lg", heightVar: vHeightLg, padInlineVar: vPadLg, gapVar: vSpace3, radiusVar: vRadiusMd, textStyleId: LEDGER.textStyleIds.lg, fontSize: 16 },
-];
-
-const disabledStates = ["false", "true"];
+const disabledStates = ${JSON.stringify(["false", "true"])};
 const createdVariants = [];
 
 for (const vCfg of variantConfigs) {
@@ -444,7 +549,7 @@ buttonSet.description = BUTTON_DESCRIPTION;
 buttonSet.x = 80;
 buttonSet.y = 180;
 buttonSet.fills = [];
-buttonSet.strokes = [{ type: "SOLID", color: { r: 0.6, g: 0.45, b: 0.95 }, opacity: 0.5 }];
+buttonSet.strokes = [boundSolidPaint(vColorBorderStrong)];
 buttonSet.strokeWeight = 1;
 buttonSet.dashPattern = [6, 4];
 buttonSet.cornerRadius = 12;
@@ -490,22 +595,17 @@ const showcase = figma.createAutoLayout("VERTICAL", {
 });
 showcase.x = buttonSet.x + buttonSet.width + 80;
 showcase.y = 80;
-showcase.fills = [{ type: "SOLID", color: { r: 0.96, g: 0.97, b: 0.98 } }];
+showcase.fills = [boundSolidPaint(vColorSurfaceMuted)];
 showcase.cornerRadius = 16;
 
 const headerTitle = figma.createText();
 headerTitle.fontName = { family: "Inter", style: "Bold" };
 headerTitle.fontSize = 22;
 headerTitle.characters = "LightSpeedUI — Liftoff <Button> (Nordic & Editorial Modes)";
-headerTitle.fills = [{ type: "SOLID", color: { r: 0.08, g: 0.1, b: 0.13 } }];
+headerTitle.fills = [boundSolidPaint(vColorText)];
 showcase.appendChild(headerTitle);
 
-const themeCards = [
-  { label: "Nordic Light", colorMode: "Nordic Light", dimMode: "Nordic" },
-  { label: "Nordic Dark", colorMode: "Nordic Dark", dimMode: "Nordic" },
-  { label: "Editorial Light", colorMode: "Editorial Light", dimMode: "Editorial" },
-  { label: "Editorial Dark", colorMode: "Editorial Dark", dimMode: "Editorial" },
-];
+const themeCards = THEME_CARDS;
 
 const propDefs = buttonSet.componentPropertyDefinitions;
 const findPropKey = (prefix) =>
@@ -558,7 +658,7 @@ for (const tc of themeCards) {
   rowVariants.counterAxisAlignItems = "CENTER";
   rowVariants.fills = [];
 
-  for (const vKey of ["primary", "secondary", "outline", "ghost", "danger"]) {
+  for (const vKey of variantConfigs.map((c) => c.key)) {
     const matchVariant = buttonSet.children.find(
       (c) => c.name === "variant=" + vKey + ", size=md, disabled=false",
     );
@@ -572,8 +672,9 @@ for (const tc of themeCards) {
     rowVariants.appendChild(inst);
   }
 
+  const disabledSampleVariant = variantConfigs[1]?.key || variantConfigs[0].key;
   const disVariant = buttonSet.children.find(
-    (c) => c.name === "variant=secondary, size=md, disabled=true",
+    (c) => c.name === "variant=" + disabledSampleVariant + ", size=md, disabled=true",
   );
   if (disVariant && disVariant.type === "COMPONENT") {
     const disInst = disVariant.createInstance();
@@ -590,7 +691,8 @@ for (const tc of themeCards) {
   rowSizes.counterAxisAlignItems = "CENTER";
   rowSizes.fills = [];
 
-  for (const [sKey, sLabel] of [["sm", "Small"], ["md", "Medium"], ["lg", "Large"]]) {
+  for (const sKey of sizeConfigs.map((c) => c.key)) {
+    const sLabel = sKey.charAt(0).toUpperCase() + sKey.slice(1);
     const mv = buttonSet.children.find(
       (c) => c.name === "variant=primary, size=" + sKey + ", disabled=false",
     );

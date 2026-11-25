@@ -1,0 +1,22 @@
+---
+/**
+ * @title Input
+ * @level liftoff
+ * @description Themed text input built atop OriginInput with semantic token styling.
+ * @category Forms
+ * @hydration none
+ * @accessibility
+ * - Delegates label binding, persistent hints and native constraints to `OriginInput`.
+ * @keyboard
+ * - Native input keyboard behavior.
+ */
+
+import OriginInput from "@lsui/origin/Input.astro";
+import type { ComponentProps } from "astro/types";
+import "./core.css";
+
+type Props = ComponentProps<typeof OriginInput>;
+
+---
+
+<OriginInput {...Astro.props} />

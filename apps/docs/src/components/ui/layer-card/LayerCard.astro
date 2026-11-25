@@ -26,8 +26,8 @@ const { orientation = "vertical", class: className, "data-slot": slot = "layer-c
   data-slot={slot}
   data-orientation={orientation}
   class={cn(
-    "group/layer flex w-full overflow-hidden rounded-lg bg-muted text-sm ring ring-border",
-    orientation === "horizontal" ? "flex-row items-stretch" : "flex-col",
+    "nd-layer-card",
+    orientation === "horizontal" ? "nd-layer-card-horizontal" : "nd-layer-card-vertical",
     className,
   )}
   {...attrs}

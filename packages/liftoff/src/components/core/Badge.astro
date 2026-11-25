@@ -1,0 +1,25 @@
+---
+/**
+ * @title Badge
+ * @level liftoff
+ * @description Themed inline status badge styled entirely with semantic tokens.
+ * @category Status
+ * @hydration none
+ * @accessibility
+ * - Renders a non-interactive `<span>`; never use as a button.
+ * @keyboard
+ * - No keyboard interaction.
+ * @slots
+ * - `default`: Badge label.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+import "./core.css";
+
+type Props = HTMLAttributes<"span">;
+
+---
+
+<span data-lsui-badge {...Astro.props}>
+  <slot />
+</span>

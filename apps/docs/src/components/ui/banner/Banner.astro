@@ -29,7 +29,7 @@ const c = config[variant] ?? config.note;
 <div
   data-slot="banner"
   role={variant === "danger" || variant === "caution" ? "alert" : "status"}
-  class={cn("banner-card my-4 flex w-full items-start gap-3 rounded-lg px-4 py-3 text-sm leading-normal text-foreground", className)}
+  class={cn("banner-card na-banner", className)}
   style={`--_c: ${c.color}; --_t: ${c.tint};`}
   {...(dismissible
     ? {
@@ -40,7 +40,7 @@ const c = config[variant] ?? config.note;
     : {})}
   {...attrs}
 >
-  <div data-slot="banner-content" class="banner-card-body min-w-0 flex-1">
+  <div data-slot="banner-content" class="banner-card-body na-banner-body">
     <Fragment set:html={content} />
   </div>
   {dismissible && (
@@ -48,10 +48,10 @@ const c = config[variant] ?? config.note;
       type="button"
       data-nb-banner-close
       data-slot="banner-close"
-      class="-my-1 -me-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-current opacity-60 transition-[background-color,opacity] hover:bg-card/60 hover:opacity-100"
+      class="na-banner-close"
       aria-label="Dismiss banner"
     >
-      <Icon name="ph:x" class="w-3.5 h-3.5" />
+      <Icon name="ph:x" class="na-icon-xs" />
     </button>
   )}
 </div>

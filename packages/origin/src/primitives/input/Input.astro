@@ -1,0 +1,62 @@
+---
+/**
+ * @title OriginInput
+ * @level origin
+ * @description Unstyled native text input with a bound label, persistent hint and native constraint attributes.
+ * @category Primitives
+ * @hydration none
+ * @accessibility
+ * - Renders `<label for>` before the input; a visible label is mandatory.
+ * - Helper text is persistent and linked via `aria-describedby`; `placeholder` is never used as the only instruction.
+ * - Required fields are marked both visually (via the label text) and with the native `required` attribute.
+ * @keyboard
+ * - Native input keyboard behavior; `enterkeyhint` and `autocomplete` are passed through.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+
+type NativeInputAttributes = Omit<
+  HTMLAttributes<"input">,
+  "id" | "aria-label" | "aria-labelledby" | "type"
+>;
+
+type Props = NativeInputAttributes & {
+  id: string;
+  label: string;
+  type?: HTMLAttributes<"input">["type"];
+  name?: string;
+  hint?: string;
+  describedBy?: string;
+  required?: boolean;
+};
+
+const {
+  id,
+  label,
+  type = "text",
+  name,
+  hint,
+  describedBy,
+  required = false,
+  ...rest
+} = Astro.props;
+
+const describedByValue = [describedBy, hint ? `${id}-hint` : null]
+  .filter(Boolean)
+  .join(" ") || undefined;
+---
+
+<div data-lsui-field>
+  <label for={id}>
+    {label}{required && <span aria-hidden="true"> *</span>}
+  </label>
+  <input
+    id={id}
+    type={type}
+    name={name ?? id}
+    required={required}
+    aria-describedby={describedByValue}
+    {...rest}
+  />
+  {hint && <p id={`${id}-hint`}>{hint}</p>}
+</div>

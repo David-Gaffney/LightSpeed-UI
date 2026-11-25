@@ -1,0 +1,28 @@
+---
+/**
+ * @title Prose
+ * @level liftoff
+ * @description Themed long-form article container with semantic heading rhythm.
+ * @category Content
+ * @hydration none
+ * @accessibility
+ * - Renders `<article>` with a natural heading order supplied by the consumer.
+ * @keyboard
+ * - No custom keyboard behavior.
+ * @slots
+ * - `default`: Rendered prose content.
+ */
+
+import "./content.css";
+
+type Props = {
+  class?: string;
+  id?: string;
+  label?: string;
+};
+
+---
+
+<article data-lsui-prose {...Astro.props}>
+  <slot />
+</article>

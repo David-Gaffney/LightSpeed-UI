@@ -158,10 +158,16 @@
       outline-offset: var(--ring-offset);
     }
 
-    [data-lsui-button]:where(:disabled, [aria-disabled="true"]) {
-      opacity: 0.55;
-      cursor: not-allowed;
+    [data-lsui-button]:is(:disabled, [aria-disabled="true"]) {
+      /* Never dim the whole element: opacity also fades the label and focus ring.
+       * Full-strength semantic text + a subtle surface-derived fill keeps focusable
+       * `aria-disabled` labels legible; the dashed border is a non-color state cue. */
+      background-color: color-mix(in oklab, var(--color-surface) 88%, var(--color-text));
+      color: var(--color-text);
+      border-color: var(--color-border);
+      border-style: dashed;
       box-shadow: none;
+      cursor: not-allowed;
     }
   }
 }

@@ -1,0 +1,28 @@
+---
+/**
+ * @title Blocks
+ * @level liftoff
+ * @description Themed section wrapper for CMS block sequences.
+ * @category Content
+ * @hydration none
+ * @accessibility
+ * - Renders `<section>`; consumers supply its heading.
+ * @keyboard
+ * - No custom keyboard behavior.
+ * @slots
+ * - `default`: Rendered blocks.
+ */
+
+import "./content.css";
+
+type Props = {
+  class?: string;
+  id?: string;
+  label?: string;
+};
+
+---
+
+<section data-lsui-blocks {...Astro.props}>
+  <slot />
+</section>

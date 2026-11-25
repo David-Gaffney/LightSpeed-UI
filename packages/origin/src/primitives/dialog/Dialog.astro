@@ -1,0 +1,60 @@
+---
+/**
+ * @title OriginDialog
+ * @level origin
+ * @description Unstyled native modal dialog primitive using Invoker Commands; the browser owns focus containment, inert page, Escape dismissal and focus restoration.
+ * @category Primitives
+ * @hydration optional
+ * @accessibility
+ * - Renders a native `<dialog>` opened only with `command="show-modal"` / `showModal()`.
+ * - No `role="dialog"`, `aria-modal`, manual focus trap, `inert` toggling or Escape handler: the native modal already provides all of them.
+ * - Consumers supply an accessible name via `labelledBy` (or `aria-labelledby`) and may add `describedBy`.
+ * @keyboard
+ * - `Escape` / back gesture: closes the native modal; focus returns to the invoker automatically.
+ * - `command="show-modal"` on the invoker opens it; `command="close"` in the content closes it.
+ * @slots
+ * - `default`: Dialog body.
+ * - `actions`: Footer controls; use `type="button" command="close"` so buttons stay safe inside a form.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+
+type NativeDialogAttributes = Omit<
+  HTMLAttributes<"dialog">,
+  "open" | "role" | "aria-modal" | "aria-labelledby" | "aria-describedby" | "tabindex" | "closedby"
+>;
+
+type Props = NativeDialogAttributes & {
+  id: string;
+  labelledBy?: string;
+  describedBy?: string;
+  closedby?: "any" | "closerequest" | "none";
+};
+
+const {
+  id,
+  labelledBy,
+  describedBy,
+  closedby = "closerequest",
+  ...restProps
+} = Astro.props;
+
+// Computed attributes are authoritative; strip overrides at runtime.
+// (The keys are omitted from Props, so they cannot be destructured typed.)
+const rest = { ...restProps };
+for (const key of [
+  "role",
+  "aria-modal",
+  "open",
+  "tabindex",
+  "aria-labelledby",
+  "aria-describedby",
+]) {
+  delete (rest as Record<string, unknown>)[key];
+}
+---
+
+<dialog id={id} closedby={closedby} aria-labelledby={labelledBy} aria-describedby={describedBy} {...rest}>
+  <slot />
+  <slot name="actions" />
+</dialog>

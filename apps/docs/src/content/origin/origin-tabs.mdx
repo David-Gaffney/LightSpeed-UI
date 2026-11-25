@@ -1,0 +1,43 @@
+---
+title: OriginTabs
+description: Unstyled headless tabs using native focusgroup with a roving-focus fallback; tabs and panels are supplied via named slots.
+sidebar:
+  order: 8
+---
+
+import OriginTabs from "@lsui/origin/Tabs.astro";
+
+<ComponentPreview title="OriginTabs Preview" theme="nordic light" hydration="optional">
+  <OriginTabs>OriginTabs</OriginTabs>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/origin/Tabs.astro` or read its registry manifest at `/r/origin/origin-tabs.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `label` | `string` | — | Yes |  |
+| `activation` | `"automatic" \| "manual"` | `"automatic"` | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `tabs` | `role="tab"` buttons. |
+| `panels` | `role="tabpanel"` regions. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Render `role="tablist"` with an accessible `label`; native `focusgroup="tablist"` provides one tab stop and arrow keys where supported.
+- Consumers render `role="tab"` buttons with `aria-selected`, and `role="tabpanel"` elements with `aria-labelledby`; all panels except the selected one must start `hidden`.
+- Selection is styled from `aria-selected`, never a separate class.
+
+### Keyboard Interactions
+
+- `Arrow` keys move between tabs (native focusgroup, or the Part 9.1 fallback); `Home`/`End` jump to first/last.
+- `Enter`/`Space` selects the focused tab; automatic activation also selects on arrow movement.

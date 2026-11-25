@@ -1,0 +1,40 @@
+---
+title: Blocks
+description: Themed section wrapper for CMS block sequences.
+sidebar:
+  order: 4
+---
+
+import Blocks from "@lsui/liftoff/Blocks.astro";
+
+<ComponentPreview title="Blocks Preview" theme="nordic light" hydration="none">
+  <Blocks>Blocks</Blocks>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/Blocks.astro` or read its registry manifest at `/r/liftoff/blocks.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `class` | `string` | — | No | Consumer CSS class escape hatch |
+| `id` | `string` | — | No | DOM element identifier |
+| `label` | `string` | — | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Rendered blocks. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Renders `<section>`; consumers supply its heading.
+
+### Keyboard Interactions
+
+- No custom keyboard behavior.

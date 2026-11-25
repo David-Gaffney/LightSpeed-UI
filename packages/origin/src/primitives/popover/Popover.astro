@@ -1,0 +1,84 @@
+---
+/**
+ * @title OriginPopover
+ * @level origin
+ * @description Unstyled native Popover API surface with declarative triggers, conditional polyfill loading and optional focus return to the trigger.
+ * @category Primitives
+ * @hydration optional
+ * @accessibility
+ * - Renders a native `[popover]` element; top-layer promotion, light dismiss and Escape come from the platform.
+ * - Does not invent roles: add `role="menu"` / `role="listbox"` on the host when implementing those patterns.
+ * - Use either `popovertarget` or `command="toggle-popover"` on the trigger, never both for the same popover.
+ * @keyboard
+ * - `Escape` / light dismiss: closes per the native `popover` value.
+ * - With `trigger` set, hiding the popover from a button inside it returns focus to the trigger.
+ * @slots
+ * - `default`: Popover content.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+
+type NativePopoverAttributes = Omit<
+  HTMLAttributes<"div">,
+  "popover" | "role" | "tabindex" | "aria-expanded"
+>;
+
+type Props = NativePopoverAttributes & {
+  id: string;
+  popover?: "auto" | "manual";
+  /** Id of the invoker; enables conditional polyfill loading and focus return. */
+  trigger?: string;
+  /** Documented hook for Liftoff/Landing anchor-positioning rules; no CSS ships in Origin. */
+  anchorName?: string;
+};
+
+const {
+  id,
+  popover = "auto",
+  trigger,
+  anchorName,
+  ...restProps
+} = Astro.props;
+
+// Computed attributes are authoritative; strip overrides at runtime.
+const rest = { ...restProps };
+for (const key of ["role", "tabindex", "aria-expanded"]) {
+  delete (rest as Record<string, unknown>)[key];
+}
+
+const hasTrigger = typeof trigger === "string" && trigger.length > 0;
+---
+
+<div
+  id={id}
+  popover={popover}
+  data-lsui-popover=""
+  data-lsui-return-focus={hasTrigger ? trigger : undefined}
+  data-lsui-anchor={anchorName}
+  {...rest}
+>
+  <slot />
+</div>
+
+{hasTrigger && (
+  <script>
+    import { ensureDeclarativeTriggers } from "@lsui/origin/polyfills";
+
+    void ensureDeclarativeTriggers({ popover: true, invoker: false });
+
+    for (const el of document.querySelectorAll<HTMLElement>(
+      "[data-lsui-return-focus]",
+    )) {
+      const trigger = document.getElementById(
+        el.dataset.lsuiReturnFocus ?? "",
+      );
+      if (!trigger) continue;
+      el.addEventListener("beforetoggle", (event) => {
+        const next = (event as ToggleEvent).newState;
+        if (next === "closed" && el.contains(document.activeElement)) {
+          trigger.focus();
+        }
+      });
+    }
+  </script>
+)}

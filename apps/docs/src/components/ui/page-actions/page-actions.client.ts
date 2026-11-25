@@ -14,19 +14,19 @@ function initPageActions(root: HTMLElement): () => void {
   function showState(state: "copied" | "error") {
     if (!copyIcon || !checkIcon || !label) return;
     if (state === "copied") {
-      copyIcon.classList.add("hidden");
-      checkIcon.classList.remove("hidden");
+      copyIcon.classList.add("nob-hidden");
+      checkIcon.classList.remove("nob-hidden");
       label.textContent = "Copied";
     } else {
       // An error after a recent success shows the copy icon again, not the check.
-      copyIcon.classList.remove("hidden");
-      checkIcon.classList.add("hidden");
+      copyIcon.classList.remove("nob-hidden");
+      checkIcon.classList.add("nob-hidden");
       label.textContent = "Couldn't copy";
     }
     if (resetTimer) window.clearTimeout(resetTimer);
     resetTimer = window.setTimeout(() => {
-      copyIcon.classList.remove("hidden");
-      checkIcon.classList.add("hidden");
+      copyIcon.classList.remove("nob-hidden");
+      checkIcon.classList.add("nob-hidden");
       label.textContent = "Copy page";
     }, 1500);
   }

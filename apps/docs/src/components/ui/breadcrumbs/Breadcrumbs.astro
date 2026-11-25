@@ -31,15 +31,15 @@ const tailItems = shouldCollapse ? items.slice(items.length - tailCount) : [];
 ---
 
 {items.length > (endsAtCurrentPage ? 1 : 0) && (
-  <nav aria-label="Breadcrumb" data-slot="breadcrumbs" class={cn("text-xs font-medium", className)} {...attrs}>
-    <ol data-slot="breadcrumbs-list" class="flex flex-wrap items-center gap-y-0.5 text-muted-foreground">
+  <nav aria-label="Breadcrumb" data-slot="breadcrumbs" class={cn("na-breadcrumbs", className)} {...attrs}>
+    <ol data-slot="breadcrumbs-list" class="na-breadcrumbs-list">
       {headItems.map((crumb, i) => (
-        <li data-slot="breadcrumbs-item" class="flex min-w-0 items-center">
-          {i > 0 && <span aria-hidden="true" data-slot="breadcrumbs-separator" class="mx-1.5 text-muted-foreground/50">/</span>}
+        <li data-slot="breadcrumbs-item" class="na-breadcrumbs-item">
+          {i > 0 && <span aria-hidden="true" data-slot="breadcrumbs-separator" class="na-breadcrumbs-sep">/</span>}
           {isCurrent(!shouldCollapse && i === items.length - 1) || !crumb.href ? (
-            <span aria-current={isCurrent(!shouldCollapse && i === items.length - 1) ? "page" : undefined} title={crumb.label} class="text-foreground truncate max-w-[12rem]">{crumb.label}</span>
+            <span aria-current={isCurrent(!shouldCollapse && i === items.length - 1) ? "page" : undefined} title={crumb.label} class="na-breadcrumbs-current">{crumb.label}</span>
           ) : (
-            <a href={resolveHref(crumb.href)} title={crumb.label} class="hover:text-foreground transition-colors truncate max-w-[12rem]">
+            <a href={resolveHref(crumb.href)} title={crumb.label} class="na-breadcrumbs-link">
               {crumb.label}
             </a>
           )}
@@ -47,26 +47,26 @@ const tailItems = shouldCollapse ? items.slice(items.length - tailCount) : [];
       ))}
 
       {shouldCollapse && collapsedItems.length > 0 && (
-        <li data-slot="breadcrumbs-item" class="flex min-w-0 items-center">
-          <span aria-hidden="true" data-slot="breadcrumbs-separator" class="mx-1.5 text-muted-foreground/50">/</span>
-          <details class="relative group">
+        <li data-slot="breadcrumbs-item" class="na-breadcrumbs-item">
+          <span aria-hidden="true" data-slot="breadcrumbs-separator" class="na-breadcrumbs-sep">/</span>
+          <details class="na-breadcrumbs-collapse">
             <summary
-              class="list-none cursor-pointer select-none rounded px-1 py-0.5 transition-colors hover:bg-accent hover:text-foreground [&::-webkit-details-marker]:hidden group-open:before:fixed group-open:before:inset-0 group-open:before:z-[39] group-open:before:cursor-default group-open:before:content-['']"
+              class="na-breadcrumbs-more"
               aria-label={`Show ${collapsedItems.length} more path segments`}
             >
-              <span class="tracking-widest">&hellip;</span>
+              <span class="na-breadcrumbs-ellipsis">&hellip;</span>
             </summary>
-            <div class="absolute start-0 top-full z-40 mt-1 min-w-[10rem] max-w-[16rem] rounded-lg border border-border bg-card p-1 shadow-lg">
+            <div class="na-breadcrumbs-menu">
               {collapsedItems.map((crumb) => (
                 crumb.href ? (
                   <a
                     href={resolveHref(crumb.href)}
-                    class="block truncate rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                    class="na-breadcrumbs-menu-link"
                   >
                     {crumb.label}
                   </a>
                 ) : (
-                  <span class="block truncate rounded-md px-2.5 py-1.5 text-xs text-muted-foreground">
+                  <span class="na-breadcrumbs-menu-item">
                     {crumb.label}
                   </span>
                 )
@@ -77,12 +77,12 @@ const tailItems = shouldCollapse ? items.slice(items.length - tailCount) : [];
       )}
 
       {shouldCollapse && tailItems.map((crumb, i) => (
-        <li data-slot="breadcrumbs-item" class="flex min-w-0 items-center">
-          <span aria-hidden="true" data-slot="breadcrumbs-separator" class="mx-1.5 text-muted-foreground/50">/</span>
+        <li data-slot="breadcrumbs-item" class="na-breadcrumbs-item">
+          <span aria-hidden="true" data-slot="breadcrumbs-separator" class="na-breadcrumbs-sep">/</span>
           {isCurrent(i === tailItems.length - 1) || !crumb.href ? (
-            <span aria-current={isCurrent(i === tailItems.length - 1) ? "page" : undefined} title={crumb.label} class="text-foreground truncate max-w-[12rem]">{crumb.label}</span>
+            <span aria-current={isCurrent(i === tailItems.length - 1) ? "page" : undefined} title={crumb.label} class="na-breadcrumbs-current">{crumb.label}</span>
           ) : (
-            <a href={resolveHref(crumb.href)} title={crumb.label} class="hover:text-foreground transition-colors truncate max-w-[12rem]">
+            <a href={resolveHref(crumb.href)} title={crumb.label} class="na-breadcrumbs-link">
               {crumb.label}
             </a>
           )}

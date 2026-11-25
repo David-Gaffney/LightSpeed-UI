@@ -1,0 +1,19 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry-item.json",
+  "name": "origin/origin-tabs",
+  "title": "OriginTabs",
+  "level": "origin",
+  "type": "registry:ui",
+  "description": "Unstyled headless tabs using native focusgroup with a roving-focus fallback; tabs and panels are supplied via named slots.",
+  "category": "Primitives",
+  "hydration": "optional",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "packages/origin/src/primitives/tabs/Tabs.astro",
+      "target": "src/components/origin/origin-tabs/Tabs.astro",
+      "sha256": "b187d79a3b3c0879a6763921ed4e4ea27a2ff2544802cb8440b52cdec6e9d124",
+      "content": "---\n/**\n * @title OriginTabs\n * @level origin\n * @description Unstyled headless tabs using native focusgroup with a roving-focus fallback; tabs and panels are supplied via named slots.\n * @category Primitives\n * @hydration optional\n * @accessibility\n * - Render `role=\"tablist\"` with an accessible `label`; native `focusgroup=\"tablist\"` provides one tab stop and arrow keys where supported.\n * - Consumers render `role=\"tab\"` buttons with `aria-selected`, and `role=\"tabpanel\"` elements with `aria-labelledby`; all panels except the selected one must start `hidden`.\n * - Selection is styled from `aria-selected`, never a separate class.\n * @keyboard\n * - `Arrow` keys move between tabs (native focusgroup, or the Part 9.1 fallback); `Home`/`End` jump to first/last.\n * - `Enter`/`Space` selects the focused tab; automatic activation also selects on arrow movement.\n * @slots\n * - `tabs`: `role=\"tab\"` buttons.\n * - `panels`: `role=\"tabpanel\"` regions.\n */\n\nimport type { HTMLAttributes } from \"astro/types\";\n\ntype Props = Omit<HTMLAttributes<\"div\">, \"role\" | \"aria-label\"> & {\n  label: string;\n  activation?: \"automatic\" | \"manual\";\n};\n\nconst { label, activation = \"automatic\", ...restProps } = Astro.props;\nconst rest = { ...restProps };\nfor (const key of [\"role\", \"aria-label\", \"tabindex\"]) {\n  delete (rest as Record<string, unknown>)[key];\n}\n---\n\n<div data-lsui-tabs data-activation={activation} {...rest}>\n  <div\n    role=\"tablist\"\n    aria-label={label}\n    {...{ focusgroup: activation === \"manual\" ? \"tablist nomemory\" : \"tablist\" }}\n    data-lsui-tablist\n  >\n    <slot name=\"tabs\" />\n  </div>\n  <div data-lsui-panels>\n    <slot name=\"panels\" />\n  </div>\n</div>\n\n<script>\n  import {\n    createRovingFocus,\n    isNativeFocusGroupSupported,\n  } from \"@lsui/origin/controllers/roving-focus\";\n\n  for (const root of document.querySelectorAll<HTMLElement>(\"[data-lsui-tabs]\")) {\n    const list = root.querySelector<HTMLElement>('[role=\"tablist\"]');\n    if (!list) continue;\n    const tabs = [...list.querySelectorAll<HTMLElement>('[role=\"tab\"]')];\n    const panels = [\n      ...root.querySelectorAll<HTMLElement>('[role=\"tabpanel\"]'),\n    ];\n\n    const select = (tab: HTMLElement): void => {\n      for (const other of tabs) {\n        other.setAttribute(\"aria-selected\", String(other === tab));\n      }\n      const target = tab.getAttribute(\"aria-controls\");\n      for (const panel of panels) {\n        const visible = target ? panel.id === target : panel.getAttribute(\"aria-labelledby\") === tab.id;\n        if (visible) panel.removeAttribute(\"hidden\");\n        else panel.setAttribute(\"hidden\", \"until-found\");\n      }\n    };\n\n    for (const tab of tabs) {\n      tab.addEventListener(\"click\", () => select(tab));\n    }\n\n    if (!isNativeFocusGroupSupported()) {\n      createRovingFocus(list, {\n        itemSelector: '[role=\"tab\"]',\n        onFocusChange: (tab) => {\n          if (root.dataset.activation !== \"manual\") select(tab);\n        },\n      });\n    }\n  }\n</script>\n"
+    }
+  ]
+}

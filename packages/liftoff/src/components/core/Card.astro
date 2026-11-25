@@ -1,0 +1,25 @@
+---
+/**
+ * @title Card
+ * @level liftoff
+ * @description Themed surface container styled entirely with semantic tokens.
+ * @category Layout
+ * @hydration none
+ * @accessibility
+ * - Renders a plain `<section>`; consumers supply headings and landmarks.
+ * @keyboard
+ * - No custom keyboard behavior.
+ * @slots
+ * - `default`: Card content.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+import "./core.css";
+
+type Props = HTMLAttributes<"section">;
+
+---
+
+<section data-lsui-card {...Astro.props}>
+  <slot />
+</section>

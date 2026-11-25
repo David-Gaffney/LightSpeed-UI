@@ -1,0 +1,44 @@
+---
+title: OriginSelect
+description: Unstyled native select with a bound label and optional persistent hint; no custom listbox role invention.
+sidebar:
+  order: 7
+---
+
+import OriginSelect from "@lsui/origin/Select.astro";
+
+<ComponentPreview title="OriginSelect Preview" theme="nordic light" hydration="none">
+  <OriginSelect>OriginSelect</OriginSelect>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/origin/Select.astro` or read its registry manifest at `/r/origin/origin-select.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `string` | — | Yes | DOM element identifier |
+| `label` | `string` | — | Yes |  |
+| `name` | `string` | — | No |  |
+| `hint` | `string` | — | No | Persistent helper text; rendered after the control and linked via aria-describedby. |
+| `describedBy` | `string` | — | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Native `<option>` elements. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Renders a real `<label for>` before the `<select>`; the label is required at compile time.
+- Hints are persistent text linked with `aria-describedby`, never placeholder-only instructions.
+- The native select owns keyboard behavior, form submission and accessible roles.
+
+### Keyboard Interactions
+
+- Native select keyboard interaction (Arrow keys, Home/End, typeahead, Enter/Space).

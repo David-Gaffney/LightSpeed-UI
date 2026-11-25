@@ -29,18 +29,14 @@ const key = isNext ? shortcuts.nextPage : shortcuts.previousPage;
   data-nb-pagination-item
   data-nb-shortcut-for={key || undefined}
   data-slot="pagination-link"
-  class={cn(
-    "nb-pagination-link relative flex min-w-0 flex-1 items-center gap-3 rounded-full py-1 no-underline",
-    "focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring",
-    isNext ? "justify-end pe-2.5 ps-5 text-end" : "pe-5 ps-2.5",
-    className,
-  )}
+  data-direction={isNext ? "next" : "prev"}
+  class={cn("nb-pagination-link ne-pager-link", className)}
   {...attrs}
 >
   {!isNext && key && <PaginationKey data-nb-shortcut-hint={key}>{shortcutLabel(key)}</PaginationKey>}
-  <span class="min-w-0">
-    <span data-slot="pagination-label" class="block text-[0.6875rem] leading-4 text-muted-foreground">{caption}</span>
-    <span data-slot="pagination-title" class="nb-pagination-title block text-sm leading-5 font-medium text-foreground"><slot /></span>
+  <span class="ne-pager-text">
+    <span data-slot="pagination-label" class="ne-pager-label">{caption}</span>
+    <span data-slot="pagination-title" class="nb-pagination-title ne-pager-title"><slot /></span>
   </span>
   {isNext && key && <PaginationKey data-nb-shortcut-hint={key}>{shortcutLabel(key)}</PaginationKey>}
 </a>

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry-item.json",
+  "name": "liftoff/input",
+  "title": "Input",
+  "level": "liftoff",
+  "type": "registry:ui",
+  "description": "Themed text input built atop OriginInput with semantic token styling.",
+  "category": "Forms",
+  "hydration": "none",
+  "dependencies": [
+    "@lsui/origin"
+  ],
+  "files": [
+    {
+      "path": "packages/liftoff/src/components/core/Input.astro",
+      "target": "src/components/liftoff/input/Input.astro",
+      "sha256": "bf1a578e9262e2d3eb3abe65ea27a7560ff537d26424e734b3da3be2f7eaedf5",
+      "content": "---\n/**\n * @title Input\n * @level liftoff\n * @description Themed text input built atop OriginInput with semantic token styling.\n * @category Forms\n * @hydration none\n * @accessibility\n * - Delegates label binding, persistent hints and native constraints to `OriginInput`.\n * @keyboard\n * - Native input keyboard behavior.\n */\n\nimport OriginInput from \"@lsui/origin/Input.astro\";\nimport type { ComponentProps } from \"astro/types\";\nimport \"./core.css\";\n\ntype Props = ComponentProps<typeof OriginInput>;\n\n---\n\n<OriginInput {...Astro.props} />\n"
+    },
+    {
+      "path": "packages/liftoff/src/components/core/core.css",
+      "target": "src/components/liftoff/input/core.css",
+      "sha256": "8236ceec61fbbf6afe8bf0002ad6872ee7b7faf70f1450058bdd16a17e81b4f5",
+      "content": "/* LightSpeedUI Level 2 (@lsui/liftoff) — shared visual styles for core UI wrappers.\n * Semantic tokens only; no hex values, Tailwind utilities or CSS Modules.\n */\n\n@layer lsui {\n  @layer components {\n    [data-lsui-card] {\n      box-sizing: border-box;\n      padding: var(--space-lg);\n      border: var(--border-width) solid var(--color-border);\n      border-radius: var(--radius-lg);\n      background: var(--color-surface);\n      color: var(--color-text);\n    }\n\n    [data-lsui-badge] {\n      display: inline-flex;\n      align-items: center;\n      box-sizing: border-box;\n      min-block-size: var(--target-min-size, 1.5rem);\n      padding-inline: var(--space-2);\n      border: var(--border-width) solid var(--color-border);\n      border-radius: var(--radius-md);\n      background: var(--color-surface-muted, var(--color-surface));\n      color: var(--color-text-muted);\n      font-family: var(--font-body);\n      font-size: var(--text-xs, var(--text-sm));\n      font-weight: var(--weight-medium);\n    }\n\n    [data-lsui-field] {\n      display: grid;\n      gap: var(--space-1);\n      margin-block-end: var(--space-md);\n      color: var(--color-text);\n      font-family: var(--font-body);\n      font-size: var(--text-sm);\n    }\n\n    [data-lsui-field] label {\n      font-weight: var(--weight-medium);\n    }\n\n    [data-lsui-field] :is(input, select) {\n      box-sizing: border-box;\n      min-block-size: max(var(--control-height-md), var(--target-min-size, 1.5rem));\n      padding: var(--space-2) var(--control-pad-inline-md);\n      border: var(--border-width) solid var(--color-border-strong);\n      border-radius: var(--radius-md);\n      background: var(--color-surface);\n      color: var(--color-text);\n      font: inherit;\n    }\n\n    [data-lsui-field] :is(input, select):focus-visible {\n      outline: var(--border-width-lg, 2px) solid var(--color-ring);\n      outline-offset: var(--space-1);\n    }\n\n    [data-lsui-field] p {\n      margin: 0;\n      color: var(--color-text-muted);\n      font-size: var(--text-xs, var(--text-sm));\n    }\n\n    [data-lsui-tabs] [role=\"tablist\"] {\n      display: flex;\n      gap: var(--space-2);\n      border-block-end: var(--border-width) solid var(--color-border);\n    }\n\n    [data-lsui-tabs] [role=\"tab\"] {\n      min-block-size: var(--target-min-size, 1.5rem);\n      padding: var(--space-2) var(--space-3);\n      border: 0;\n      border-block-end: var(--border-width-lg, 2px) solid transparent;\n      background: transparent;\n      color: var(--color-text-muted);\n      font: inherit;\n      cursor: pointer;\n    }\n\n    [data-lsui-tabs] [role=\"tab\"][aria-selected=\"true\"] {\n      border-block-end-color: var(--color-ring);\n      color: var(--color-text);\n      font-weight: var(--weight-medium);\n    }\n\n    [data-lsui-tabs] [role=\"tabpanel\"] {\n      padding-block: var(--space-md);\n    }\n\n    [data-lsui-dialog] {\n      max-inline-size: min(90vw, 40rem);\n      padding: var(--space-lg);\n      border: var(--border-width) solid var(--color-border);\n      border-radius: var(--radius-lg);\n      background: var(--color-surface);\n      color: var(--color-text);\n    }\n\n    [data-lsui-dialog]::backdrop {\n      background: color-mix(in oklab, var(--color-text) 40%, transparent);\n    }\n\n    [data-lsui-popover] {\n      max-inline-size: min(90vw, 24rem);\n      padding: var(--space-md);\n      border: var(--border-width) solid var(--color-border);\n      border-radius: var(--radius-md);\n      background: var(--color-surface);\n      color: var(--color-text);\n      box-shadow: var(--shadow-md);\n    }\n\n    @supports (position-area: block-end) {\n      [data-lsui-popover] {\n        inset: auto;\n        margin: 0;\n        position-area: block-end span-inline-start;\n        position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;\n      }\n    }\n  }\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+---
+/**
+ * @title TableOfContents
+ * @level liftoff
+ * @description Themed table-of-contents navigation built from consumer-supplied anchor links.
+ * @category Content
+ * @hydration none
+ * @accessibility
+ * - Renders a labelled `<nav>`; links must use real `href` values.
+ * @keyboard
+ * - Native anchor keyboard behavior.
+ * @slots
+ * - `default`: Nested `<ul>` / `<li>` / `<a>` outline.
+ */
+
+import "./content.css";
+
+type Props = {
+  class?: string;
+  id?: string;
+  label?: string;
+};
+
+---
+
+<nav data-lsui-toc aria-label={Astro.props.label ?? "On this page"} {...Astro.props}>
+  <slot />
+</nav>

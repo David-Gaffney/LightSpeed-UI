@@ -134,12 +134,12 @@ Inside Code Mode (`execute`), run discovery **sequentially** using the `fileKey`
 3. Persist the returned `{ collections, colorModes, dimensionModes, variablesByCssToken, textStyleIds }` JSON to a state ledger file on disk (e.g., `design-system-state-<runId>.json`) so exact Figma IDs—never guessed names—feed subsequent component calls.
 
 ### Step 5: Sync Dependency Atoms, Component Set & Multi-Theme Showcase
-1. Generate the idempotent component script using `buildButtonComponentSyncScript(spec, tokenLedger)` (or the target component's builder in `@lsui/figma-sync`).
+1. Generate the idempotent component script using `buildButtonComponentSyncScript(spec, tokenLedger)` (or the target component's builder in `@lsui/figma-sync`). Variant/size axes come from `spec.components[].variantAxes`, and every canvas color is resolved from semantic tokens via the ledger—no literal hex/RGB values. A `VARIANT_PLAN` guard reports a named page-split plan if a component exceeds Figma's 30-variant cap.
 2. Execute it sequentially via `tools.figma.use_figma` (**never** run two mutating `use_figma` calls in parallel):
    - Creates `Tier 0` dependency atoms (e.g., `16×16` vector `Icon` components) in a separate `Dependencies` frame first.
    - Builds all component variants with 100% variable-bound fills, strokes, radii, heights, paddings, and gaps, attaching `addComponentProperty(...)` **before** `figma.combineAsVariants(...)`.
    - Positions every variant into a non-overlapping `row × column` grid and resizes the `ComponentSetNode` with `resizeWithoutConstraints(...)`.
-   - Builds a **Multi-Theme Review Showcase** frame beside the `ComponentSetNode` using `card.setExplicitVariableModeForCollection(...)` for `Nordic Light`, `Nordic Dark`, `Editorial Light`, and `Editorial Dark`, ending with `await showcase.screenshot({ scale: 1 })`.
+   - Builds a **Multi-Theme Review Showcase** frame beside the `ComponentSetNode` using `card.setExplicitVariableModeForCollection(...)`, with cards derived from `spec.variableCollections.colors.modes` (currently Nordic/Editorial Light/Dark), ending with `await showcase.screenshot({ scale: 1 })`.
 3. Inspect the returned `1x` screenshot at normal scale to verify zero text clipping, crisp icon contrast across light/dark modes, and accurate corner-radius shifts between `Nordic` and `Editorial`.
 
 ---

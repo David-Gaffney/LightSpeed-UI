@@ -1,0 +1,40 @@
+---
+title: TableOfContents
+description: Themed table-of-contents navigation built from consumer-supplied anchor links.
+sidebar:
+  order: 10
+---
+
+import TableOfContents from "@lsui/liftoff/TableOfContents.astro";
+
+<ComponentPreview title="TableOfContents Preview" theme="nordic light" hydration="none">
+  <TableOfContents>TableOfContents</TableOfContents>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/TableOfContents.astro` or read its registry manifest at `/r/liftoff/table-of-contents.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `class` | `string` | — | No | Consumer CSS class escape hatch |
+| `id` | `string` | — | No | DOM element identifier |
+| `label` | `string` | — | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Nested `<ul>` / `<li>` / `<a>` outline. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Renders a labelled `<nav>`; links must use real `href` values.
+
+### Keyboard Interactions
+
+- Native anchor keyboard behavior.

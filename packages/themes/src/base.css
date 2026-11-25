@@ -377,6 +377,12 @@
 
     [data-surface="inverse"] {
       --lsui-surface: inverse;
+      /* Remap the whole surface context, not just the label color: focus rings and
+       * component boundaries must meet 3:1 against THIS background (WCAG 1.4.11). */
+      --color-surface: var(--color-surface-inverse);
+      --color-ring: var(--color-text-inverse);
+      --color-border: color-mix(in oklab, var(--color-text-inverse) 45%, var(--color-surface-inverse));
+      --color-border-strong: color-mix(in oklab, var(--color-text-inverse) 62%, var(--color-surface-inverse));
       background-color: var(--color-surface-inverse);
       color: var(--color-text-inverse);
       --color-text: var(--color-text-inverse);

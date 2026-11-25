@@ -1,0 +1,44 @@
+---
+title: OriginPopover
+description: Unstyled native Popover API surface with declarative triggers, conditional polyfill loading and optional focus return to the trigger.
+sidebar:
+  order: 6
+---
+
+import OriginPopover from "@lsui/origin/Popover.astro";
+
+<ComponentPreview title="OriginPopover Preview" theme="nordic light" hydration="optional">
+  <OriginPopover>OriginPopover</OriginPopover>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/origin/Popover.astro` or read its registry manifest at `/r/origin/origin-popover.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `string` | — | Yes | DOM element identifier |
+| `popover` | `"auto" \| "manual"` | `"auto"` | No |  |
+| `trigger` | `string` | — | No | Id of the invoker; enables conditional polyfill loading and focus return. |
+| `anchorName` | `string` | — | No | Documented hook for Liftoff/Landing anchor-positioning rules; no CSS ships in Origin. |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Popover content. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Renders a native `[popover]` element; top-layer promotion, light dismiss and Escape come from the platform.
+- Does not invent roles: add `role="menu"` / `role="listbox"` on the host when implementing those patterns.
+- Use either `popovertarget` or `command="toggle-popover"` on the trigger, never both for the same popover.
+
+### Keyboard Interactions
+
+- `Escape` / light dismiss: closes per the native `popover` value.
+- With `trigger` set, hiding the popover from a button inside it returns focus to the trigger.

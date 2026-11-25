@@ -34,6 +34,66 @@
       "registryUrl": "/r/origin/origin-link.json"
     },
     {
+      "name": "origin/origin-dialog",
+      "slug": "origin-dialog",
+      "title": "OriginDialog",
+      "level": "origin",
+      "type": "registry:ui",
+      "category": "Primitives",
+      "hydration": "optional",
+      "description": "Unstyled native modal dialog primitive using Invoker Commands; the browser owns focus containment, inert page, Escape dismissal and focus restoration.",
+      "dependencies": [],
+      "registryUrl": "/r/origin/origin-dialog.json"
+    },
+    {
+      "name": "origin/origin-input",
+      "slug": "origin-input",
+      "title": "OriginInput",
+      "level": "origin",
+      "type": "registry:ui",
+      "category": "Primitives",
+      "hydration": "none",
+      "description": "Unstyled native text input with a bound label, persistent hint and native constraint attributes.",
+      "dependencies": [],
+      "registryUrl": "/r/origin/origin-input.json"
+    },
+    {
+      "name": "origin/origin-popover",
+      "slug": "origin-popover",
+      "title": "OriginPopover",
+      "level": "origin",
+      "type": "registry:ui",
+      "category": "Primitives",
+      "hydration": "optional",
+      "description": "Unstyled native Popover API surface with declarative triggers, conditional polyfill loading and optional focus return to the trigger.",
+      "dependencies": [],
+      "registryUrl": "/r/origin/origin-popover.json"
+    },
+    {
+      "name": "origin/origin-select",
+      "slug": "origin-select",
+      "title": "OriginSelect",
+      "level": "origin",
+      "type": "registry:ui",
+      "category": "Primitives",
+      "hydration": "none",
+      "description": "Unstyled native select with a bound label and optional persistent hint; no custom listbox role invention.",
+      "dependencies": [],
+      "registryUrl": "/r/origin/origin-select.json"
+    },
+    {
+      "name": "origin/origin-tabs",
+      "slug": "origin-tabs",
+      "title": "OriginTabs",
+      "level": "origin",
+      "type": "registry:ui",
+      "category": "Primitives",
+      "hydration": "optional",
+      "description": "Unstyled headless tabs using native focusgroup with a roving-focus fallback; tabs and panels are supplied via named slots.",
+      "dependencies": [],
+      "registryUrl": "/r/origin/origin-tabs.json"
+    },
+    {
       "name": "liftoff/button",
       "slug": "button",
       "title": "Button",
@@ -60,6 +120,234 @@
         "@lsui/origin"
       ],
       "registryUrl": "/r/liftoff/link-button.json"
+    },
+    {
+      "name": "liftoff/blocks",
+      "slug": "blocks",
+      "title": "Blocks",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Content",
+      "hydration": "none",
+      "description": "Themed section wrapper for CMS block sequences.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/blocks.json"
+    },
+    {
+      "name": "liftoff/byline",
+      "slug": "byline",
+      "title": "Byline",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Content",
+      "hydration": "none",
+      "description": "Themed author/date metadata row.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/byline.json"
+    },
+    {
+      "name": "liftoff/pagination",
+      "slug": "pagination",
+      "title": "Pagination",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Content",
+      "hydration": "none",
+      "description": "Themed previous/next navigation with real links.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/pagination.json"
+    },
+    {
+      "name": "liftoff/portable-text",
+      "slug": "portable-text",
+      "title": "PortableText",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Content",
+      "hydration": "none",
+      "description": "Themed container for normalized portable-text blocks supplied through the default slot.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/portable-text.json"
+    },
+    {
+      "name": "liftoff/post-card",
+      "slug": "post-card",
+      "title": "PostCard",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Content",
+      "hydration": "none",
+      "description": "Themed article teaser card with a real navigation link.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/post-card.json"
+    },
+    {
+      "name": "liftoff/prose",
+      "slug": "prose",
+      "title": "Prose",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Content",
+      "hydration": "none",
+      "description": "Themed long-form article container with semantic heading rhythm.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/prose.json"
+    },
+    {
+      "name": "liftoff/table-of-contents",
+      "slug": "table-of-contents",
+      "title": "TableOfContents",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Content",
+      "hydration": "none",
+      "description": "Themed table-of-contents navigation built from consumer-supplied anchor links.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/table-of-contents.json"
+    },
+    {
+      "name": "liftoff/badge",
+      "slug": "badge",
+      "title": "Badge",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Status",
+      "hydration": "none",
+      "description": "Themed inline status badge styled entirely with semantic tokens.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/badge.json"
+    },
+    {
+      "name": "liftoff/card",
+      "slug": "card",
+      "title": "Card",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Layout",
+      "hydration": "none",
+      "description": "Themed surface container styled entirely with semantic tokens.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/card.json"
+    },
+    {
+      "name": "liftoff/dialog",
+      "slug": "dialog",
+      "title": "Dialog",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Overlays",
+      "hydration": "optional",
+      "description": "Themed native modal dialog built atop OriginDialog.",
+      "dependencies": [
+        "@lsui/origin"
+      ],
+      "registryUrl": "/r/liftoff/dialog.json"
+    },
+    {
+      "name": "liftoff/input",
+      "slug": "input",
+      "title": "Input",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Forms",
+      "hydration": "none",
+      "description": "Themed text input built atop OriginInput with semantic token styling.",
+      "dependencies": [
+        "@lsui/origin"
+      ],
+      "registryUrl": "/r/liftoff/input.json"
+    },
+    {
+      "name": "liftoff/popover",
+      "slug": "popover",
+      "title": "Popover",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Overlays",
+      "hydration": "optional",
+      "description": "Themed native popover built atop OriginPopover.",
+      "dependencies": [
+        "@lsui/origin"
+      ],
+      "registryUrl": "/r/liftoff/popover.json"
+    },
+    {
+      "name": "liftoff/select",
+      "slug": "select",
+      "title": "Select",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Forms",
+      "hydration": "none",
+      "description": "Themed native select built atop OriginSelect with semantic token styling.",
+      "dependencies": [
+        "@lsui/origin"
+      ],
+      "registryUrl": "/r/liftoff/select.json"
+    },
+    {
+      "name": "liftoff/tabs",
+      "slug": "tabs",
+      "title": "Tabs",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Navigation",
+      "hydration": "optional",
+      "description": "Themed headless tabs built atop OriginTabs using native focusgroup where supported.",
+      "dependencies": [
+        "@lsui/origin"
+      ],
+      "registryUrl": "/r/liftoff/tabs.json"
+    },
+    {
+      "name": "liftoff/callout",
+      "slug": "callout",
+      "title": "Callout",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Documentation",
+      "hydration": "none",
+      "description": "Themed documentation callout with a semantic label and non-color type marker.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/callout.json"
+    },
+    {
+      "name": "liftoff/code-group",
+      "slug": "code-group",
+      "title": "CodeGroup",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Documentation",
+      "hydration": "optional",
+      "description": "Themed tabbed code group built atop OriginTabs.",
+      "dependencies": [
+        "@lsui/origin"
+      ],
+      "registryUrl": "/r/liftoff/code-group.json"
+    },
+    {
+      "name": "liftoff/docs-sidebar",
+      "slug": "docs-sidebar",
+      "title": "DocsSidebar",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Documentation",
+      "hydration": "none",
+      "description": "Themed nested documentation navigation landmark.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/docs-sidebar.json"
+    },
+    {
+      "name": "liftoff/prev-next",
+      "slug": "prev-next",
+      "title": "PrevNext",
+      "level": "liftoff",
+      "type": "registry:ui",
+      "category": "Documentation",
+      "hydration": "none",
+      "description": "Themed previous/next documentation links.",
+      "dependencies": [],
+      "registryUrl": "/r/liftoff/prev-next.json"
     }
   ]
 }

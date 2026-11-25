@@ -33,7 +33,7 @@ const counterStart = start ?? (listStart !== undefined ? Number(listStart) : und
   style={counterStart !== undefined ? `--steps-start: ${counterStart};` : undefined}
   {...attrs}
 >
-  {lead.trim() && <div data-slot="steps-intro" class="mb-4" set:html={lead} />}
+  {lead.trim() && <div data-slot="steps-intro" class="nd-steps-intro" set:html={lead} />}
   {stepMode ? <ol role="list" data-slot="steps-list" set:html={steps} /> : <Fragment set:html={steps} />}
 </div>
 

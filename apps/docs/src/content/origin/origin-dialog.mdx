@@ -1,0 +1,45 @@
+---
+title: OriginDialog
+description: Unstyled native modal dialog primitive using Invoker Commands; the browser owns focus containment, inert page, Escape dismissal and focus restoration.
+sidebar:
+  order: 4
+---
+
+import OriginDialog from "@lsui/origin/Dialog.astro";
+
+<ComponentPreview title="OriginDialog Preview" theme="nordic light" hydration="optional">
+  <OriginDialog>OriginDialog</OriginDialog>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/origin/Dialog.astro` or read its registry manifest at `/r/origin/origin-dialog.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `string` | — | Yes | DOM element identifier |
+| `labelledBy` | `string` | — | No |  |
+| `describedBy` | `string` | — | No |  |
+| `closedby` | `"any" \| "closerequest" \| "none"` | `"closerequest"` | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Dialog body. |
+| `actions` | Footer controls; use `type="button" command="close"` so buttons stay safe inside a form. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Renders a native `<dialog>` opened only with `command="show-modal"` / `showModal()`.
+- No `role="dialog"`, `aria-modal`, manual focus trap, `inert` toggling or Escape handler: the native modal already provides all of them.
+- Consumers supply an accessible name via `labelledBy` (or `aria-labelledby`) and may add `describedBy`.
+
+### Keyboard Interactions
+
+- `Escape` / back gesture: closes the native modal; focus returns to the invoker automatically.
+- `command="show-modal"` on the invoker opens it; `command="close"` in the content closes it.

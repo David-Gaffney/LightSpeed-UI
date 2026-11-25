@@ -58,10 +58,18 @@ const {
   disabled = false,
   render = true,
   iconOnly = false,
-  ...rest
+  // Derived by linkAttrs(); remove before spreading (Astro keeps duplicate
+  // attributes and the browser honors the first one).
+  "aria-disabled": rawAriaDisabled,
+  ...restProps
 } = Astro.props;
 
-const rawAriaDisabled = rest["aria-disabled"];
+const rest = { ...restProps };
+// `role` is deliberately omitted from Props, but a consumer can still pass it
+// through an untyped spread, so strip these at runtime as well.
+delete (rest as Record<string, unknown>).role;
+delete (rest as Record<string, unknown>).tabindex;
+delete (rest as Record<string, unknown>)["data-icon-only"];
 const ariaDisabledNormalized: boolean | "true" | "false" | undefined =
   rawAriaDisabled === true || rawAriaDisabled === "true"
     ? "true"
@@ -81,9 +89,9 @@ const isAriaDisabled = computedAttrs["aria-disabled"] === "true";
   render && (
     <>
       <a
-        data-icon-only={iconOnly ? "" : undefined}
-        {...computedAttrs}
         {...rest}
+        {...computedAttrs}
+        data-icon-only={iconOnly ? "" : undefined}
       >
         <slot name="icon-start" />
         <slot />

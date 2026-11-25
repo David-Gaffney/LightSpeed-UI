@@ -1,0 +1,24 @@
+---
+/**
+ * @title Popover
+ * @level liftoff
+ * @description Themed native popover built atop OriginPopover.
+ * @category Overlays
+ * @hydration optional
+ * @accessibility
+ * - Delegates native popover semantics and focus return to `OriginPopover`.
+ * @keyboard
+ * - Native light dismiss and Escape; trigger uses `popovertarget`.
+ * @slots
+ * - `default`: Popover content.
+ */
+
+import OriginPopover from "@lsui/origin/Popover.astro";
+import type { ComponentProps } from "astro/types";
+import "./core.css";
+
+type Props = ComponentProps<typeof OriginPopover>;
+
+---
+
+<OriginPopover {...Astro.props}><slot /></OriginPopover>

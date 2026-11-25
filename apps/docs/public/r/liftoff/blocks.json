@@ -1,0 +1,25 @@
+{
+  "$schema": "https://lightspeedui.dev/schema/registry-item.json",
+  "name": "liftoff/blocks",
+  "title": "Blocks",
+  "level": "liftoff",
+  "type": "registry:ui",
+  "description": "Themed section wrapper for CMS block sequences.",
+  "category": "Content",
+  "hydration": "none",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "packages/liftoff/src/components/content/Blocks.astro",
+      "target": "src/components/liftoff/blocks/Blocks.astro",
+      "sha256": "4ac65d943fea891f560a397cc3404e77eb0f0ebe7c7912371df1484556cfd702",
+      "content": "---\n/**\n * @title Blocks\n * @level liftoff\n * @description Themed section wrapper for CMS block sequences.\n * @category Content\n * @hydration none\n * @accessibility\n * - Renders `<section>`; consumers supply its heading.\n * @keyboard\n * - No custom keyboard behavior.\n * @slots\n * - `default`: Rendered blocks.\n */\n\nimport \"./content.css\";\n\ntype Props = {\n  class?: string;\n  id?: string;\n  label?: string;\n};\n\n---\n\n<section data-lsui-blocks {...Astro.props}>\n  <slot />\n</section>\n"
+    },
+    {
+      "path": "packages/liftoff/src/components/content/content.css",
+      "target": "src/components/liftoff/blocks/content.css",
+      "sha256": "f9b8105c69d3440620531c99205e7416db28bc7be4b9209efe530a49535cc2d3",
+      "content": "/* LightSpeedUI Level 2 — content and publishing styles; semantic tokens only. */\n@layer lsui {\n  @layer components {\n    [data-lsui-prose],\n    [data-lsui-portable-text],\n    [data-lsui-blocks] {\n      color: var(--color-text);\n      font-family: var(--font-body);\n      line-height: var(--leading-relaxed);\n    }\n\n    [data-lsui-prose] :is(h1, h2, h3, h4) {\n      line-height: var(--leading-tight);\n      margin-block-start: var(--space-lg);\n    }\n\n    [data-lsui-byline],\n    [data-lsui-post-meta] {\n      display: flex;\n      flex-wrap: wrap;\n      gap: var(--space-2);\n      color: var(--color-text-muted);\n      font-size: var(--text-sm);\n    }\n\n    [data-lsui-post-card] {\n      display: grid;\n      gap: var(--space-2);\n      padding: var(--space-md);\n      border: var(--border-width) solid var(--color-border);\n      border-radius: var(--radius-md);\n      background: var(--color-surface);\n      color: var(--color-text);\n    }\n\n    [data-lsui-post-card] a {\n      color: var(--color-text);\n      text-decoration-thickness: var(--border-width);\n      text-underline-offset: var(--space-1);\n    }\n\n    [data-lsui-toc] nav ul {\n      list-style: none;\n      padding-inline-start: 0;\n    }\n\n    [data-lsui-pagination] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: space-between;\n      gap: var(--space-md);\n      padding-block: var(--space-lg);\n    }\n\n    [data-lsui-pagination] a {\n      min-block-size: var(--target-min-size, 1.5rem);\n      color: var(--color-text);\n    }\n  }\n}\n"
+    }
+  ]
+}

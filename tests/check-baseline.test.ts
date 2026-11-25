@@ -13,6 +13,12 @@ function createTempFixture(): string {
   tempDirs.push(dir);
   mkdirSync(path.join(dir, "packages/behaviors/src"), { recursive: true });
   mkdirSync(path.join(dir, "packages/themes/src"), { recursive: true });
+  mkdirSync(path.join(dir, "apps/demo/src"), { recursive: true });
+  writeFileSync(
+    path.join(dir, "apps/demo/package.json"),
+    JSON.stringify({ name: "@lsui/demo", dependencies: {} }),
+  );
+  writeFileSync(path.join(dir, "apps/demo/src/main.ts"), "export {};\n");
   writeFileSync(
     path.join(dir, "packages/behaviors/package.json"),
     JSON.stringify({ name: "@lsui/behaviors", dependencies: {} }),
@@ -119,6 +125,9 @@ describe("workspace & BASELINE.md 3-section governance", () => {
     expect(
       result.errors.some((e) => e.includes("Out-of-order Baseline date")),
     ).toBe(true);
+    expect(
+      result.errors.some((e) => e.includes("ascending to newest at the bottom")),
+    ).toBe(true);
   });
 
   it("rejects Section 2/3 entries missing from Section 1, invalid URLs, or missing files", () => {
@@ -191,6 +200,58 @@ describe("workspace & BASELINE.md 3-section governance", () => {
     ).toBe(true);
     expect(
       result.errors.some((e) => e.includes('Imports polyfill "invokers-polyfill"')),
+    ).toBe(true);
+  });
+
+  it("reverse-scans apps/* too, including require() and non-'polyfill'-named shims", () => {
+    const rootDir = createTempFixture();
+    writeFileSync(
+      path.join(rootDir, "apps/demo/package.json"),
+      JSON.stringify({
+        name: "@lsui/demo",
+        dependencies: { "whatwg-fetch": "^3.6.20" },
+      }),
+    );
+    writeFileSync(
+      path.join(rootDir, "apps/demo/src/main.ts"),
+      'const polyfill = require("invokers-polyfill");\nimport "whatwg-fetch";\nexport { polyfill };\n',
+    );
+    const markdown = `
+## 1. Baseline Newly Available Features Used
+
+### Baseline 2025
+
+| Baseline Newly Available | Feature | WebStatus Link | Compatibility Strategy | Used In |
+| :--- | :--- | :--- | :--- | :--- |
+| 2025-01-27 | Popover | https://webstatus.dev/features/popover | CSS fallback | \`packages/themes/src/base.css\` |
+
+## 2. CSS-Only Fallbacks
+
+| Baseline Newly Available | Feature | WebStatus Link | CSS Fallback Mechanism | Used In |
+| :--- | :--- | :--- | :--- | :--- |
+| 2025-01-27 | Popover | https://webstatus.dev/features/popover | CSS fallback | \`packages/themes/src/base.css\` |
+
+## 3. Active Polyfills
+
+| Baseline Newly Available | Feature | WebStatus Link | Polyfill | Used In |
+| :--- | :--- | :--- | :--- | :--- |
+`;
+    const result = validateBaselineLedger({ rootDir, markdown });
+    expect(result.ok).toBe(false);
+    expect(
+      result.errors.some((e) =>
+        e.includes('apps/demo/package.json: Polyfill dependency "whatwg-fetch"'),
+      ),
+    ).toBe(true);
+    expect(
+      result.errors.some((e) =>
+        e.includes('apps/demo/src/main.ts: Imports polyfill "invokers-polyfill"'),
+      ),
+    ).toBe(true);
+    expect(
+      result.errors.some((e) =>
+        e.includes('apps/demo/src/main.ts: Imports polyfill "whatwg-fetch"'),
+      ),
     ).toBe(true);
   });
 });

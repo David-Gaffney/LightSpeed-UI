@@ -1,0 +1,40 @@
+---
+title: PostCard
+description: Themed article teaser card with a real navigation link.
+sidebar:
+  order: 8
+---
+
+import PostCard from "@lsui/liftoff/PostCard.astro";
+
+<ComponentPreview title="PostCard Preview" theme="nordic light" hydration="none">
+  <PostCard>PostCard</PostCard>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/PostCard.astro` or read its registry manifest at `/r/liftoff/post-card.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `title` | `string` | — | Yes |  |
+| `href` | `string` | — | Yes | Navigation destination attribute (no visual Figma axis) |
+| `date` | `string` | — | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Optional summary content. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Uses `<article>` and a genuine `<a href>`; never role="button".
+
+### Keyboard Interactions
+
+- Native link keyboard behavior.

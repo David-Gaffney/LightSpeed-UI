@@ -1,0 +1,555 @@
+/* chrome-b.css — semantic presentation classes for docs chrome components:
+ * button, link-button, dialog, page-actions, search and switch.
+ *
+ * Replaces the Nimbus starter Tailwind utilities with token-only CSS in the
+ * already-declared `components` layer. Layer order (theme, base, lsui,
+ * components, utilities) lives in globals.css — do not redeclare it here.
+ * No Tailwind import, no @apply, no theme(), no hardcoded hex/rgb.
+ */
+
+@layer components {
+  /* ---- Shared primitives ------------------------------------------------ */
+
+  /* Reusable icon sizes. `-lg` covers the button's 1.125rem icon. */
+  .nob-icon-xs { width: 0.875rem; height: 0.875rem; }
+  .nob-icon-sm { width: 1rem; height: 1rem; }
+  .nob-icon-md { width: 1.25rem; height: 1.25rem; }
+  .nob-icon-lg { width: 1.125rem; height: 1.125rem; }
+
+  /* Accessible visually-hidden (formerly `sr-only`). */
+  .nob-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Toggled by page-actions.client.ts in place of the Tailwind `hidden`. */
+  .nob-hidden { display: none; }
+
+  @keyframes nob-spin { to { transform: rotate(360deg); } }
+  .nob-spin { animation: nob-spin 1s linear infinite; }
+
+  /* ====================================================================== *
+   * button/ + link-button/ — shared button vocabulary
+   * ====================================================================== */
+
+  .nob-btn {
+    display: inline-flex;
+    max-width: 100%;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--nb-radius);
+    text-align: center;
+    font-weight: 500;
+    text-decoration: none;
+    text-wrap: balance;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    user-select: none;
+  }
+  .nob-btn:focus-visible {
+    outline: 2px solid var(--nb-ring);
+    outline-offset: 2px;
+  }
+  .nob-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* Variants. A `ring` is a 3px box-shadow spread in the starter. */
+  .nob-btn-primary {
+    background-color: var(--nb-primary);
+    color: var(--nb-primary-foreground);
+    box-shadow: var(--nb-shadow-sm);
+  }
+  .nob-btn-primary:hover {
+    background-color: var(--nb-primary-hover);
+    box-shadow: var(--nb-shadow);
+  }
+  .nob-btn-secondary {
+    background-color: var(--nb-card);
+    color: var(--nb-foreground);
+    box-shadow: 0 0 0 3px var(--nb-border), var(--nb-shadow-sm);
+  }
+  .nob-btn-secondary:hover {
+    background-color: var(--nb-accent);
+    box-shadow: 0 0 0 3px var(--nb-border-strong), var(--nb-shadow-sm);
+  }
+  .nob-btn-ghost {
+    background-color: transparent;
+    color: var(--nb-foreground);
+    box-shadow: none;
+  }
+  .nob-btn-ghost:hover { background-color: var(--nb-accent); }
+  .nob-btn-destructive {
+    background-color: var(--nb-danger);
+    color: var(--nb-card);
+    box-shadow: var(--nb-shadow-sm);
+  }
+  [data-mode="dark"] .nob-btn-destructive { color: var(--nb-background); }
+  .nob-btn-destructive:hover {
+    background-color: color-mix(in oklch, var(--nb-danger) 90%, transparent);
+  }
+  .nob-btn-secondary-destructive {
+    background-color: var(--nb-card);
+    color: var(--nb-danger);
+    box-shadow: 0 0 0 3px var(--nb-border), var(--nb-shadow-sm);
+  }
+  .nob-btn-secondary-destructive:hover {
+    background-color: var(--nb-accent);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--nb-danger) 40%, transparent), var(--nb-shadow-sm);
+  }
+  .nob-btn-outline {
+    background-color: transparent;
+    color: var(--nb-foreground);
+    box-shadow: 0 0 0 3px var(--nb-border);
+  }
+  .nob-btn-outline:hover { box-shadow: 0 0 0 3px var(--nb-border-strong); }
+
+  /* Rectangular sizing. */
+  .nob-btn-size-xs {
+    gap: 0.25rem;
+    padding-inline: 0.5rem;
+    padding-block: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  .nob-btn-size-sm {
+    gap: 0.25rem;
+    padding-inline: 0.75rem;
+    padding-block: 0.375rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  .nob-btn-size-base {
+    gap: 0.375rem;
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  .nob-btn-size-lg {
+    gap: 0.5rem;
+    padding-inline: 1.25rem;
+    padding-block: 0.625rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  /* Square/circle sizing (icon-only): equal sides, no padding. Declared
+     after the rectangular sizes so their padding wins. */
+  .nob-btn-compact-xs { width: 1.75rem; height: 1.75rem; padding: 0; }
+  .nob-btn-compact-sm { width: 2rem; height: 2rem; padding: 0; }
+  .nob-btn-compact-base { width: 2.25rem; height: 2.25rem; padding: 0; }
+  .nob-btn-compact-lg { width: 2.5rem; height: 2.5rem; padding: 0; }
+  .nob-btn-square { padding: 0; }
+  .nob-btn-circle { padding: 0; border-radius: 9999px; }
+
+  /* LinkButton's caret: nudges on hover, mirrors in RTL. */
+  .nob-btn-caret {
+    transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nob-btn:hover .nob-btn-caret { transform: translateX(0.125rem); }
+  [dir="rtl"] .nob-btn-caret { transform: scaleX(-1); }
+  [dir="rtl"] .nob-btn:hover .nob-btn-caret {
+    transform: translateX(-0.125rem) scaleX(-1);
+  }
+
+  /* ====================================================================== *
+   * dialog/
+   * ====================================================================== */
+
+  .nob-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+  }
+  /* Dark scrim (formerly `backdrop:bg-black/40`). ::backdrop must be a
+     scroll container for overscroll-behavior to take effect. */
+  .nob-dialog::backdrop {
+    background-color: oklch(0 0 0 / 0.4);
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+  .nob-dialog:modal { overscroll-behavior: contain; }
+
+  .nob-dialog-frame {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10vh;
+    padding-inline: 1rem;
+    pointer-events: none;
+  }
+  .nob-dialog-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 70vh;
+    overflow-y: auto;
+    border-radius: var(--nb-radius);
+    background-color: var(--nb-muted);
+    box-shadow: 0 0 0 1px var(--nb-border), var(--nb-shadow-lg);
+    pointer-events: auto;
+  }
+  /* SearchDialog's consumer override — declared after .nob-dialog-panel so
+     its max-width/shadow win while cn() still merges the two class lists. */
+  .nob-search-dialog-panel {
+    max-width: 36rem;
+    background-color: var(--nb-muted);
+    box-shadow: 0 0 0 1px var(--nb-border), var(--nb-shadow-lg);
+  }
+
+  /* ====================================================================== *
+   * page-actions/
+   * ====================================================================== */
+
+  .nob-page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-inline-start: -0.5rem;
+    row-gap: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+  }
+  .nob-page-actions-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 0.375rem;
+    background-color: transparent;
+    padding-inline: 0.5rem;
+    padding-block: 0.25rem;
+    color: var(--nb-muted-foreground);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+      background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nob-page-actions-btn:hover {
+    background-color: var(--nb-accent);
+    color: var(--nb-foreground);
+  }
+  .nob-page-actions-btn:focus-visible {
+    outline: 2px solid var(--nb-ring);
+    outline-offset: 2px;
+  }
+  .nob-page-actions-updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding-inline: 0.5rem;
+    padding-block: 0.25rem;
+    color: var(--nb-muted-foreground);
+  }
+  .nob-page-actions-updated-label { /* sr-only by default, revealed at sm. */ }
+  @media (min-width: 40rem) {
+    .nob-page-actions-updated-label {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      clip-path: none;
+      white-space: normal;
+    }
+  }
+  .nob-page-actions-separator {
+    display: none;
+    user-select: none;
+    color: color-mix(in oklch, var(--nb-muted-foreground) 40%, transparent);
+  }
+  @media (min-width: 40rem) {
+    .nob-page-actions-separator { display: inline; }
+  }
+  .nob-page-actions-check { color: var(--nb-success); }
+  .nob-page-actions-md-short { display: inline; }
+  .nob-page-actions-md-long { display: none; }
+  @media (min-width: 40rem) {
+    .nob-page-actions-md-short { display: none; }
+    .nob-page-actions-md-long { display: inline; }
+  }
+
+  /* ====================================================================== *
+   * search/
+   * ====================================================================== */
+
+  .nob-search-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--nb-border);
+    border-radius: 0.375rem;
+    background-color: var(--nb-card);
+    padding: 0.5rem;
+    color: var(--nb-muted-foreground);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+      color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nob-search-trigger:hover {
+    border-color: var(--nb-border-strong);
+    color: var(--nb-foreground);
+  }
+  @media (min-width: 40rem) {
+    .nob-search-trigger {
+      padding-inline: 0.625rem;
+      padding-block: 0.375rem;
+    }
+  }
+  .nob-search-muted-icon {
+    flex-shrink: 0;
+    color: var(--nb-muted-foreground);
+  }
+  .nob-search-trigger-label { /* sr-only until md. */ }
+  @media (min-width: 48rem) {
+    .nob-search-trigger-label {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      clip-path: none;
+      white-space: normal;
+    }
+  }
+  .nob-search-shortcut-hint {
+    display: none;
+    align-items: center;
+    gap: 0.125rem;
+    border: 1px solid var(--nb-border);
+    border-radius: var(--nb-radius-sm);
+    background-color: var(--nb-muted);
+    padding-inline: 0.375rem;
+    padding-block: 0.125rem;
+    color: var(--nb-muted-foreground);
+    font-size: 0.625rem;
+    line-height: 1rem;
+    font-weight: 500;
+  }
+  @media (min-width: 40rem) {
+    .nob-search-shortcut-hint { display: inline-flex; }
+  }
+  .nob-search-shortcuts-toggle { margin-inline-start: auto; }
+
+  .nob-search-header-wrap {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-start-start-radius: var(--nb-radius);
+    border-start-end-radius: var(--nb-radius);
+    border-bottom: 1px solid var(--nb-border);
+    background-color: var(--nb-card);
+  }
+  .nob-search-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--nb-border);
+    padding-inline: 1rem;
+    padding-block: 0.75rem;
+  }
+  .nob-search-input {
+    flex: 1 1 0%;
+    min-width: 0;
+    border: 0;
+    background-color: transparent;
+    color: var(--nb-foreground);
+    font-size: 0.875rem;
+  }
+  .nob-search-input::placeholder { color: var(--nb-muted-foreground); }
+  .nob-search-input:focus { outline: none; }
+  .nob-search-esc {
+    border: 1px solid var(--nb-border);
+    border-radius: var(--nb-radius-sm);
+    background-color: var(--nb-muted);
+    padding-inline: 0.375rem;
+    padding-block: 0.125rem;
+    color: var(--nb-muted-foreground);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+      background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nob-search-esc:hover {
+    background-color: var(--nb-accent);
+    color: var(--nb-foreground);
+  }
+  .nob-search-results-wrap {
+    min-height: 10rem;
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
+  .nob-search-empty {
+    padding-block: 2rem;
+    color: var(--nb-muted-foreground);
+    text-align: center;
+    font-size: 0.875rem;
+  }
+  .nob-search-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 1rem;
+    row-gap: 0.375rem;
+    padding-inline: 1rem;
+    padding-block: 0.625rem;
+    color: var(--nb-muted-foreground);
+    font-size: 0.75rem;
+  }
+
+  /* Dynamically-built result rows (search.client.ts). */
+  .nob-search-result-link {
+    display: block;
+    overflow: hidden;
+    color: var(--nb-foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .nob-search-result-link:focus-visible { outline: none; }
+  .nob-search-result {
+    border-radius: var(--nb-radius);
+    padding-inline: 0.5rem;
+    padding-block: 0.5rem;
+    cursor: pointer;
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nob-search-result:hover,
+  .nob-search-result[data-highlighted] { background-color: var(--nb-accent); }
+  .nob-search-snippet {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin-top: 0.25rem;
+    color: var(--nb-muted-foreground);
+    font-size: 0.75rem;
+    line-height: 1.625;
+  }
+  .nob-search-subresult-link {
+    display: block;
+    overflow: hidden;
+    color: var(--nb-muted-foreground);
+    font-size: 0.75rem;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .nob-search-subresult {
+    margin-inline-start: 1rem;
+    border-inline-start: 1px solid var(--nb-border);
+    border-start-end-radius: var(--nb-radius);
+    border-end-end-radius: var(--nb-radius);
+    padding-inline-start: 0.75rem;
+    padding-block: 0.25rem;
+    cursor: pointer;
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+      color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nob-search-subresult:hover,
+  .nob-search-subresult[data-highlighted] {
+    background-color: var(--nb-accent);
+    color: var(--nb-foreground);
+  }
+
+  /* ====================================================================== *
+   * switch/
+   * ====================================================================== */
+
+  .nob-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+  .nob-switch:focus-visible {
+    outline: 2px solid var(--nb-brand);
+    outline-offset: 2px;
+  }
+  .nob-switch:disabled { cursor: not-allowed; opacity: 0.5; }
+
+  /* Squircle where the browser draws one, rounded rectangle elsewhere. */
+  .nob-switch-shape {
+    corner-shape: squircle;
+    border-radius: 5px;
+  }
+  @supports (corner-shape: squircle) {
+    .nob-switch-shape { border-radius: 10px; }
+  }
+
+  .nob-switch-track {
+    --nob-track-bg: var(--nb-border);
+    --nob-track-ring: var(--nb-border-strong);
+    --nob-thumb-bg: var(--nb-card);
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    background-color: var(--nob-track-bg);
+    box-shadow: 0 0 0 3px var(--nob-track-ring);
+    transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+  }
+  [data-mode="dark"] .nob-switch-track {
+    --nob-track-bg: var(--nb-border-strong);
+    --nob-thumb-bg: var(--nb-border-strong);
+  }
+  .nob-switch[aria-checked="true"] .nob-switch-track {
+    --nob-track-bg: var(--nb-info);
+    --nob-track-ring: var(--nb-info);
+    --nob-thumb-bg: var(--nb-card);
+  }
+  [data-mode="dark"] .nob-switch[aria-checked="true"] .nob-switch-track {
+    --nob-track-bg: var(--nb-info);
+    --nob-track-ring: var(--nb-info);
+    --nob-thumb-bg: var(--nb-info);
+  }
+  .nob-switch-track-sm { width: 2rem; height: 1rem; }
+  .nob-switch-track-base { width: 2.25rem; height: 1.125rem; }
+  .nob-switch-track-lg { width: 2.5rem; height: 1.25rem; }
+
+  .nob-switch-thumb {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    background-color: var(--nob-thumb-bg);
+    box-shadow: 0 0 1px 0.5px oklch(0 0 0 / 0.12), 0 1px 2px oklch(0 0 0 / 0.08);
+    transition: inset-inline-start 150ms ease-out;
+  }
+  [data-mode="dark"] .nob-switch-thumb {
+    box-shadow: 0 0 1px 0.5px oklch(1 0 0 / 0.1), 0 1px 2px oklch(0 0 0 / 0.3);
+  }
+  .nob-switch-thumb-sm { width: 1rem; }
+  .nob-switch-thumb-base { width: 1.125rem; }
+  .nob-switch-thumb-lg { width: 1.25rem; }
+  .nob-switch[aria-checked="true"] .nob-switch-thumb-sm { inset-inline-start: 1rem; }
+  .nob-switch[aria-checked="true"] .nob-switch-thumb-base { inset-inline-start: 1.125rem; }
+  .nob-switch[aria-checked="true"] .nob-switch-thumb-lg { inset-inline-start: 1.25rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nob-switch-track,
+    .nob-switch-thumb { transition: none; }
+  }
+}

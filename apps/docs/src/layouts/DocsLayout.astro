@@ -10,6 +10,7 @@
  * no table of contents, no breadcrumbs and no previous/next links.
  */
 import Icon from "@cloudflare/nimbus-docs/components/Icon.astro";
+import DocsSidebar from "@lsui/liftoff/DocsSidebar.astro";
 import BaseLayout from "./BaseLayout.astro";
 import Header from "@/components/Header.astro";
 import Logo from "@/components/Logo.astro";
@@ -99,21 +100,21 @@ const showToc = headings !== false && (hasToc || headings.length > 0);
 ---
 
 <BaseLayout title={title} description={description} noindex={noindex || draft} markdownUrl={markdownUrl} socialImage={socialImage} socialImageAlt={socialImageAlt} locale={locale} lastUpdated={lastUpdated} head={head} collection={collection} entryId={entryId}>
-  <div class="flex flex-col min-h-screen">
+  <div class="ne-shell">
     {hasHeader ? <slot name="header" /> : <Header collection={collection} entryId={entryId} showSidebar={showSidebar} />}
 
     {isCustom ? (
-      <main id="main-content" tabindex="-1" transition:name="nb-content" class="flex-1">
+      <main id="main-content" tabindex="-1" transition:name="nb-content" class="ne-main">
         <slot />
       </main>
     ) : (
-      <div class="flex-1 mx-auto w-full">
-        <div class="flex">
+      <div class="ne-body">
+        <div class="ne-columns">
           {/* The page's content comes first in source order, so agents and
               text readers reach it before the sidebar; `order-first` keeps
               the sidebar on the left. */}
-          <main id="main-content" tabindex="-1" transition:name="nb-content" class="flex-1 min-w-0">
-            <div class="mx-auto max-w-(--nb-content-max) px-4 md:px-6 pt-6 pb-12">
+          <main id="main-content" tabindex="-1" transition:name="nb-content" class="ne-main">
+            <div class="ne-main-inner">
               {versionStatus?.isDeprecated && (
                 <Banner
                   variant="caution"
@@ -125,7 +126,7 @@ const showToc = headings !== false && (hasToc || headings.length > 0);
                 />
               )}
               {banner && <Banner content={banner.content} variant={banner.type} dismissible={banner.dismissible} />}
-              <Breadcrumbs items={breadcrumbs} class="pb-2" />
+              <Breadcrumbs items={breadcrumbs} class="ne-breadcrumbs" />
               <div {...pagefindAttrs}>
                 {pagefindDeprecated && <span hidden data-pagefind-filter="status:deprecated"></span>}
                 {hasPageTitle ? (
@@ -133,46 +134,46 @@ const showToc = headings !== false && (hasToc || headings.length > 0);
                 ) : (
                   <Fragment>
                     {/* The page header: title, description and page actions, as one styleable part. */}
-                    <div data-slot="page-header" class="mt-6">
-                    <div class="flex items-center gap-3 flex-wrap">
-                      <h1 class="text-foreground mb-0 [overflow-wrap:anywhere] [text-wrap:balance]" style={`font-size:var(--nb-h1-size);line-height:var(--nb-h1-leading);font-weight:var(--nb-h1-weight);letter-spacing:var(--nb-h1-tracking)`}>{title}</h1>
+                    <div data-slot="page-header" class="ne-page-header">
+                    <div class="ne-title-row">
+                      <h1 class="ne-page-title" style={`font-size:var(--nb-h1-size);line-height:var(--nb-h1-leading);font-weight:var(--nb-h1-weight);letter-spacing:var(--nb-h1-tracking)`}>{title}</h1>
                       {draft && <Badge text="Draft" variant="warning" size="medium" />}
                     </div>
                     {description && (
-                      <p class="text-base leading-7 sm:text-lg sm:leading-7 text-muted-foreground mt-2 mb-2 [text-wrap:pretty]">{description}</p>
+                      <p class="ne-page-description">{description}</p>
                     )}
-                    <PageActions markdownUrl={markdownUrl} lastUpdated={lastUpdated} class={description ? undefined : "mt-3"}>
+                    <PageActions markdownUrl={markdownUrl} lastUpdated={lastUpdated} class="ne-page-actions" data-compact={description ? undefined : ""}>
                       {capabilities.mcpUrl && <ConnectMcp />}
                     </PageActions>
                     </div>
                     {hasMobileToc && (
-                      <div class="border-border bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-(--nb-header-height) z-20 -mx-4 mt-3 mb-6 border-y px-4 py-2 backdrop-blur md:-mx-6 md:px-6 xl:hidden">
+                      <div class="ne-mobile-toc-bar">
                         <MobileTOC headings={headings} />
                       </div>
                     )}
                     {(markdownUrl || audience === "human") && (
                       audience === "human" ? (
-                        <div class="mt-3 mb-6 flex items-center gap-3" role="none">
-                          <div class="h-px flex-1 bg-border"></div>
-                          <Badge text="For humans" variant="success" size="small" class="font-mono uppercase border border-success/15" />
-                          <div class="h-px flex-1 bg-border"></div>
+                        <div class="ne-audience-row" role="none">
+                          <div class="ne-rule"></div>
+                          <Badge text="For humans" variant="success" size="small" class="ne-human-badge" />
+                          <div class="ne-rule"></div>
                         </div>
                       ) : (
-                        <div class={`mt-3 mb-6 h-px w-full bg-border ${hasMobileToc ? "hidden xl:block" : ""}`} role="none" />
+                        <div class="ne-rule-wide" data-toc-spacer={hasMobileToc ? "" : undefined} role="none" />
                       )
                     )}
-                    {!description && !markdownUrl && audience !== "human" && <div class="mb-4" />}
+                    {!description && !markdownUrl && audience !== "human" && <div class="ne-spacer-sm" />}
                   </Fragment>
                 )}
-                <article class="docs-content max-w-none">
+                <article class="docs-content ne-article">
                   <slot />
                 </article>
                 {hasContentFooter ? (
                   <slot name="content-footer" />
                 ) : editUrl && (
-                  <div class="mt-8 mb-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                    <a href={editUrl} class="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors no-underline" target="_blank" rel="noopener">
-                      <Icon name="ph:pencil-simple" class="w-3.5 h-3.5" />
+                  <div class="ne-edit-row">
+                    <a href={editUrl} class="ne-edit-link" target="_blank" rel="noopener">
+                      <Icon name="ph:pencil-simple" class="ne-icon-xs" />
                       Edit this page
                     </a>
                   </div>
@@ -183,21 +184,21 @@ const showToc = headings !== false && (hasToc || headings.length > 0);
           </main>
 
           {showSidebar && (
-            <aside id="desktop-sidebar" aria-label="Sidebar" data-nb-desktop-sidebar class="order-first hidden md:flex w-60 lg:w-(--nb-sidebar-width) shrink-0 border-e border-border bg-background sticky top-14 h-[calc(100vh-3.5rem)] flex-col relative">
+            <aside id="desktop-sidebar" aria-label="Sidebar" data-nb-desktop-sidebar class="ne-sidebar">
               {/* One tree per page: this node moves into the mobile drawer
                   while it is open and comes back on close. It owns the
                   scroll, so open-group and scroll state follow it. */}
-              <div data-nb-sidebar-tree class="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+              <div data-nb-sidebar-tree class="ne-sidebar-tree">
                 {hasSidebar ? (
                   <slot name="sidebar" />
                 ) : (
-                  <nav class="px-4 pb-12 pt-5">
+                  <DocsSidebar label="Documentation" class="ne-sidebar-nav">
                     {showFilter && <SidebarFilter />}
                     <Sidebar items={sidebar ?? []} persist />
-                  </nav>
+                  </DocsSidebar>
                 )}
               </div>
-              <div class="pointer-events-none sticky bottom-0 h-8 bg-gradient-to-t from-base to-transparent" />
+              <div class="ne-sidebar-fade" />
             </aside>
           )}
 
@@ -275,12 +276,12 @@ const showToc = headings !== false && (hasToc || headings.length > 0);
           )}
 
           {/* No sidebar: a spacer the TOC's width keeps the body centred on the page. */}
-          {!showSidebar && showToc && <div aria-hidden="true" class="order-first hidden xl:block w-(--nb-toc-width) shrink-0" />}
+          {!showSidebar && showToc && <div aria-hidden="true" class="ne-toc-spacer" />}
 
 
           {showToc && (
-            <aside aria-label="On this page" data-nb-toc-scroll-host class="hidden xl:block w-(--nb-toc-width) shrink-0 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto">
-              <div class="pt-6 pb-8 ps-8 pe-6">
+            <aside aria-label="On this page" data-nb-toc-scroll-host class="ne-toc-column">
+              <div class="ne-toc-inner">
                 {hasToc ? <slot name="toc" /> : <TOC headings={headings} />}
               </div>
             </aside>
@@ -298,22 +299,22 @@ const showToc = headings !== false && (hasToc || headings.length > 0);
     <dialog
       data-mobile-sidebar
       data-state="closed"
-      class="group fixed inset-0 m-0 h-full w-full max-h-full max-w-full border-0 bg-transparent p-0 transition-[background-color] duration-250 ease-out data-[state=open]:bg-black/40 motion-reduce:transition-none [&::backdrop]:bg-transparent"
+      class="ne-drawer"
       aria-label="Site navigation"
     >
-      <div data-mobile-sidebar-panel class="flex h-full w-(--nb-sidebar-width) max-w-[85vw] -translate-x-full flex-col border-e border-border bg-card transition-transform duration-250 ease-out group-data-[state=open]:translate-x-0 rtl:translate-x-full rtl:group-data-[state=open]:translate-x-0 motion-reduce:transition-none">
-        <div class="sticky top-0 z-[1] flex items-center justify-between border-b border-border bg-card px-4 py-3">
+      <div data-mobile-sidebar-panel class="ne-drawer-panel">
+        <div class="ne-drawer-header">
           {/* The logo, as in the header; the site title stays as its accessible name. */}
-          <a href={homeHref} class="flex items-center text-foreground transition-opacity hover:opacity-70">
-            <Logo class="h-7 w-7 shrink-0" />
-            <span class="sr-only">{config.title}</span>
+          <a href={homeHref} class="ne-drawer-brand">
+            <Logo class="ne-icon-brand" />
+            <span class="ne-sr-only">{config.title}</span>
           </a>
-          <button data-close-sidebar class="flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="Close sidebar">
-            <Icon name="ph:x" class="w-5 h-5" />
+          <button data-close-sidebar class="ne-drawer-close" aria-label="Close sidebar">
+            <Icon name="ph:x" class="ne-icon-md" />
           </button>
         </div>
         {/* The rail's tree is moved here while the drawer is open. */}
-        <div data-nb-sidebar-drawer-slot class="flex min-h-0 flex-1 flex-col [&>[data-nb-sidebar-tree]]:min-h-0 [&>[data-nb-sidebar-tree]]:flex-1 [&>[data-nb-sidebar-tree]]:overflow-y-auto [&>[data-nb-sidebar-tree]]:overscroll-contain"></div>
+        <div data-nb-sidebar-drawer-slot class="ne-drawer-slot"></div>
       </div>
     </dialog>
   )}

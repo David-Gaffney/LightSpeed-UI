@@ -1,9 +1,11 @@
 {
   "name": "@lsui/liftoff",
   "version": "0.0.1",
-  "description": "Level 2 (Liftoff) — Copy-paste themed .astro components built atop @lsui/origin primitives and @lsui/themes semantic tokens",
+  "description": "Level 2 (Liftoff) \u2014 Copy-paste themed .astro components built atop @lsui/origin primitives and @lsui/themes semantic tokens",
   "type": "module",
-  "sideEffects": ["**/*.css"],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "dependencies": {
     "@lsui/origin": "workspace:*",
     "@lsui/themes": "workspace:*"
@@ -19,9 +21,36 @@
     "./Button.astro": "./src/components/button/Button.astro",
     "./LinkButton.astro": "./src/components/button/LinkButton.astro",
     "./components/button": "./src/components/button/index.ts",
-    "./components/button/*": "./src/components/button/*"
+    "./components/button/*": "./src/components/button/*",
+    "./Card.astro": "./src/components/core/Card.astro",
+    "./Badge.astro": "./src/components/core/Badge.astro",
+    "./Input.astro": "./src/components/core/Input.astro",
+    "./Select.astro": "./src/components/core/Select.astro",
+    "./Dialog.astro": "./src/components/core/Dialog.astro",
+    "./Popover.astro": "./src/components/core/Popover.astro",
+    "./Tabs.astro": "./src/components/core/Tabs.astro",
+    "./components/core": "./src/components/core/index.ts",
+    "./components/core/*": "./src/components/core/*",
+    "./Prose.astro": "./src/components/content/Prose.astro",
+    "./PortableText.astro": "./src/components/content/PortableText.astro",
+    "./Blocks.astro": "./src/components/content/Blocks.astro",
+    "./TableOfContents.astro": "./src/components/content/TableOfContents.astro",
+    "./Byline.astro": "./src/components/content/Byline.astro",
+    "./PostCard.astro": "./src/components/content/PostCard.astro",
+    "./Pagination.astro": "./src/components/content/Pagination.astro",
+    "./components/content": "./src/components/content/index.ts",
+    "./components/content/*": "./src/components/content/*",
+    "./Callout.astro": "./src/components/docs/Callout.astro",
+    "./CodeGroup.astro": "./src/components/docs/CodeGroup.astro",
+    "./DocsSidebar.astro": "./src/components/docs/DocsSidebar.astro",
+    "./PrevNext.astro": "./src/components/docs/PrevNext.astro",
+    "./components/docs": "./src/components/docs/index.ts",
+    "./components/docs/*": "./src/components/docs/*"
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "astro sync && tsc -p tsconfig.check.json --noEmit --runExternalCode"

@@ -119,12 +119,12 @@ lsui/
 ## Automated Code-to-Figma Sync, CLI & AI Ecosystem
 
 - **Figma Librarian (`@lsui/figma-sync`)**: Release-gated runner over Figma's Remote MCP (`https://mcp.figma.com/mcp` `use_figma`) syncing `@lsui/themes` tokens → Figma Variables and `Liftoff`/`Landing` styled components → Figma Component Sets (with mandatory version-history checkpoints and human Publish gating).
-- **Level-Aware CLI (`@lsui/cli`)**:
+- **Level-Aware CLI (`@lsui/cli`) — planned in `GUIDE.md` Phase 13.1, not implemented yet**:
   ```bash
   npx lsui add origin/origin-button   # Level 1 unstyled primitive
   npx lsui add button                 # Level 2 Liftoff component (default)
   npx lsui add landing/hero           # Level 3 Landing block
   npx lsui add apogee/tour            # Level 4 Apogee experience
   ```
-- **3-Stage `npx @lsui/upgrade`**: Lockstep `@lsui/*` dependency bumps + `lsui.json` SHA-256 hash-checked component sync + AST codemods & `.lsui/UPGRADE.md`.
+- **3-Stage `npx @lsui/upgrade` (planned in `GUIDE.md` Phase 13.2, not implemented yet)**: Lockstep `@lsui/*` dependency bumps + `lsui.json` SHA-256 hash-checked component sync + AST codemods & `.lsui/UPGRADE.md`.
 - **AI Skill (`@lsui/skill`) + Framework MCP (`@lsui/mcp`) + Root `AGENTS.md`**: Generated directly from `@lsui/ast` so coding agents understand all 4 levels without guessing.

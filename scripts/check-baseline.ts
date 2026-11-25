@@ -30,9 +30,31 @@ export interface ValidationResult {
 
 const DATE_RE = /^\d{4}-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?$/;
 const WEBSTATUS_RE = /^https:\/\/webstatus\.dev\/features\/[a-z0-9-]+(?:\/)?$/;
-const POLYFILL_PKG_RE = /(?:^|\/)[\w-]*polyfill[\w-]*$/i;
+/**
+ * Polyfills are usually detectably named, but a few common shims are not.
+ * Register those explicitly here; anything with "polyfill" in its name/path
+ * is detected automatically. Genuinely opaque vendor names must still be
+ * recorded in BASELINE.md by hand (the ledger is the source of truth).
+ */
+const KNOWN_POLYFILL_PACKAGES = new Set([
+  "@webcomponents/custom-elements",
+  "whatwg-fetch",
+  "core-js",
+  "intersection-observer",
+]);
+
+function isPolyfillSpecifier(specifier: string): boolean {
+  const bare = specifier.replace(/^node:/, "");
+  const segments = bare.split("/");
+  const packageName = bare.startsWith("@")
+    ? segments.slice(0, 2).join("/")
+    : (segments[0] ?? "");
+  return /polyfill/i.test(bare) || KNOWN_POLYFILL_PACKAGES.has(packageName);
+}
+
+/** import "x", import { a } from "x", import("x"), require("x"), export ... from "x". */
 const IMPORT_RE =
-  /(?:import\s+(?:[^"']*from\s+)?|import\s*\(\s*)["']([^"']*polyfill[^"']*)["']/gi;
+  /(?:import\s+(?:[^"';\n]*?\bfrom\s+)?|import\s*\(\s*|require\s*\(\s*|export\s+(?:[^"';\n]*?\bfrom\s+)?)["']([^"']+)["']/gi;
 
 type SectionId = "none" | "newly" | "css-fallbacks" | "polyfills";
 
@@ -226,7 +248,7 @@ function validateRows(
 
       if (previousDate !== null && normalized < previousDate) {
         errors.push(
-          `BASELINE.md:${entry.line} (${sectionLabel}): Out-of-order Baseline date "${entry.baselineDate}" appears after newer date on line ${previousLine}. Sort oldest at the top descending to newest at the bottom.`,
+          `BASELINE.md:${entry.line} (${sectionLabel}): Out-of-order Baseline date "${entry.baselineDate}" appears after newer date on line ${previousLine}. Sort oldest at the top, ascending to newest at the bottom.`,
         );
       }
       previousDate = normalized;
@@ -324,44 +346,57 @@ export function validateBaselineLedger(options: {
     }
   }
 
-  // Reverse-scan packages/* for unlisted polyfill dependencies or imports
-  const packagesDir = path.join(rootDir, "packages");
-  if (existsSync(packagesDir)) {
-    const documentedText = parsed.activePolyfills
-      .map((e) => e.mechanism.toLowerCase())
-      .join(" ");
-    const documentedFiles = new Set(
-      parsed.activePolyfills.flatMap((e) => e.usedIn),
-    );
+  // Reverse-scan the whole workspace (root, packages/*, apps/*, scripts/*)
+  // for unlisted polyfill dependencies or import/require specifiers.
+  const documentedText = parsed.activePolyfills
+    .map((e) => e.mechanism.toLowerCase())
+    .join(" ");
+  const documentedFiles = new Set(
+    parsed.activePolyfills.flatMap((e) => e.usedIn),
+  );
 
-    for (const pkgFolder of readdirSync(packagesDir)) {
-      const pkgJsonPath = path.join(packagesDir, pkgFolder, "package.json");
+  const checkPackageJson = (pkgJsonPath: string, relDir: string): void => {
+    const pkgJson = JSON.parse(readFileSync(pkgJsonPath, "utf-8")) as {
+      dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+      optionalDependencies?: Record<string, string>;
+    };
+    const allDeps = {
+      ...pkgJson.dependencies,
+      ...pkgJson.devDependencies,
+      ...pkgJson.optionalDependencies,
+    };
+    for (const depName of Object.keys(allDeps)) {
+      if (
+        isPolyfillSpecifier(depName) &&
+        !documentedText.includes(depName.toLowerCase())
+      ) {
+        const relJson = relDir === "." ? "package.json" : `${relDir}/package.json`;
+        errors.push(
+          `${relJson}: Polyfill dependency "${depName}" is not recorded in Section 3 of BASELINE.md.`,
+        );
+      }
+    }
+  };
+
+  const rootPkgJson = path.join(rootDir, "package.json");
+  if (existsSync(rootPkgJson)) checkPackageJson(rootPkgJson, ".");
+
+  for (const rootName of ["packages", "apps", "scripts"] as const) {
+    const rootPath = path.join(rootDir, rootName);
+    if (!existsSync(rootPath)) continue;
+    for (const folder of readdirSync(rootPath)) {
+      const folderPath = path.join(rootPath, folder);
+      if (!statSync(folderPath).isDirectory()) continue;
+
+      const pkgJsonPath = path.join(folderPath, "package.json");
       if (existsSync(pkgJsonPath)) {
-        const pkgJson = JSON.parse(readFileSync(pkgJsonPath, "utf-8")) as {
-          dependencies?: Record<string, string>;
-          devDependencies?: Record<string, string>;
-          optionalDependencies?: Record<string, string>;
-        };
-        const allDeps = {
-          ...pkgJson.dependencies,
-          ...pkgJson.devDependencies,
-          ...pkgJson.optionalDependencies,
-        };
-        for (const depName of Object.keys(allDeps)) {
-          if (
-            POLYFILL_PKG_RE.test(depName) &&
-            !documentedText.includes(depName.toLowerCase())
-          ) {
-            errors.push(
-              `packages/${pkgFolder}/package.json: Polyfill dependency "${depName}" is not recorded in Section 3 of BASELINE.md.`,
-            );
-          }
-        }
+        checkPackageJson(pkgJsonPath, `${rootName}/${folder}`);
       }
 
       const srcFiles = walkFiles(
-        path.join(packagesDir, pkgFolder, "src"),
-        new Set([".ts", ".js", ".mjs", ".astro"]),
+        path.join(folderPath, "src"),
+        new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".astro"]),
       );
       for (const file of srcFiles) {
         const relFile = path.relative(rootDir, file).split(path.sep).join("/");
@@ -370,7 +405,7 @@ export function validateBaselineLedger(options: {
         let match: RegExpExecArray | null;
         while ((match = IMPORT_RE.exec(source)) !== null) {
           const specifier = match[1] ?? "";
-          if (!documentedFiles.has(relFile)) {
+          if (isPolyfillSpecifier(specifier) && !documentedFiles.has(relFile)) {
             errors.push(
               `${relFile}: Imports polyfill "${specifier}" without listing "${relFile}" in Section 3 of BASELINE.md.`,
             );

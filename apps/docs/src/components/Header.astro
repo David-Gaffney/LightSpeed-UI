@@ -77,29 +77,25 @@ const resolveSectionHref = (href: string): string =>
   withBase(href, import.meta.env.BASE_URL);
 ---
 
-<header class="sticky top-0 z-30 border-b border-border bg-card/80 backdrop-blur-lg">
-  <div class="mx-auto flex items-center justify-between gap-3 h-14 px-4 lg:px-6">
-    <div class="flex items-center gap-3 min-w-0">
+<header class="na-header">
+  <div class="na-header-bar">
+    <div class="na-header-leading">
       <slot name="brand">
         {/* The mark alone; the site title stays as the link's accessible name. */}
-        <a href={homeHref} class="flex shrink-0 items-center text-foreground transition-opacity hover:opacity-70">
-          <Logo class="h-7 w-7 shrink-0" />
-          <span class="sr-only">{config.title}</span>
+        <a href={homeHref} class="na-header-brand">
+          <Logo class="na-icon-brand na-shrink-0" />
+          <span class="na-visually-hidden">{config.title}</span>
         </a>
       </slot>
 
       {showSections && (
-        <nav aria-label="Sections" class="hidden md:flex items-center gap-1 ms-4 ps-4 border-s border-border h-6 min-w-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <nav aria-label="Sections" class="na-section-tabs na-no-scrollbar">
           {sections.map((section) => (
             <a
               href={resolveSectionHref(section.href)}
               aria-current={section.isActive ? "page" : undefined}
-              class:list={[
-                "px-2 py-1 rounded-md text-[0.8125rem] font-medium no-underline transition-colors shrink-0 whitespace-nowrap",
-                section.isActive
-                  ? "text-foreground bg-accent"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/60",
-              ]}
+              data-active={section.isActive ? "true" : undefined}
+              class="na-section-tab"
             >
               {section.label}
             </a>
@@ -108,7 +104,7 @@ const resolveSectionHref = (href: string): string =>
       )}
     </div>
 
-    <div class="flex items-center gap-2 shrink-0">
+    <div class="na-header-trailing">
       <slot name="actions" />
       {config.search !== false && <SearchTrigger />}
       {/* Without search, the reader's single-key switch lives here. */}
@@ -122,9 +118,9 @@ const resolveSectionHref = (href: string): string =>
           aria-label="GitHub"
           target="_blank"
           rel="noopener"
-          class="text-muted-foreground"
+          class="na-muted-text"
         >
-          <Icon name="ph:github-logo" class="w-4 h-4" />
+          <Icon name="ph:github-logo" class="na-icon-sm" />
         </LinkButton>
       )}
       <ThemeToggle />
@@ -136,24 +132,20 @@ const resolveSectionHref = (href: string): string =>
           icon="ph:list"
           aria-label="Open navigation"
           data-menu-btn
-          class="md:hidden text-muted-foreground"
+          class="na-menu-btn"
         />
       )}
     </div>
   </div>
   {/* Phones: the tabs on a row of their own under the bar. */}
   {showSections && (
-    <nav aria-label="Sections" data-nb-header-tabs class="md:hidden flex items-center gap-1 h-10 px-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <nav aria-label="Sections" data-nb-header-tabs class="na-section-tabs-mobile na-no-scrollbar">
       {sections.map((section) => (
         <a
           href={resolveSectionHref(section.href)}
           aria-current={section.isActive ? "page" : undefined}
-          class:list={[
-            "px-2 py-1 rounded-md text-[0.8125rem] font-medium no-underline transition-colors shrink-0 whitespace-nowrap",
-            section.isActive
-              ? "text-foreground bg-accent"
-              : "text-muted-foreground hover:text-foreground hover:bg-accent/60",
-          ]}
+          data-active={section.isActive ? "true" : undefined}
+          class="na-section-tab"
         >
           {section.label}
         </a>

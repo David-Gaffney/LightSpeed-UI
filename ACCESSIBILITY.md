@@ -62,7 +62,7 @@ Maintainers will assign or confirm severity during triage (you do not need to de
 - We will acknowledge your report respectfully and constructively.
 - We will never ask you to prove or disclose a disability.
 - Where possible, we will share an immediate workaround (such as a prop, slot, or CSS token override) while a permanent fix is developed.
-- Because downstream projects copy `.astro` markup via our CLI while importing headless behaviors from `@lsui/origin`, we prioritize fixing behavioral/ARIA bugs in `@lsui/origin` and shipping `npx @lsui/upgrade` updates so consumers can pick up accessibility fixes cleanly.
+- Because downstream projects copy `.astro` markup via our CLI while importing headless behaviors from `@lsui/origin`, we prioritize fixing behavioral/ARIA bugs in `@lsui/origin` and shipping the planned `npx @lsui/upgrade` updates (`GUIDE.md` Phase 13.2) so consumers can pick up accessibility fixes cleanly.
 - We will post updates on the issue if timelines or dependencies change, and welcome your confirmation before closing a resolved report.
 
 ### Resolution expectations
@@ -95,14 +95,14 @@ LightSpeedUI targets **Web Platform Baseline 2026** with progressive enhancement
 - **Input methods:** Mouse/trackpad, keyboard-only navigation, touch screens (`pointer: coarse` 44×44px target sizing), and OS zoom / text scaling.
 - **Assistive technologies (targeted):** VoiceOver (macOS and iOS), NVDA (Windows), JAWS (Windows), and TalkBack (Android).
 
-**Verification note:** Automated WCAG 2.2 AA `axe-core` scans, computed contrast/target-size assertions, and keyboard activation E2E tests currently run in Chromium via Playwright on every test run (`pnpm test:e2e`). Formal manual testing across every browser + screen-reader matrix above has not yet been completed (see below).
+**Verification note:** Automated WCAG 2.2 AA `axe-core` scans, computed contrast/target-size assertions, and keyboard activation E2E tests currently run in Chromium via Playwright on every test run (`pnpm test:e2e`). Computed-style assertions additionally check that `[data-surface="inverse"]` focus rings and borders clear 3:1 and that focusable `aria-disabled` labels clear 4:1 in both Nordic and Editorial light/dark modes. Formal manual testing across every browser + screen-reader matrix above has not yet been completed (see below).
 
 ## Known limitations
 
-LightSpeedUI is currently in early active development (Phase 1 complete; Phases 2–5 in progress in [`PLAN.md`](./PLAN.md)). Current known limitations include:
+LightSpeedUI is currently in early active development: [`GUIDE.md`](./GUIDE.md) Phases 1–8 (30/48 Parts) are complete and Phases 9–13 are planned (the high-level `PLAN.md` calls these Phase 0–1 complete and Phase 2–5 upcoming). Current known limitations include:
 
 - **Manual screen-reader matrix testing is still in progress:** While `@lsui/origin` (`OriginButton`, `OriginLink`, `announce()`) and `@lsui/liftoff` (`Button`, `LinkButton`) pass automated `@axe-core/playwright` WCAG 2.2 AA scans and Playwright keyboard tests, the library has not yet undergone a comprehensive manual audit across NVDA, JAWS, VoiceOver, and TalkBack.
-- **Documentation site chrome (`apps/docs`):** Live `<ComponentPreview>` sandboxes isolate and render LightSpeedUI's own accessible CSS and primitives, but the surrounding documentation layout currently uses `@cloudflare/nimbus-docs` starter UI. Replacing that starter chrome with LightSpeedUI's own pure-CSS documentation components (`DocsSidebar`, `PrevNext`, `Callout`, `CodeGroup`) is tracked in [`PLAN.md`](./PLAN.md) (Phase 3, Part 3).
+- **Documentation site chrome (`apps/docs`):** Live `<ComponentPreview>` sandboxes isolate and render LightSpeedUI's own accessible CSS and primitives, but the surrounding documentation layout currently uses `@cloudflare/nimbus-docs` starter UI. Replacing that starter chrome with LightSpeedUI's own pure-CSS documentation components (`DocsSidebar`, `PrevNext`, `Callout`, `CodeGroup`) is tracked in [`GUIDE.md`](./GUIDE.md) (Phase 10, Part 4; high-level `PLAN.md` Phase 3, Part 3).
 - **Figma design-system library limitations:** Components and Multi-Theme Showcases generated via [`FIGMA.md`](./FIGMA.md) (`@lsui/figma-sync`) communicate variant states and theme modes visually on the Figma canvas, which does not convey HTML landmarks, keyboard maps, or `ariaNotify()` behavior on its own. Collaborators using the Figma file should pair visual specs with the generated [`COMPONENTS.md`](./COMPONENTS.md) and per-component documentation pages, which list every prop, ARIA rule, and keyboard interaction in text.
 
 If you encounter a barrier not listed here, please [open an accessibility issue](https://github.com/David-Gaffney/LightSpeed-UI/issues/new?template=accessibility.yml).

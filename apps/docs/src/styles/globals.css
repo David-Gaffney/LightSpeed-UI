@@ -1,15 +1,19 @@
 @layer theme, base, lsui, components, utilities;
-@import "tailwindcss";
-
-@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
+/* Part 10.4 — local semantic chrome stylesheets replace Tailwind utilities.
+   @layer components keeps them isolated from <ComponentPreview>'s base reset. */
+@import "./chrome-a.css";
+@import "./chrome-b.css";
+@import "./chrome-c.css";
+@import "./chrome-d.css";
+@import "./chrome-e.css";
 
 /* ============================================================
  * Nimbus Theme — THE file you edit to customize your site.
  *
  * Architecture:
  *   1. CSS custom properties (--nb-*) define the design tokens
- *   2. `@theme` block exposes them to Tailwind so utilities like
- *      `bg-card`, `text-foreground`, `border-border` work
+ *   2. Semantic `--color-*` custom properties mirror the `--nb-*` tokens for
+ *      consumers that read them (no Tailwind dependency is required)
  *   3. Dark mode uses the `[data-mode="dark"]` attribute
  *   4. All colors use oklch for perceptual uniformity
  *
@@ -17,8 +21,8 @@
  *   - Surfaces paired with foregrounds: `card` / `card-foreground`
  *   - Functional names: `primary` (action), `accent` (hover surface),
  *     `muted` (de-emphasized), not visual relationships
- *   - Reserved Tailwind keywords avoided (no `text-base`, `font-sans`,
- *     `shadow-lg`, etc. as color names — they collide with built-ins)
+ *   - Reserved keywords avoided (no `text-base`, `font-sans`, `shadow-lg`,
+ *     etc. as color names — they collide with CSS utility conventions)
  * ============================================================ */
 
 /* ---- Light mode (default) ---- */
@@ -210,11 +214,10 @@
 	--nb-shadow-lg: 0 4px 12px oklch(0 0 0 / 0.4), 0 2px 4px oklch(0 0 0 / 0.2);
 }
 
-/* ---- Tailwind theme mapping ----
- * These generate Tailwind utility classes:
- *   bg-card, text-foreground, border-border, ring-ring, etc.
- */
-@theme {
+/* ---- Theme tokens previously exposed through Tailwind's @theme ----
+ * Kept as plain custom properties so consumers of var(--color-card) etc.
+ * still work now that the Tailwind dependency is removed. */
+:root {
 	--color-background: var(--nb-background);
 	--color-foreground: var(--nb-foreground);
 
@@ -288,6 +291,27 @@ body {
 
 /* ---- Focus indicators ---- */
 @layer base {
+	/* Minimal replacement for Tailwind Preflight, which is no longer imported. */
+	*,
+	::before,
+	::after {
+		box-sizing: border-box;
+	}
+	body {
+		margin: 0;
+	}
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6,
+	p,
+	ul,
+	ol {
+		margin: 0;
+	}
+
 	/* Default the outline to the focus ring's resting values so turning the
 	   ring on (outline-style: none → solid) changes nothing a transition can
 	   animate — no color/width/offset flash under transition-colors/-all. */

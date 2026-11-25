@@ -1,0 +1,39 @@
+---
+title: Byline
+description: Themed author/date metadata row.
+sidebar:
+  order: 5
+---
+
+import Byline from "@lsui/liftoff/Byline.astro";
+
+<ComponentPreview title="Byline Preview" theme="nordic light" hydration="none">
+  <Byline>Byline</Byline>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/Byline.astro` or read its registry manifest at `/r/liftoff/byline.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `author` | `string` | — | Yes |  |
+| `date` | `string` | — | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Optional extra metadata. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Uses a definition-list-free inline layout; date is rendered in a `<time>` element when supplied.
+
+### Keyboard Interactions
+
+- No custom keyboard behavior.

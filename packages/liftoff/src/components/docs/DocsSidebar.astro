@@ -1,0 +1,28 @@
+---
+/**
+ * @title DocsSidebar
+ * @level liftoff
+ * @description Themed nested documentation navigation landmark.
+ * @category Documentation
+ * @hydration none
+ * @accessibility
+ * - Renders a labelled `<nav>`; links must be real anchors with optional `aria-current="page"`.
+ * @keyboard
+ * - Native link keyboard behavior.
+ * @slots
+ * - `default`: Nested list of links.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+import "./docs.css";
+
+type Props = Omit<HTMLAttributes<"nav">, "aria-label"> & {
+  label?: string;
+};
+const { label = "Documentation" } = Astro.props as Props;
+
+---
+
+<nav data-lsui-docs-sidebar aria-label={label} {...Astro.props}>
+  <slot />
+</nav>

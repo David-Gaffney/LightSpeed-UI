@@ -1,0 +1,38 @@
+---
+title: Popover
+description: Themed native popover built atop OriginPopover.
+sidebar:
+  order: 15
+---
+
+import Popover from "@lsui/liftoff/Popover.astro";
+
+<ComponentPreview title="Popover Preview" theme="nordic light" hydration="optional">
+  <Popover>Popover</Popover>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/Popover.astro` or read its registry manifest at `/r/liftoff/popover.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Popover content. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Delegates native popover semantics and focus return to `OriginPopover`.
+
+### Keyboard Interactions
+
+- Native light dismiss and Escape; trigger uses `popovertarget`.

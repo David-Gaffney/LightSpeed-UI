@@ -1,0 +1,40 @@
+---
+title: PortableText
+description: Themed container for normalized portable-text blocks supplied through the default slot.
+sidebar:
+  order: 7
+---
+
+import PortableText from "@lsui/liftoff/PortableText.astro";
+
+<ComponentPreview title="PortableText Preview" theme="nordic light" hydration="none">
+  <PortableText>PortableText</PortableText>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/PortableText.astro` or read its registry manifest at `/r/liftoff/portable-text.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `class` | `string` | — | No | Consumer CSS class escape hatch |
+| `id` | `string` | — | No | DOM element identifier |
+| `label` | `string` | — | No |  |
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Rendered portable-text blocks. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Renders a plain `<div>`; block renderers own their semantics.
+
+### Keyboard Interactions
+
+- No custom keyboard behavior.

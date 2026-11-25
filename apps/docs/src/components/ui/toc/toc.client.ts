@@ -26,6 +26,11 @@ function initToc(root: HTMLElement): () => void {
     .map((slug, index) => ({ el: document.getElementById(slug), index }))
     .filter((o): o is { el: HTMLElement; index: number } => o.el !== null);
   if (observed.length === 0) return () => {};
+  // `scrollspy` guidance: fragment targets must be focusable so a keyboard
+  // reader can scroll the container after activating a TOC link.
+  for (const o of observed) {
+    if (!o.el.hasAttribute("tabindex")) o.el.setAttribute("tabindex", "-1");
+  }
   const indexOfEl = new Map<HTMLElement, number>(
     observed.map((o) => [o.el, o.index]),
   );
@@ -149,8 +154,11 @@ function initToc(root: HTMLElement): () => void {
     currentIndex = index;
 
     currentLink?.removeAttribute("aria-current");
+    currentLink?.classList.remove("target-current");
     const activeLink = links[index] ?? null;
     activeLink?.setAttribute("aria-current", "true");
+    // Fallback class for browsers without `scroll-target-group` / `:target-current`.
+    activeLink?.classList.add("target-current");
     currentLink = activeLink;
     if (activeLink) revealActiveLink(activeLink);
 
@@ -330,6 +338,7 @@ function initToc(root: HTMLElement): () => void {
         if (observed.some((o) => o.index === index)) return;
         const el = document.getElementById(slug);
         if (!el) return;
+        if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
         observed.push({ el, index });
         indexOfEl.set(el, index);
         spy.observe(el);

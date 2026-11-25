@@ -1,0 +1,51 @@
+---
+/**
+ * @title OriginSelect
+ * @level origin
+ * @description Unstyled native select with a bound label and optional persistent hint; no custom listbox role invention.
+ * @category Primitives
+ * @hydration none
+ * @accessibility
+ * - Renders a real `<label for>` before the `<select>`; the label is required at compile time.
+ * - Hints are persistent text linked with `aria-describedby`, never placeholder-only instructions.
+ * - The native select owns keyboard behavior, form submission and accessible roles.
+ * @keyboard
+ * - Native select keyboard interaction (Arrow keys, Home/End, typeahead, Enter/Space).
+ * @slots
+ * - `default`: Native `<option>` elements.
+ */
+
+import type { HTMLAttributes } from "astro/types";
+
+type NativeSelectAttributes = Omit<HTMLAttributes<"select">, "id" | "aria-label" | "aria-labelledby">;
+
+type Props = NativeSelectAttributes & {
+  id: string;
+  label: string;
+  name?: string;
+  /** Persistent helper text; rendered after the control and linked via aria-describedby. */
+  hint?: string;
+  describedBy?: string;
+};
+
+const {
+  id,
+  label,
+  name,
+  hint,
+  describedBy,
+  ...rest
+} = Astro.props;
+
+const describedByValue = [describedBy, hint ? `${id}-hint` : null]
+  .filter(Boolean)
+  .join(" ") || undefined;
+---
+
+<div data-lsui-field>
+  <label for={id}>{label}</label>
+  <select id={id} name={name ?? id} aria-describedby={describedByValue} {...rest}>
+    <slot />
+  </select>
+  {hint && <p id={`${id}-hint`}>{hint}</p>}
+</div>

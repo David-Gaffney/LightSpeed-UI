@@ -89,14 +89,14 @@ export function initSearch(config: SearchConfig): SearchInstance {
   // arrow keys reach every link and each option's name is its own title.
   function buildResult(result: SearchResult): HTMLElement[] {
     const option = resultOption(
-      resultLink(result.title, result.url, "block truncate text-sm font-medium text-foreground no-underline focus-visible:outline-none"),
-      "rounded-lg px-2 py-2 transition-colors cursor-pointer hover:bg-accent data-[highlighted]:bg-accent",
+      resultLink(result.title, result.url, "nob-search-result-link"),
+      "nob-search-result",
     );
 
     if (result.snippet) {
       const snippet = document.createElement("p");
       snippet.id = `${option.id}-snippet`;
-      snippet.className = "mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground";
+      snippet.className = "nob-search-snippet";
       snippet.innerHTML = result.snippet;
       option.appendChild(snippet);
       option.setAttribute("aria-describedby", snippet.id);
@@ -105,8 +105,8 @@ export function initSearch(config: SearchConfig): SearchInstance {
     // Pagefind's first sub-result is often the page itself: skip it.
     const subs = (result.subResults ?? []).filter((sub) => sub.url !== result.url).slice(0, 3).map((sub) =>
       resultOption(
-        resultLink(sub.title, sub.url, "block truncate text-xs text-muted-foreground no-underline"),
-        "ms-4 border-s border-border rounded-e-lg ps-3 py-1 transition-colors cursor-pointer hover:bg-accent hover:text-foreground data-[highlighted]:bg-accent",
+        resultLink(sub.title, sub.url, "nob-search-subresult-link"),
+        "nob-search-subresult",
       ),
     );
 

@@ -4,7 +4,10 @@
  * Attaches headless controllers to plain semantic HTML elements matching `selector`
  * without introducing Custom Element wrapper nodes in the DOM. Automatically mounts
  * on initial load and after Astro `<ClientRouter />` swaps, running cleanup callbacks
- * before page swaps.
+ * before page swaps. A MutationObserver also cleans up elements removed by ordinary
+ * DOM code (outside view transitions); connectivity is re-checked after the mutation
+ * batch so a moved/reinserted node is not torn down. Registering the same
+ * `(selector, setup)` twice is a no-op, keeping setup idempotent.
  */
 
 export type CleanupFn = () => void;
@@ -21,6 +24,21 @@ interface RegistryEntry {
 
 const registry: RegistryEntry[] = [];
 let lifecycleBound = false;
+let pruneScheduled = false;
+
+/**
+ * Ordinary DOM removals do not fire Astro lifecycle events. Observe removals,
+ * then re-check `isConnected` in a microtask so nodes that were only moved or
+ * reinserted during the same batch are not torn down.
+ */
+function scheduleDisconnectPrune(): void {
+  if (pruneScheduled) return;
+  pruneScheduled = true;
+  queueMicrotask(() => {
+    pruneScheduled = false;
+    cleanupDisconnectedOrAll(false);
+  });
+}
 
 function runEntry(entry: RegistryEntry, root: ParentNode = document): void {
   const matches = root.querySelectorAll(entry.selector);
@@ -59,6 +77,12 @@ function ensureLifecycleListeners(): void {
       runEntry(entry);
     }
   });
+
+  new MutationObserver((records) => {
+    if (records.some((record) => record.removedNodes.length > 0)) {
+      scheduleDisconnectPrune();
+    }
+  }).observe(document, { childList: true, subtree: true });
 }
 
 export function mount<T extends Element = HTMLElement>(
@@ -71,9 +95,20 @@ export function mount<T extends Element = HTMLElement>(
 
   ensureLifecycleListeners();
 
+  const typedSetup = setup as MountSetup<Element>;
+  if (
+    registry.some(
+      (existing) =>
+        existing.selector === selector && existing.setup === typedSetup,
+    )
+  ) {
+    // Idempotent registration: a second consumer must not add duplicate listeners.
+    return () => {};
+  }
+
   const entry: RegistryEntry = {
     selector,
-    setup: setup as MountSetup<Element>,
+    setup: typedSetup,
     mounted: new WeakMap(),
     elements: new Set(),
   };

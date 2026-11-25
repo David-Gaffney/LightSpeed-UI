@@ -1,0 +1,24 @@
+---
+/**
+ * @title Select
+ * @level liftoff
+ * @description Themed native select built atop OriginSelect with semantic token styling.
+ * @category Forms
+ * @hydration none
+ * @accessibility
+ * - Delegates label binding and persistent hints to `OriginSelect`.
+ * @keyboard
+ * - Native select keyboard behavior.
+ * @slots
+ * - `default`: Native `<option>` elements.
+ */
+
+import OriginSelect from "@lsui/origin/Select.astro";
+import type { ComponentProps } from "astro/types";
+import "./core.css";
+
+type Props = ComponentProps<typeof OriginSelect>;
+
+---
+
+<OriginSelect {...Astro.props}><slot /></OriginSelect>

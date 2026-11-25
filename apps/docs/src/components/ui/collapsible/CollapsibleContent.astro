@@ -17,15 +17,10 @@ const isOpen = attrs["data-nb-state"] === "open";
   data-slot={slot}
   data-nb-collapsible-content
   inert={!isOpen || undefined}
-  class={cn(
-    "grid grid-rows-[0fr] transition-[grid-template-rows] duration-250 ease-[cubic-bezier(0.87,0,0.13,1)]",
-    "data-[nb-state=open]:grid-rows-[1fr]",
-    "motion-reduce:transition-none",
-    className,
-  )}
+  class={cn("nc-collapsible-content", className)}
   {...attrs}
 >
-  <div class="overflow-hidden min-h-0">
+  <div class="nc-collapsible-content-inner">
     <slot />
   </div>
 </div>

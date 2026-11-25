@@ -15,7 +15,7 @@ const { markdownUrl, llmsUrl } = Astro.props;
 {/* Read by screen readers and agents; out of the Tab order, so keyboard users
     don't land on links they can't see. Nothing to point at, nothing said. */}
 {(markdownUrl || llmsUrl) && (
-  <aside class="sr-only" aria-label="For AI agents" data-ai-agent-directive>
+  <aside class="na-visually-hidden" aria-label="For AI agents" data-ai-agent-directive>
     {markdownUrl && llmsUrl ? (
       <Fragment>
         This page is available in Markdown format. Markdown is recommended for AI

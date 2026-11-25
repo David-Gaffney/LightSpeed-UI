@@ -1,6 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import OriginButton from "@lsui/origin/Button.astro";
+import OriginDialog from "@lsui/origin/Dialog.astro";
+import OriginPopover from "@lsui/origin/Popover.astro";
+import OriginTabs from "@lsui/origin/Tabs.astro";
+import OriginSelect from "@lsui/origin/Select.astro";
+import OriginInput from "@lsui/origin/Input.astro";
 import Button from "@lsui/liftoff/Button.astro";
 import LinkButton from "@lsui/liftoff/LinkButton.astro";
 ---
@@ -25,6 +30,35 @@ import LinkButton from "@lsui/liftoff/LinkButton.astro";
       <Button id="aria-disabled-btn" variant="outline" aria-disabled="true">
         Toolbar Save (aria-disabled)
       </Button>
+
+      <Button id="override-native-btn" role="link" tabindex="5" variant="outline">
+        Native Override
+      </Button>
+
+      <Button id="override-btn" as="span" role="link" tabindex="5" variant="outline">
+        Simulated Override
+      </Button>
+
+      <Button id="override-disabled-btn" as="span" disabled aria-disabled="false" variant="secondary">
+        Disabled Override
+      </Button>
+
+      <LinkButton
+        id="override-link-btn"
+        href="/never"
+        disabled
+        aria-disabled="false"
+        {...({ role: "button", tabindex: "5" } as Record<string, string>)}
+        variant="ghost"
+      >
+        Disabled Link Override
+      </LinkButton>
+
+      <div id="nordic-inverse-disabled-panel" data-surface="inverse" class="swatch-panel">
+        <Button id="nordic-inverse-disabled" variant="secondary" aria-disabled="true">
+          Unavailable (focusable)
+        </Button>
+      </div>
 
       <LinkButton id="disabled-link-btn" href="/never" variant="ghost" disabled>
         Disabled LinkButton
@@ -51,6 +85,61 @@ import LinkButton from "@lsui/liftoff/LinkButton.astro";
       </Button>
     </dialog>
 
+    <Button id="open-custom-layer" variant="outline">Open Custom Layer</Button>
+
+    <div
+      id="custom-layer"
+      role="dialog"
+      aria-label="Custom layer"
+      hidden
+      style="position: fixed; inset-block-start: 25%; inset-inline-start: 25%; padding: var(--space-lg); border: var(--border-width) solid var(--color-border-strong); background: var(--color-surface); color: var(--color-text);"
+    >
+      <button id="custom-layer-first" type="button">First</button>
+      <button id="custom-layer-last" type="button">Last</button>
+    </div>
+
+    <OriginButton id="origin-dialog-trigger" commandfor="origin-dialog-demo" command="show-modal">
+      Open Origin Dialog
+    </OriginButton>
+
+    <OriginDialog id="origin-dialog-demo" labelledBy="origin-dialog-title" closedby="any">
+      <h2 id="origin-dialog-title">Origin Dialog</h2>
+      <p>Opened declaratively; the native modal owns focus and dismissal.</p>
+      <OriginButton slot="actions" type="button" commandfor="origin-dialog-demo" command="close">
+        Close
+      </OriginButton>
+    </OriginDialog>
+
+    <OriginButton id="origin-popover-trigger" popovertarget="origin-popover-demo">
+      Open Origin Popover
+    </OriginButton>
+
+    <OriginPopover id="origin-popover-demo" trigger="origin-popover-trigger">
+      <p>Origin Popover content.</p>
+      <OriginButton
+        id="origin-popover-close"
+        type="button"
+        popovertarget="origin-popover-demo"
+        popovertargetaction="hide"
+      >
+        Close
+      </OriginButton>
+    </OriginPopover>
+
+    <OriginTabs label="Example tabs">
+      <button slot="tabs" id="tab-one" type="button" role="tab" aria-controls="panel-one" aria-selected="true">One</button>
+      <button slot="tabs" id="tab-two" type="button" role="tab" aria-controls="panel-two" aria-selected="false">Two</button>
+      <div slot="panels" id="panel-one" role="tabpanel" aria-labelledby="tab-one" tabindex="0">Panel one</div>
+      <div slot="panels" id="panel-two" role="tabpanel" aria-labelledby="tab-two" tabindex="0" hidden="until-found">Panel two</div>
+    </OriginTabs>
+
+    <OriginSelect id="origin-select" label="Color" hint="Choose one">
+      <option value="nordic">Nordic</option>
+      <option value="editorial">Editorial</option>
+    </OriginSelect>
+
+    <OriginInput id="origin-input" label="Display name" hint="Shown publicly" required />
+
     <div
       id="demo-popover"
       popover="auto"
@@ -62,7 +151,34 @@ import LinkButton from "@lsui/liftoff/LinkButton.astro";
 </BaseLayout>
 
 <script>
-  import { announce, mount } from "@lsui/origin";
+  import {
+    announce,
+    createDismissableLayer,
+    createFocusTrap,
+    mount,
+  } from "@lsui/origin";
+
+  const layerTrigger = document.querySelector<HTMLButtonElement>("#open-custom-layer")!;
+  const customLayer = document.querySelector<HTMLElement>("#custom-layer")!;
+  let layerTrap: ReturnType<typeof createFocusTrap> | null = null;
+  let layerDismiss: ReturnType<typeof createDismissableLayer> | null = null;
+
+  function closeCustomLayer(): void {
+    layerDismiss?.destroy();
+    layerTrap?.destroy();
+    layerDismiss = null;
+    layerTrap = null;
+    customLayer.hidden = true;
+  }
+
+  layerTrigger.addEventListener("click", () => {
+    customLayer.hidden = false;
+    layerTrap = createFocusTrap(customLayer, { returnFocus: layerTrigger });
+    layerDismiss = createDismissableLayer(customLayer, {
+      trigger: layerTrigger,
+      onDismiss: closeCustomLayer,
+    });
+  });
 
   mount("#origin-span-btn", (el) => {
     const onClick = () => {

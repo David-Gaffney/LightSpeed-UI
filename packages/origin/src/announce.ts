@@ -29,17 +29,40 @@ type AriaNotifyFn = (
 ) => void;
 
 const IGNORED_ELEMENT_TAGS = new Set(["HTML", "BODY"]);
+// Keyed by the host element, not the Document: a region placed inside a modal
+// dialog is discarded with it, and a later announcement creates a fresh one on
+// the body instead of writing into inert DOM.
 const fallbackRegions = new WeakMap<
-  Document,
+  Element,
   Record<AnnouncePriority, HTMLElement>
 >();
 
+/**
+ * A live region must live inside the active top-layer context. A modal dialog
+ * makes everything outside it inert, so a body-level region would be silenced
+ * in exactly the flows that need announcements.
+ */
+function findFallbackHost(doc: Document): Element | null {
+  const openDialog = doc.querySelector("dialog[open]");
+  if (openDialog) return openDialog;
+  try {
+    const openPopover = doc.querySelector(
+      '[popover]:is(:popover-open, .\\:popover-open)',
+    );
+    if (openPopover) return openPopover;
+  } catch {
+    // Browsers without :popover-open simply keep the body host.
+  }
+  return doc.body ?? doc.documentElement ?? null;
+}
+
 function getOrCreateFallbackRegion(
-  doc: Document,
+  host: Element,
   priority: AnnouncePriority,
 ): HTMLElement {
-  let pair = fallbackRegions.get(doc);
+  let pair = fallbackRegions.get(host);
   if (!pair) {
+    const doc = host.ownerDocument;
     const createRegion = (p: AnnouncePriority): HTMLElement => {
       const el = doc.createElement("div");
       el.setAttribute("role", p === "assertive" ? "alert" : "status");
@@ -57,14 +80,14 @@ function getOrCreateFallbackRegion(
         border: "0",
         whiteSpace: "nowrap",
       });
-      doc.body.appendChild(el);
+      host.appendChild(el);
       return el;
     };
     pair = {
       polite: createRegion("polite"),
       assertive: createRegion("assertive"),
     };
-    fallbackRegions.set(doc, pair);
+    fallbackRegions.set(host, pair);
   }
   return pair[priority];
 }
@@ -92,6 +115,8 @@ export function announce(message: string, options?: AnnounceOptions): void {
   // 1. Prefer `Element.ariaNotify()` on semantic target elements (inherits nearest `lang`)
   if (
     target &&
+    // A detached target cannot notify; treat a missing flag (test doubles) as connected.
+    target.isConnected !== false &&
     !IGNORED_ELEMENT_TAGS.has(target.tagName.toUpperCase()) &&
     typeof (target as unknown as { ariaNotify?: unknown }).ariaNotify === "function"
   ) {
@@ -109,13 +134,20 @@ export function announce(message: string, options?: AnnounceOptions): void {
     return;
   }
 
-  // 3. Fallback for pre-Baseline-2026 browsers: shared visually-hidden `aria-live` region
-  const region = getOrCreateFallbackRegion(doc, priority);
+  // 3. Fallback for pre-Baseline-2026 browsers: visually-hidden `aria-live`
+  // region inside the active top-layer context (never inert body content).
+  const host = findFallbackHost(doc);
+  if (!host) return;
+  const region = getOrCreateFallbackRegion(host, priority);
   region.textContent = "";
-  const schedule =
-    typeof requestAnimationFrame === "function"
-      ? requestAnimationFrame
-      : (cb: () => void) => setTimeout(cb, 0);
+  const view = doc.defaultView;
+  const schedule = (cb: () => void): void => {
+    if (view && typeof view.requestAnimationFrame === "function") {
+      view.requestAnimationFrame(cb);
+    } else {
+      setTimeout(cb, 0);
+    }
+  };
   schedule(() => {
     region.textContent = trimmed;
   });

@@ -1,6 +1,82 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+function parseColor(value: string): [number, number, number] {
+  const rgb = /rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i.exec(value);
+  if (rgb) return [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])];
+
+  // Chromium serializes computed custom-property colors as oklch(); convert with
+  // the same Oklab -> linear sRGB -> gamma sRGB math as @lsui/ast color.ts.
+  const oklch = /^oklch\(\s*([\d.]+)(%)?\s+([\d.]+)\s+([\d.]+)(?:deg)?(?:\s*\/\s*([\d.]+%?))?\s*\)$/i.exec(
+    value.trim(),
+  );
+  if (oklch) {
+    const l = oklch[2] ? Number(oklch[1]) / 100 : Number(oklch[1]);
+    const c = Number(oklch[3]);
+    const h = (Number(oklch[4]) * Math.PI) / 180;
+    const a = c * Math.cos(h);
+    const b = c * Math.sin(h);
+    const l_ = l + 0.3963377774 * a + 0.2158037573 * b;
+    const m_ = l - 0.1055613458 * a - 0.0638541728 * b;
+    const s_ = l - 0.0894841775 * a - 1.291485548 * b;
+    const l3 = l_ ** 3;
+    const m3 = m_ ** 3;
+    const s3 = s_ ** 3;
+    const encode = (linear: number): number => {
+      const v = Math.min(1, Math.max(0, linear));
+      return (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055) * 255;
+    };
+    return [
+      encode(4.0767416621 * l3 - 3.3077115913 * m3 + 0.2309699292 * s3),
+      encode(-1.2684380046 * l3 + 2.6097574011 * m3 - 0.3413193965 * s3),
+      encode(-0.0041960863 * l3 - 0.7034186147 * m3 + 1.707614701 * s3),
+    ];
+  }
+  const oklab = /^oklab\(\s*([\d.]+)(%)?\s+(-?[\d.]+)\s+(-?[\d.]+)\s*\)$/i.exec(
+    value.trim(),
+  );
+  if (oklab) {
+    const l = oklab[2] ? Number(oklab[1]) / 100 : Number(oklab[1]);
+    const a = Number(oklab[3]);
+    const b = Number(oklab[4]);
+    const l_ = l + 0.3963377774 * a + 0.2158037573 * b;
+    const m_ = l - 0.1055613458 * a - 0.0638541728 * b;
+    const s_ = l - 0.0894841775 * a - 1.291485548 * b;
+    const l3 = l_ ** 3;
+    const m3 = m_ ** 3;
+    const s3 = s_ ** 3;
+    const encode = (linear: number): number => {
+      const v = Math.min(1, Math.max(0, linear));
+      return (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055) * 255;
+    };
+    return [
+      encode(4.0767416621 * l3 - 3.3077115913 * m3 + 0.2309699292 * s3),
+      encode(-1.2684380046 * l3 + 2.6097574011 * m3 - 0.3413193965 * s3),
+      encode(-0.0041960863 * l3 - 0.7034186147 * m3 + 1.707614701 * s3),
+    ];
+  }
+
+  const srgb = /^color\(\s*srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)$/i.exec(
+    value.trim(),
+  );
+  if (srgb) return [Number(srgb[1]) * 255, Number(srgb[2]) * 255, Number(srgb[3]) * 255];
+
+  throw new Error(`Unsupported computed color: ${value}`);
+}
+
+function contrast(foreground: string, background: string): number {
+  const luminance = ([r, g, b]: [number, number, number]): number => {
+    const linear = (channel: number): number => {
+      const c = channel / 255;
+      return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    };
+    return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
+  };
+  const a = luminance(parseColor(foreground));
+  const b = luminance(parseColor(background));
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+
 test.describe("LightSpeedUI Playground (Themes, Button/LinkButton & WCAG 2.2 AA)", () => {
   test("renders zero-JS Button & LinkButton across themes, contexts, cursors, hover/focus, and target minimums", async ({
     page,
@@ -138,6 +214,186 @@ test.describe("LightSpeedUI Playground (Themes, Button/LinkButton & WCAG 2.2 AA)
       .analyze();
 
     expect(a11y.violations).toEqual([]);
+  });
+
+  test("inverse surfaces keep focus rings and disabled labels above WCAG contrast minimums", async ({
+    page,
+  }) => {
+    await page.goto("http://localhost:4322/");
+
+    const combos: [string, string][] = [
+      ["nordic-inverse-light-panel", "nordic-inverse-light-btn"],
+      ["nordic-inverse-dark-panel", "nordic-inverse-dark-btn"],
+      ["editorial-inverse-light-panel", "editorial-inverse-light-btn"],
+      ["editorial-inverse-dark-panel", "editorial-inverse-dark-btn"],
+    ];
+
+    for (const [panelId, buttonId] of combos) {
+      const colors = await page.evaluate(
+        ({ panelId, buttonId }) => {
+          const panel = document.getElementById(panelId)!;
+          const probe = document.createElement("div");
+          panel.appendChild(probe);
+          probe.style.backgroundColor = "var(--color-ring)";
+          const ring = getComputedStyle(probe).backgroundColor;
+          probe.style.backgroundColor = "var(--color-border)";
+          const border = getComputedStyle(probe).backgroundColor;
+          probe.remove();
+          return {
+            surface: getComputedStyle(panel).backgroundColor,
+            ring,
+            border,
+          };
+        },
+        { panelId, buttonId },
+      );
+
+      expect(contrast(colors.ring, colors.surface), `${panelId} focus ring`).toBeGreaterThanOrEqual(3);
+      expect(contrast(colors.border, colors.surface), `${panelId} border`).toBeGreaterThanOrEqual(3);
+
+      // Keyboard focus must actually use that remapped ring token.
+      await page.keyboard.press("Tab");
+      const button = page.locator(`#${buttonId}`);
+      await button.focus();
+      const focused = await button.evaluate((el) => ({
+        visible: el.matches(":focus-visible"),
+        outlineStyle: getComputedStyle(el).outlineStyle,
+        outlineColor: getComputedStyle(el).outlineColor,
+      }));
+      expect(focused.visible, `${buttonId} focus-visible`).toBe(true);
+      expect(focused.outlineStyle).toBe("solid");
+      expect(
+        contrast(focused.outlineColor, colors.surface),
+        `${buttonId} outlined focus ring`,
+      ).toBeGreaterThanOrEqual(3);
+    }
+
+    await page.goto("http://localhost:4322/triggers/");
+    const disabled = await page.evaluate(() => {
+      const button = document.getElementById("nordic-inverse-disabled")!;
+      const panel = button.parentElement!;
+      return {
+        ariaDisabled: button.getAttribute("aria-disabled"),
+        color: getComputedStyle(button).color,
+        background: getComputedStyle(button).backgroundColor,
+        surface: getComputedStyle(panel).backgroundColor,
+        borderStyle: getComputedStyle(button).borderTopStyle,
+        opacity: getComputedStyle(button).opacity,
+      };
+    });
+    expect(disabled.ariaDisabled).toBe("true");
+    expect(disabled.opacity).toBe("1");
+    expect(disabled.borderStyle).toBe("dashed");
+    expect(
+      contrast(disabled.color, disabled.surface),
+      "disabled label vs inverse surface",
+    ).toBeGreaterThanOrEqual(4.5);
+    expect(
+      contrast(disabled.color, disabled.background),
+      "disabled label vs its own fill",
+    ).toBeGreaterThanOrEqual(4.5);
+  });
+
+  test("OriginTabs, OriginSelect and OriginInput keep native semantics", async ({ page }) => {
+    await page.goto("http://localhost:4322/triggers/");
+    await expect(page.locator("#tab-two")).toHaveAttribute("aria-selected", "false");
+    await page.locator("#tab-two").click();
+    await expect(page.locator("#tab-two")).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator("#panel-two")).toBeVisible();
+    await expect(page.locator("#panel-one")).toBeHidden();
+
+    await expect(page.locator('label[for="origin-select"]')).toBeVisible();
+    await expect(page.locator("#origin-select")).toHaveAttribute("aria-describedby", "origin-select-hint");
+    await expect(page.locator('label[for="origin-input"]')).toBeVisible();
+    await expect(page.locator("#origin-input")).toHaveAttribute("required", "");
+    await expect(page.locator("#origin-input")).toHaveAttribute("aria-describedby", "origin-input-hint");
+  });
+
+  test("OriginDialog and OriginPopover rely on native overlay semantics", async ({ page }) => {
+    await page.goto("http://localhost:4322/triggers/");
+    const dialog = page.locator("#origin-dialog-demo");
+
+    await page.locator("#origin-dialog-trigger").click();
+    await expect(dialog).toBeVisible();
+    expect(await dialog.evaluate((el) => (el as HTMLDialogElement).matches(":modal"))).toBe(true);
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(page.locator("#origin-dialog-trigger")).toBeFocused();
+
+    const popover = page.locator("#origin-popover-demo");
+    await page.locator("#origin-popover-trigger").click();
+    await expect(popover).toBeVisible();
+    await expect(popover).toHaveAttribute("data-lsui-popover", "");
+    await page.keyboard.press("Escape");
+    await expect(popover).toBeHidden();
+  });
+
+  test("custom focus trap cycles Tab and dismisses on Escape/outside", async ({ page }) => {
+    await page.goto("http://localhost:4322/triggers/");
+    const layer = page.locator("#custom-layer");
+
+    await page.locator("#open-custom-layer").click();
+    await expect(layer).toBeVisible();
+    await expect(page.locator("#custom-layer-first")).toBeFocused();
+
+    await page.keyboard.press("Tab");
+    await expect(page.locator("#custom-layer-last")).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(page.locator("#custom-layer-first")).toBeFocused();
+
+    await page.keyboard.press("Escape");
+    await expect(layer).toBeHidden();
+    await expect(page.locator("#open-custom-layer")).toBeFocused();
+
+    await page.locator("#open-custom-layer").click();
+    await expect(layer).toBeVisible();
+    await page.mouse.click(5, 5);
+    await expect(layer).toBeHidden();
+  });
+
+  test("computed semantics survive consumer prop overrides", async ({ page }) => {
+    await page.goto("http://localhost:4322/triggers/");
+    const result = await page.evaluate(() => {
+      const pick = (id: string) => {
+        const el = document.getElementById(id)!;
+        return {
+          tag: el.tagName,
+          role: el.getAttribute("role"),
+          tabindex: el.getAttribute("tabindex"),
+          ariaDisabled: el.getAttribute("aria-disabled"),
+          simulated: el.hasAttribute("data-lsui-simulated-button"),
+          href: el.getAttribute("href"),
+        };
+      };
+      return {
+        native: pick("override-native-btn"),
+        simulated: pick("override-btn"),
+        disabled: pick("override-disabled-btn"),
+        link: pick("override-link-btn"),
+      };
+    });
+
+    // Native button: conflicting role/tabindex are removed, not applied.
+    expect(result.native.tag).toBe("BUTTON");
+    expect(result.native.role).toBeNull();
+    expect(result.native.tabindex).toBeNull();
+
+    // Simulated button: computed role/tabindex win over consumer overrides.
+    expect(result.simulated.tag).toBe("SPAN");
+    expect(result.simulated.role).toBe("button");
+    expect(result.simulated.tabindex).toBe("0");
+    expect(result.simulated.simulated).toBe(true);
+
+    // Disabled simulated button keeps aria-disabled and is out of tab order.
+    expect(result.disabled.role).toBe("button");
+    expect(result.disabled.tabindex).toBe("-1");
+    expect(result.disabled.ariaDisabled).toBe("true");
+
+    // Disabled link never becomes a button or gains an href.
+    expect(result.link.tag).toBe("A");
+    expect(result.link.role).toBe("link");
+    expect(result.link.ariaDisabled).toBe("true");
+    expect(result.link.href).toBeNull();
   });
 
   test("expands interactive target size to >= 44x44px on coarse touch pointers", async ({

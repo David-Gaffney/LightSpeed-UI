@@ -1,0 +1,38 @@
+---
+title: Badge
+description: Themed inline status badge styled entirely with semantic tokens.
+sidebar:
+  order: 11
+---
+
+import Badge from "@lsui/liftoff/Badge.astro";
+
+<ComponentPreview title="Badge Preview" theme="nordic light" hydration="none">
+  <Badge>Badge</Badge>
+</ComponentPreview>
+
+## Installation
+
+> **Planned:** `@lsui/cli` is not published yet (see `GUIDE.md` Phase 13.1 / `PLAN.md` Phase 5, Part 1). Until then, copy the component source from `@lsui/liftoff/Badge.astro` or read its registry manifest at `/r/liftoff/badge.json`.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+| :--- | :--- | :--- | :--- | :--- |
+
+
+## Slots
+
+| Slot | Description |
+| :--- | :--- |
+| `default` | Badge label. |
+
+## Accessibility & Keyboard
+
+### Semantic & WCAG Contract
+
+- Renders a non-interactive `<span>`; never use as a button.
+
+### Keyboard Interactions
+
+- No keyboard interaction.
